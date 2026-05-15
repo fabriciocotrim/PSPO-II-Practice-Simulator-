@@ -131,3 +131,44 @@ label { display: block; font-weight: 700; margin-bottom: .35rem; }
   .exam-controls, .score-card, .tag, .select-all-row { background: #111827; }
   .check-row:hover { background: #1e293b; }
 }
+/* Accessibility fix: dark mode button contrast */
+
+@media (prefers-color-scheme: dark) {
+  .secondary {
+    background: #e0e7ff !important;
+    color: #172554 !important;
+    border: 1px solid #a5b4fc !important;
+  }
+
+  .secondary:hover {
+    background: #c7d2fe !important;
+    color: #172554 !important;
+  }
+
+  button.secondary:disabled,
+  button:disabled.secondary {
+    background: #334155 !important;
+    color: #e5e7eb !important;
+    border: 1px solid #64748b !important;
+    opacity: 1 !important;
+  }
+
+  button:disabled {
+    opacity: 1 !important;
+  }
+
+  .primary {
+    background: #2563eb !important;
+    color: #ffffff !important;
+  }
+
+  .primary:hover {
+    background: #1d4ed8 !important;
+  }
+
+  .unsure-active {
+    background: #facc15 !important;
+    color: #422006 !important;
+    border: 1px solid #eab308 !important;
+  }
+}
