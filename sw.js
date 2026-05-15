@@ -1,6 +1,6 @@
-const APP_VERSION = "1.0.1";
+const APP_VERSION = "1.1.0";
 const BUILD_DATE = "2026-05-15";
-const BUILD_TIME = "19:32-BRT";
+const BUILD_TIME = "19:48-BRT";
 const CACHE_NAME = `pspo-ii-practice-${APP_VERSION}-${BUILD_DATE}-${BUILD_TIME}`;
 
 const APP_SHELL = [

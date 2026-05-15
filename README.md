@@ -1,124 +1,110 @@
 # PSPO II Practice Simulator
 
-## Versão
-
-- Versão: 1.0.1
-- Data: 2026-05-15
-- Hora: 19:32 BRT
-
-### Alterações desta versão
-
-- Correção de contraste em modo escuro.
-- Melhoria de acessibilidade visual nos botões de navegação.
-- Melhoria de contraste em botões desabilitados.
-- Melhoria de foco visível para teclado.
-- Atualização do Service Worker para evitar cache antigo.
-- Exibição de número, data e hora da versão na interface.
-
-
 Simulador independente para prática da certificação PSPO II.
 
-## Características
+## Versão
 
-- Interface em português brasileiro.
-- Questões, alternativas e comentários em inglês.
-- Banco com 400 questões combinadas a partir dos dois arquivos fornecidos:
-  - 240 questões da versão `PSPO_II_Practice_Questions_English_240`.
-  - 160 questões da versão `PSPO_II_Practice_Questions_English_Validated`.
+- Versão: 1.1.0
+- Data: 2026-05-15
+- Hora: 19:48 BRT
+
+## Idioma
+
+A interface pode ser alternada entre português brasileiro e inglês.
+
+As questões, alternativas, comentários e temas permanecem em inglês para aproximar a experiência do ambiente real da certificação PSPO II e reforçar o vocabulário técnico usado no exame.
+
+## Funcionalidades
+
+- Banco com questões em inglês.
 - Seleção por um ou mais temas.
-- Simulados com 10, 20, 30, 40, 50 ou 60 questões.
-- Sorteio aleatório das questões conforme os filtros.
-- Modos de feedback:
-  - Feedback imediato.
-  - Revisão apenas ao final.
-- Botão para marcar questão como dúvida.
-- Filtro de navegação por questões respondidas, não respondidas, em dúvida ou todas.
-- Histórico local das últimas tentativas.
-- PWA básica com cache offline após o primeiro carregamento.
+- Simulados de 10, 20, 30, 40, 50 ou 60 questões.
+- Feedback imediato ou revisão apenas ao final.
+- Sorteio aleatório das questões e das alternativas.
+- Navegação livre entre questões.
+- Filtro por todas, respondidas, não respondidas ou em dúvida.
+- Botão para marcar/remover dúvida.
+- Botão para finalizar o simulado de qualquer ponto da prova.
+- Botão para salvar e sair.
+- Retomada automática de simulado salvo no mesmo navegador/dispositivo.
+- Salvamento automático do estado da prova em andamento.
+- Cronômetro progressivo.
+- Histórico local de resultados.
+- Toggle de idioma da interface.
+- Toggle de tema claro/escuro.
+- PWA básica com Service Worker.
 
-## Por que as questões ficam em inglês?
-
-As questões permanecem em inglês para aproximar a experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.
-
-## Estrutura dos arquivos
+## Estrutura de arquivos
 
 ```text
-index.html
-styles.css
-app.js
-questions.json
-questions-data.js
-manifest.json
-sw.js
-README.md
-/icons/icon.svg
-/icons/icon-192.png
-/icons/icon-512.png
+/
+├── index.html
+├── styles.css
+├── app.js
+├── questions.json
+├── questions-data.js
+├── manifest.json
+├── sw.js
+├── README.md
+└── icons/
+    ├── icon.svg
+    ├── icon-192.png
+    └── icon-512.png
 ```
-
-`questions.json` é o banco principal.
-
-`questions-data.js` é um espelho do banco para permitir uso local abrindo `index.html` diretamente no navegador, caso o navegador bloqueie `fetch()` de arquivos locais.
 
 ## Como rodar localmente
 
-Opção simples:
+Abra `index.html` no navegador.
 
-1. Baixe todos os arquivos.
-2. Abra `index.html` no navegador.
-
-Opção recomendada para testar PWA e service worker:
-
-```bash
-python -m http.server 8000
-```
-
-Depois acesse:
-
-```text
-http://localhost:8000
-```
+Como existe também o arquivo `questions-data.js`, o app consegue carregar o banco mesmo sem servidor local.
 
 ## Como publicar no GitHub Pages
 
 1. Crie um repositório no GitHub.
-2. Faça commit de todos os arquivos.
+2. Suba todos os arquivos para a raiz do repositório.
 3. Vá em `Settings > Pages`.
 4. Em `Build and deployment`, selecione `Deploy from a branch`.
-5. Escolha a branch `main` e a pasta `/root`.
+5. Selecione a branch `main` e a pasta `/root`.
 6. Salve.
+
+## Como atualizar depois
+
+Sempre que alterar CSS, JS ou HTML:
+
+1. Atualize os arquivos.
+2. Altere a versão em `app.js`.
+3. Altere a versão em `sw.js`.
+4. Faça commit.
+5. Abra a URL com parâmetro de versão, por exemplo:
+
+```text
+?v=1.1.0
+```
+
+Isso reduz problemas de cache do PWA.
 
 ## Como adicionar novas questões
 
-Adicione objetos ao arquivo `questions.json` usando este formato:
+Edite `questions.json` e adicione novas entradas no formato:
 
 ```json
 {
   "id": "NEW-Q001",
-  "topics": ["Empiricism", "Product Owner Accountability"],
+  "topics": ["Scrum Guide 2020", "Empiricism"],
   "difficulty": "medium",
   "type": "single",
   "question": "Question text in English.",
   "options": [
     { "id": "A", "text": "Option A." },
-    { "id": "B", "text": "Option B." },
-    { "id": "C", "text": "Option C." },
-    { "id": "D", "text": "Option D." }
+    { "id": "B", "text": "Option B." }
   ],
   "correctAnswers": ["A"],
   "explanation": "Explanation in English."
 }
 ```
 
-Para questões de múltipla resposta:
-
-```json
-"type": "multiple",
-"correctAnswers": ["A", "C"]
-```
-
-A correção é rigorosa: só conta como correta se o usuário marcar exatamente todas as respostas corretas e nenhuma incorreta.
+Depois atualize também `questions-data.js` se quiser manter suporte a abertura direta via `index.html` sem servidor.
 
 ## Aviso
 
-Este produto é independente. Não é oficial, não é endossado e não é afiliado à Scrum.org.
+Este projeto é independente. Não é produto oficial da Scrum.org e não reproduz questões oficiais do exame.

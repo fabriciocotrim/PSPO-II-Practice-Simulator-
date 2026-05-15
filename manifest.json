@@ -1,12 +1,18 @@
 {
   "name": "PSPO II Practice Simulator",
   "short_name": "PSPO II",
-  "description": "Simulador independente para prática da certificação PSPO II. Interface em português e questões em inglês.",
-  "start_url": "./index.html?v=1.0.1",
+  "description": "Simulador independente para prática da certificação PSPO II.",
+  "start_url": "./?v=1.1.0",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f8fafc",
+  "background_color": "#020617",
   "theme_color": "#172554",
   "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
@@ -17,6 +23,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "version": "1.0.1"
+  ]
 }
