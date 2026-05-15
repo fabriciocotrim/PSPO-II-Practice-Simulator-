@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#172554" />
+  <meta name="description" content="Simulador independente para prática da certificação PSPO II." />
+  <title>PSPO II Practice Simulator</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Simulador independente</p>
+      <h1>PSPO II Practice Simulator</h1>
+    </div>
+    <div class="header-badge" id="questionBankCount">Carregando...</div>
+  </header>
+
+  <main id="app" class="app-shell" aria-live="polite">
+    <section id="startScreen" class="card screen active" aria-labelledby="startTitle">
+      <h2 id="startTitle">Configurar simulado</h2>
+      <p class="notice">As questões são apresentadas em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.</p>
+
+      <form id="startForm" class="form-grid">
+        <fieldset>
+          <legend>Selecionar temas</legend>
+          <div class="field-row compact">
+            <label class="check-row select-all-row">
+              <input type="checkbox" id="selectAllTopics" checked />
+              <span>Selecionar todos</span>
+            </label>
+          </div>
+          <div id="topicsContainer" class="topic-grid" role="group" aria-label="Temas"></div>
+        </fieldset>
+
+        <fieldset class="two-col">
+          <div>
+            <label for="questionCount">Quantidade de questões</label>
+            <select id="questionCount" name="questionCount">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="40" selected>40</option>
+              <option value="50">50</option>
+              <option value="60">60</option>
+            </select>
+          </div>
+          <div>
+            <label for="feedbackMode">Modo de feedback</label>
+            <select id="feedbackMode" name="feedbackMode">
+              <option value="immediate">Feedback imediato</option>
+              <option value="final" selected>Revisão apenas ao final</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <div id="filterWarning" class="warning" hidden></div>
+        <button id="startButton" type="submit" class="primary">Iniciar simulado</button>
+      </form>
+    </section>
+
+    <section id="historyScreen" class="card screen active" aria-labelledby="historyTitle">
+      <h2 id="historyTitle">Histórico recente</h2>
+      <div id="historyContainer" class="history-empty">Nenhuma tentativa registrada ainda.</div>
+    </section>
+
+    <section id="examScreen" class="card screen" aria-labelledby="examTitle">
+      <div class="exam-topline">
+        <div>
+          <p class="eyebrow" id="examModeLabel">Simulado</p>
+          <h2 id="examTitle">Questão</h2>
+        </div>
+        <div class="progress-pill" id="progressPill">0/0</div>
+      </div>
+
+      <div class="exam-controls">
+        <label for="questionFilter">Filtro</label>
+        <select id="questionFilter">
+          <option value="all">Todas</option>
+          <option value="unanswered">Não respondidas</option>
+          <option value="answered">Respondidas</option>
+          <option value="unsure">Em dúvida</option>
+        </select>
+
+        <label for="questionSelector">Ir para</label>
+        <select id="questionSelector"></select>
+      </div>
+
+      <article id="questionCard" class="question-card"></article>
+
+      <nav class="nav-buttons" aria-label="Navegação do simulado">
+        <button id="prevButton" type="button" class="secondary">Questão anterior</button>
+        <button id="unsureButton" type="button" class="secondary">Marcar como dúvida</button>
+        <button id="nextButton" type="button" class="primary">Próxima questão</button>
+      </nav>
+    </section>
+
+    <section id="resultScreen" class="card screen" aria-labelledby="resultTitle">
+      <h2 id="resultTitle">Resultado final</h2>
+      <div id="resultSummary" class="result-summary"></div>
+      <div id="reviewContainer" class="review-list"></div>
+      <button id="newAttemptButton" type="button" class="primary wide">Novo simulado</button>
+    </section>
+  </main>
+
+  <dialog id="finishDialog" class="modal" aria-labelledby="finishDialogTitle">
+    <h2 id="finishDialogTitle">Confirmar encerramento</h2>
+    <p id="finishDialogText"></p>
+    <div class="modal-actions">
+      <button id="cancelFinishButton" type="button" class="secondary">Cancelar</button>
+      <button id="confirmFinishButton" type="button" class="primary">Confirmar encerramento</button>
+    </div>
+  </dialog>
+
+  <script src="questions-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
