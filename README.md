@@ -1,5 +1,21 @@
 # PSPO II Practice Simulator
 
+## Versão
+
+- Versão: 1.0.1
+- Data: 2026-05-15
+- Hora: 19:32 BRT
+
+### Alterações desta versão
+
+- Correção de contraste em modo escuro.
+- Melhoria de acessibilidade visual nos botões de navegação.
+- Melhoria de contraste em botões desabilitados.
+- Melhoria de foco visível para teclado.
+- Atualização do Service Worker para evitar cache antigo.
+- Exibição de número, data e hora da versão na interface.
+
+
 Simulador independente para prática da certificação PSPO II.
 
 ## Características

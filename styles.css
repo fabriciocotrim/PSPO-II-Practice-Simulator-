@@ -131,44 +131,180 @@ label { display: block; font-weight: 700; margin-bottom: .35rem; }
   .exam-controls, .score-card, .tag, .select-all-row { background: #111827; }
   .check-row:hover { background: #1e293b; }
 }
-/* Accessibility fix: dark mode button contrast */
+
+
+/* Version display */
+.version-line {
+  margin: .25rem 0 0;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 700;
+}
+.app-footer {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1rem 1.5rem;
+  color: var(--muted);
+  font-size: .82rem;
+  text-align: center;
+}
+
+/* Accessibility and visibility hardening */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: #2563eb;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+button {
+  letter-spacing: .01em;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+.option-row:focus-within {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
+
+.option-row {
+  color: var(--text);
+}
 
 @media (prefers-color-scheme: dark) {
-  .secondary {
+  :root {
+    --secondary: #e0e7ff;
+    --focus: #facc15;
+  }
+
+  .card,
+  .option-row,
+  .stat,
+  select,
+  .modal,
+  .review-item {
+    background: #111827 !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+  }
+
+  .option-row span,
+  .question-text,
+  .review-item,
+  .review-item p,
+  .review-item div {
+    color: #f8fafc;
+  }
+
+  .secondary,
+  button.secondary,
+  .nav-buttons button.secondary,
+  #prevButton,
+  #unsureButton,
+  #cancelFinishButton {
     background: #e0e7ff !important;
     color: #172554 !important;
     border: 1px solid #a5b4fc !important;
+    opacity: 1 !important;
   }
 
-  .secondary:hover {
+  .secondary:hover,
+  button.secondary:hover,
+  .nav-buttons button.secondary:hover,
+  #prevButton:hover,
+  #unsureButton:hover,
+  #cancelFinishButton:hover {
     background: #c7d2fe !important;
     color: #172554 !important;
   }
 
+  button:disabled,
+  .secondary:disabled,
   button.secondary:disabled,
-  button:disabled.secondary {
+  .nav-buttons button:disabled,
+  #prevButton:disabled,
+  #unsureButton:disabled,
+  #cancelFinishButton:disabled {
     background: #334155 !important;
-    color: #e5e7eb !important;
-    border: 1px solid #64748b !important;
+    color: #f8fafc !important;
+    border: 1px solid #94a3b8 !important;
     opacity: 1 !important;
+    cursor: not-allowed;
   }
 
-  button:disabled {
-    opacity: 1 !important;
-  }
-
-  .primary {
+  .primary,
+  button.primary,
+  #startButton,
+  #nextButton,
+  #confirmFinishButton,
+  #newAttemptButton {
     background: #2563eb !important;
+    color: #ffffff !important;
+    border: 1px solid #60a5fa !important;
+  }
+
+  .primary:hover,
+  button.primary:hover,
+  #startButton:hover,
+  #nextButton:hover,
+  #confirmFinishButton:hover,
+  #newAttemptButton:hover {
+    background: #1d4ed8 !important;
     color: #ffffff !important;
   }
 
-  .primary:hover {
-    background: #1d4ed8 !important;
-  }
-
-  .unsure-active {
+  .unsure-active,
+  #unsureButton.unsure-active {
     background: #facc15 !important;
     color: #422006 !important;
     border: 1px solid #eab308 !important;
+  }
+
+  .option-row.correct,
+  .feedback-box.correct,
+  .score-card.pass {
+    background: #052e16 !important;
+    color: #dcfce7 !important;
+    border-color: #22c55e !important;
+  }
+
+  .option-row.incorrect,
+  .feedback-box.incorrect,
+  .score-card.fail {
+    background: #450a0a !important;
+    color: #fee2e2 !important;
+    border-color: #ef4444 !important;
+  }
+
+  .warning {
+    background: #422006 !important;
+    color: #fef3c7 !important;
+    border-color: #f59e0b !important;
+  }
+
+  .notice {
+    background: #172554 !important;
+    color: #dbeafe !important;
+    border-color: #60a5fa !important;
+  }
+
+  .version-line,
+  .app-footer,
+  .eyebrow,
+  .review-label,
+  .tag,
+  .history-table th {
+    color: #cbd5e1 !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  button,
+  .option-row,
+  select,
+  .card {
+    border-width: 2px !important;
   }
 }

@@ -5,6 +5,12 @@ const TOPICS = [
   "Outcome vs Output", "Experimentation", "Decision Making"
 ];
 
+const APP_VERSION = {
+  number: "1.0.1",
+  date: "2026-05-15",
+  time: "19:32 BRT"
+};
+
 const state = {
   questions: [],
   selectedQuestions: [],
@@ -31,13 +37,16 @@ async function loadQuestions() {
 }
 
 function initializeApp() {
+  renderAppVersion();
   renderTopicSelector();
   loadAttemptHistory();
   attachEvents();
   updateQuestionBankCount();
   updateFilterWarning();
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register("sw.js")
+      .then((registration) => registration.update())
+      .catch(() => {});
   }
 }
 
@@ -358,11 +367,20 @@ function saveAttemptHistory(result) {
     score: result.percentage,
     topics: state.selectedTopics,
     questionCount: state.questionCount,
-    feedbackMode: state.feedbackMode
+    feedbackMode: state.feedbackMode,
+    appVersion: APP_VERSION.number
   };
   history.unshift(attempt);
   localStorage.setItem("pspoAttemptHistory", JSON.stringify(history.slice(0, 10)));
   localStorage.setItem("pspoLastAttempt", JSON.stringify(attempt));
+}
+
+function renderAppVersion() {
+  const versionText = `Versão ${APP_VERSION.number} · ${APP_VERSION.date} · ${APP_VERSION.time}`;
+  const headerVersion = $("appVersionLine");
+  const footerVersion = $("appVersionFooter");
+  if (headerVersion) headerVersion.textContent = versionText;
+  if (footerVersion) footerVersion.textContent = `${versionText} · Banco: ${state.questions.length} questões`;
 }
 
 function loadAttemptHistory() {
@@ -376,7 +394,7 @@ function loadAttemptHistory() {
   container.className = "";
   container.innerHTML = `
     <table class="history-table">
-      <thead><tr><th>Data</th><th>Nota</th><th>Temas</th><th>Questões</th><th>Modo</th></tr></thead>
+      <thead><tr><th>Data</th><th>Nota</th><th>Temas</th><th>Questões</th><th>Modo</th><th>Versão</th></tr></thead>
       <tbody>
         ${history.map((item) => `
           <tr>
@@ -385,6 +403,7 @@ function loadAttemptHistory() {
             <td>${escapeHtml((item.topics || []).join(", "))}</td>
             <td>${item.questionCount}</td>
             <td>${item.feedbackMode === "immediate" ? "Feedback imediato" : "Revisão ao final"}</td>
+            <td>${escapeHtml(item.appVersion || "-")}</td>
           </tr>
         `).join("")}
       </tbody>
