@@ -1,4 +1,4 @@
-const CACHE_NAME = "pspo-ii-practice-v1";
+const CACHE_NAME = "pspo-ii-practice-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
