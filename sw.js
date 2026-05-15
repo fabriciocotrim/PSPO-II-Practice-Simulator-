@@ -1,8 +1,4 @@
-const APP_VERSION = "1.1.0";
-const BUILD_DATE = "2026-05-15";
-const BUILD_TIME = "19:48-BRT";
-const CACHE_NAME = `pspo-ii-practice-${APP_VERSION}-${BUILD_DATE}-${BUILD_TIME}`;
-
+const CACHE_NAME = "pspo-ii-practice-v1.2.0";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -17,11 +13,10 @@ const APP_SHELL = [
 ];
 
 self.addEventListener("install", (event) => {
-  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) =>
-      cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: "reload" })))
-    )
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -35,7 +30,6 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-
   event.respondWith(
     fetch(event.request)
       .then((response) => {
@@ -43,12 +37,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() =>
-        caches.match(event.request).then((cached) => {
-          if (cached) return cached;
-          if (event.request.mode === "navigate") return caches.match("./index.html");
-          return undefined;
-        })
-      )
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html")))
   );
 });
