@@ -6,9 +6,9 @@ const TOPICS = [
 ];
 
 const APP_VERSION = {
-  number: "1.1.0",
+  number: "1.2.0",
   date: "2026-05-15",
-  time: "19:48 BRT"
+  time: "20:18 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -23,11 +23,9 @@ const I18N = {
     htmlLang: "pt-BR",
     independentSimulator: "Simulador independente",
     versionLoading: "Versão carregando...",
-    interfaceLanguage: "Idioma",
-    visualMode: "Tema",
-    lightMode: "Claro",
-    darkMode: "Escuro",
-    configureExam: "Configurar simulado",
+    homeTitle: "Preparar simulado",
+    configurationTab: "Configuração",
+    historyTab: "Histórico",
     languageNotice: "As questões, alternativas, comentários e temas são apresentados em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.",
     selectTopics: "Selecionar temas",
     selectAll: "Selecionar todos",
@@ -40,7 +38,10 @@ const I18N = {
     resumeSimulation: "Retomar simulado",
     discardSavedExam: "Descartar salvo",
     savedAt: "Salvo em",
+    lastSaved: "Último salvamento",
+    neverSaved: "nunca",
     elapsedTime: "Tempo",
+    timeLabel: "Tempo",
     answered: "Respondida",
     answeredPlural: "Respondidas",
     unanswered: "Não respondida",
@@ -55,8 +56,9 @@ const I18N = {
     allQuestions: "Todas",
     goTo: "Ir para",
     finishSimulation: "Finalizar simulado",
-    saveAndExit: "Salvar e sair",
-    savedAndExited: "Estado salvo. Você pode retomar depois pela tela inicial.",
+    saveState: "Salvar",
+    exitSimulation: "Sair",
+    stateSaved: "Estado salvo.",
     previousQuestion: "Questão anterior",
     markUnsure: "Marcar como dúvida",
     removeUnsure: "Remover dúvida",
@@ -64,12 +66,15 @@ const I18N = {
     finalResult: "Resultado final",
     newSimulation: "Novo simulado",
     confirmFinish: "Confirmar encerramento",
+    confirmExit: "Confirmar saída",
     cancel: "Cancelar",
     confirmFinishButton: "Confirmar encerramento",
+    confirmExitButton: "Confirmar saída",
+    back: "Voltar",
+    proceed: "Prosseguir",
     correct: "Correta",
     incorrect: "Incorreta",
-    correctAnswer: "Resposta correta",
-    explanation: "Comentário",
+    notAnswered: "Não respondida",
     status: "Status",
     passed: "Aprovado",
     notPassed: "Não aprovado",
@@ -80,10 +85,13 @@ const I18N = {
     threshold: "Limite",
     duration: "Duração",
     yourAnswer: "Sua resposta",
-    noQuestionsFilter: "Sem questões neste filtro",
+    correctAnswer: "Resposta correta",
+    explanation: "Comentário",
+    noQuestionsFilter: "Não há questões nesse filtro",
     selectAtLeastOneTopic: "Selecione pelo menos um tema.",
     notEnoughQuestions: "Há apenas {available} questões disponíveis para os filtros selecionados. Reduza a quantidade ou selecione mais temas.",
     confirmFinishText: "Você está prestes a finalizar o simulado. Existem {unanswered} questões não respondidas e {unsure} questões marcadas como dúvida. Deseja confirmar o encerramento?",
+    confirmExitText: "Suas últimas alterações após {time} não salvas serão perdidas. Tem certeza que deseja sair?",
     questionBankCount: "{count} questões",
     versionText: "Versão {number} · {date} · {time}",
     versionFooter: "Versão {number} · {date} · {time} · Banco: {count} questões",
@@ -93,19 +101,17 @@ const I18N = {
     questions: "Questões",
     mode: "Modo",
     appVersion: "Versão",
-    loadingError: "Erro ao carregar as questões.",
+    loadingError: "Erro ao carregar questões.",
     cannotLoadQuestions: "Não foi possível carregar questions.json."
   },
   en: {
     htmlLang: "en",
     independentSimulator: "Independent simulator",
     versionLoading: "Loading version...",
-    interfaceLanguage: "Language",
-    visualMode: "Theme",
-    lightMode: "Light",
-    darkMode: "Dark",
-    configureExam: "Configure simulation",
-    languageNotice: "Questions, answer options, explanations, and topics are shown in English to approximate the real PSPO II exam environment and reinforce certification vocabulary.",
+    homeTitle: "Prepare simulation",
+    configurationTab: "Configuration",
+    historyTab: "History",
+    languageNotice: "Questions, answer options, explanations, and topics are shown in English to better simulate the real PSPO II exam environment and reinforce the technical vocabulary used in the certification.",
     selectTopics: "Select topics",
     selectAll: "Select all",
     questionCount: "Number of questions",
@@ -115,9 +121,12 @@ const I18N = {
     startSimulation: "Start simulation",
     savedExam: "Saved simulation",
     resumeSimulation: "Resume simulation",
-    discardSavedExam: "Discard saved simulation",
+    discardSavedExam: "Discard saved",
     savedAt: "Saved at",
+    lastSaved: "Last saved",
+    neverSaved: "never",
     elapsedTime: "Time",
+    timeLabel: "Time",
     answered: "Answered",
     answeredPlural: "Answered",
     unanswered: "Unanswered",
@@ -132,21 +141,25 @@ const I18N = {
     allQuestions: "All",
     goTo: "Go to",
     finishSimulation: "Finish simulation",
-    saveAndExit: "Save and exit",
-    savedAndExited: "State saved. You can resume later from the start screen.",
+    saveState: "Save",
+    exitSimulation: "Exit",
+    stateSaved: "State saved.",
     previousQuestion: "Previous question",
     markUnsure: "Mark as unsure",
-    removeUnsure: "Remove unsure mark",
+    removeUnsure: "Remove unsure",
     nextQuestion: "Next question",
     finalResult: "Final result",
     newSimulation: "New simulation",
     confirmFinish: "Confirm finish",
+    confirmExit: "Confirm exit",
     cancel: "Cancel",
     confirmFinishButton: "Confirm finish",
+    confirmExitButton: "Confirm exit",
+    back: "Back",
+    proceed: "Proceed",
     correct: "Correct",
     incorrect: "Incorrect",
-    correctAnswer: "Correct answer",
-    explanation: "Explanation",
+    notAnswered: "Unanswered",
     status: "Status",
     passed: "Passed",
     notPassed: "Not passed",
@@ -157,10 +170,13 @@ const I18N = {
     threshold: "Threshold",
     duration: "Duration",
     yourAnswer: "Your answer",
+    correctAnswer: "Correct answer",
+    explanation: "Explanation",
     noQuestionsFilter: "No questions in this filter",
     selectAtLeastOneTopic: "Select at least one topic.",
     notEnoughQuestions: "There are only {available} questions available for the selected filters. Reduce the amount or select more topics.",
     confirmFinishText: "You are about to finish the simulation. There are {unanswered} unanswered questions and {unsure} questions marked as unsure. Do you want to confirm?",
+    confirmExitText: "Your unsaved changes after {time} will be lost. Are you sure you want to exit?",
     questionBankCount: "{count} questions",
     versionText: "Version {number} · {date} · {time}",
     versionFooter: "Version {number} · {date} · {time} · Bank: {count} questions",
@@ -190,7 +206,9 @@ const state = {
   elapsedSeconds: 0,
   timerId: null,
   currentExamId: null,
-  lastSavedAt: null
+  lastSavedAt: null,
+  dirty: false,
+  pendingAction: null
 };
 
 const $ = (id) => document.getElementById(id);
@@ -221,6 +239,7 @@ function saveSettings() {
 function applyTheme() {
   document.documentElement.dataset.theme = settings.theme === "dark" ? "dark" : "light";
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", settings.theme === "dark" ? "#020617" : "#172554");
+  updateToggleStates();
 }
 
 function applyLanguage() {
@@ -229,25 +248,46 @@ function applyLanguage() {
     const key = element.dataset.i18n;
     element.textContent = t(key);
   });
-  $("languageToggle").value = settings.lang;
-  $("themeToggle").value = settings.theme;
+  updateToggleStates();
   renderAppVersion();
   updateQuestionBankCount();
   updateFilterWarning();
   renderResumeCard();
   loadAttemptHistory();
-  if ($("examScreen").classList.contains("active")) renderQuestion();
+  updateSaveLine();
+  if ($("examScreen")?.classList.contains("active")) renderQuestion();
+}
+
+function updateToggleStates() {
+  document.querySelectorAll(".lang-toggle").forEach((button) => {
+    const active = button.dataset.lang === settings.lang;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  document.querySelectorAll(".theme-toggle").forEach((button) => {
+    const active = button.dataset.themeValue === settings.theme;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 }
 
 async function loadQuestions() {
   if (Array.isArray(window.QUESTION_BANK) && window.QUESTION_BANK.length) {
-    state.questions = window.QUESTION_BANK;
+    state.questions = normalizeQuestions(window.QUESTION_BANK);
     return state.questions;
   }
   const response = await fetch("questions.json", { cache: "no-store" });
   if (!response.ok) throw new Error(t("cannotLoadQuestions"));
-  state.questions = await response.json();
+  const data = await response.json();
+  state.questions = normalizeQuestions(data);
   return state.questions;
+}
+
+function normalizeQuestions(questions) {
+  return questions.map((question) => ({
+    ...question,
+    options: sortOptions(question.options || [])
+  }));
 }
 
 function initializeApp() {
@@ -267,16 +307,24 @@ function initializeApp() {
 }
 
 function attachEvents() {
-  $("languageToggle").addEventListener("change", (event) => {
-    settings.lang = event.target.value;
-    saveSettings();
-    applyLanguage();
+  document.querySelectorAll(".lang-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      settings.lang = button.dataset.lang;
+      saveSettings();
+      applyLanguage();
+    });
   });
 
-  $("themeToggle").addEventListener("change", (event) => {
-    settings.theme = event.target.value;
-    saveSettings();
-    applyTheme();
+  document.querySelectorAll(".theme-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      settings.theme = button.dataset.themeValue;
+      saveSettings();
+      applyTheme();
+    });
+  });
+
+  document.querySelectorAll(".tab-button").forEach((button) => {
+    button.addEventListener("click", () => switchHomeTab(button.dataset.tab));
   });
 
   $("startForm").addEventListener("submit", (event) => {
@@ -299,38 +347,72 @@ function attachEvents() {
   $("feedbackMode").addEventListener("change", updateFilterWarning);
 
   $("prevButton").addEventListener("click", () => moveQuestion(-1));
-  $("nextButton").addEventListener("click", () => {
-    if (state.currentIndex === state.selectedQuestions.length - 1) finishExam();
-    else moveQuestion(1);
-  });
+  $("nextButton").addEventListener("click", handleNextQuestion);
   $("finishNowButton").addEventListener("click", finishExam);
-  $("saveExitButton").addEventListener("click", saveAndExit);
+  $("saveButton").addEventListener("click", () => {
+    saveAnswerFromDom();
+    saveCurrentExam(true);
+    showExamStatus(t("stateSaved"));
+  });
+  $("exitButton").addEventListener("click", confirmExit);
   $("unsureButton").addEventListener("click", toggleUnsure);
   $("questionSelector").addEventListener("change", (event) => {
     const idx = Number(event.target.value);
     if (!Number.isNaN(idx)) {
+      saveAnswerFromDom();
       state.currentIndex = idx;
-      saveCurrentExam();
+      state.dirty = true;
       renderQuestion();
     }
   });
   $("questionFilter").addEventListener("change", renderQuestionSelector);
+
   $("cancelFinishButton").addEventListener("click", () => $("finishDialog").close());
   $("confirmFinishButton").addEventListener("click", () => {
     $("finishDialog").close();
     finishExamConfirmed();
   });
+
+  $("cancelExitButton").addEventListener("click", () => $("exitDialog").close());
+  $("confirmExitButton").addEventListener("click", () => {
+    $("exitDialog").close();
+    exitWithoutSaving();
+  });
+
+  $("feedbackBackButton").addEventListener("click", () => $("feedbackDialog").close());
+  $("feedbackProceedButton").addEventListener("click", () => {
+    $("feedbackDialog").close();
+    proceedAfterFeedback();
+  });
+
   $("newAttemptButton").addEventListener("click", () => {
     clearCurrentExam();
-    setScreen("start");
+    setScreen("home");
+    switchHomeTab("config");
     renderResumeCard();
     loadAttemptHistory();
   });
 
-  window.addEventListener("beforeunload", () => saveCurrentExam());
+  window.addEventListener("beforeunload", () => saveCurrentExam(false, { automatic: true }));
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") saveCurrentExam();
+    if (document.visibilityState === "hidden") saveCurrentExam(false, { automatic: true });
   });
+}
+
+function switchHomeTab(tab) {
+  const safeTab = tab === "history" ? "history" : "config";
+  document.querySelectorAll(".tab-button").forEach((button) => {
+    const active = button.dataset.tab === safeTab;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  ["config", "history"].forEach((name) => {
+    const panel = $(`${name}Panel`);
+    const active = name === safeTab;
+    panel.hidden = !active;
+    panel.classList.toggle("active", active);
+  });
+  if (safeTab === "history") loadAttemptHistory();
 }
 
 function updateQuestionBankCount() {
@@ -401,7 +483,7 @@ function startSimulation() {
   }
   state.selectedQuestions = shuffleArray(pool).slice(0, state.questionCount).map((question) => ({
     ...question,
-    options: shuffleArray(question.options || [])
+    options: sortOptions(question.options || [])
   }));
   state.currentIndex = 0;
   state.answers = {};
@@ -410,11 +492,17 @@ function startSimulation() {
   state.elapsedSeconds = 0;
   state.currentExamId = `exam-${Date.now()}`;
   state.lastSavedAt = null;
+  state.dirty = false;
+  state.pendingAction = null;
   $("questionFilter").value = "all";
   setScreen("exam");
   startTimer();
-  saveCurrentExam();
+  saveCurrentExam(true);
   renderQuestion();
+}
+
+function sortOptions(options) {
+  return [...options].sort((a, b) => String(a.id).localeCompare(String(b.id)));
 }
 
 function shuffleArray(array) {
@@ -430,7 +518,6 @@ function renderQuestion() {
   const question = state.selectedQuestions[state.currentIndex];
   if (!question) return;
   const userAnswers = state.answers[question.id] || [];
-  const isImmediateAnswered = state.feedbackMode === "immediate" && userAnswers.length > 0;
   $("examTitle").textContent = `${t("question")} ${state.currentIndex + 1}`;
   $("progressPill").textContent = `${state.currentIndex + 1}/${state.selectedQuestions.length}`;
   $("timerPill").textContent = formatDuration(state.elapsedSeconds);
@@ -439,20 +526,19 @@ function renderQuestion() {
   $("nextButton").textContent = state.currentIndex === state.selectedQuestions.length - 1 ? t("finishSimulation") : t("nextQuestion");
   $("unsureButton").textContent = state.unsure[question.id] ? t("removeUnsure") : t("markUnsure");
   $("unsureButton").classList.toggle("unsure-active", Boolean(state.unsure[question.id]));
+  updateSaveLine();
 
   const inputType = question.type === "multiple" ? "checkbox" : "radio";
-  const optionsHtml = question.options.map((option) => {
+  const optionsHtml = sortOptions(question.options || []).map((option) => {
     const checked = userAnswers.includes(option.id) ? "checked" : "";
-    const highlight = isImmediateAnswered ? optionHighlightClass(question, option.id, userAnswers) : "";
     return `
-      <label class="option-row ${highlight}">
-        <input type="${inputType}" name="answer-${escapeHtml(question.id)}" value="${escapeHtml(option.id)}" ${checked} />
+      <label class="option-row">
+        <input type="${inputType}" name="answer" value="${escapeHtml(option.id)}" ${checked} />
         <span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span>
       </label>
     `;
   }).join("");
 
-  const feedbackHtml = isImmediateAnswered ? renderFeedbackBox(question, userAnswers) : "";
   $("questionCard").innerHTML = `
     <div class="question-meta">
       <span class="tag">${question.type === "multiple" ? "Multiple answer" : "Single answer"}</span>
@@ -460,82 +546,122 @@ function renderQuestion() {
     </div>
     <div class="question-text">${escapeHtml(question.question)}</div>
     <div class="options">${optionsHtml}</div>
-    ${feedbackHtml}
   `;
 
-  $("questionCard").querySelectorAll("input").forEach((input) => {
-    input.addEventListener("change", () => saveAnswer(question.id));
-  });
+  $("questionCard").querySelectorAll("input").forEach((input) => input.addEventListener("change", saveAnswerFromDom));
   renderQuestionSelector();
 }
 
-function renderFeedbackBox(question, userAnswers) {
-  const correct = isCorrect(question, userAnswers);
-  return `
-    <div class="feedback-box ${correct ? "correct" : "incorrect"}">
-      <strong>${correct ? t("correct") : t("incorrect")}</strong>
-      <div><strong>${t("correctAnswer")}:</strong> ${escapeHtml(question.correctAnswers.join(", "))}</div>
-      <div><strong>${t("explanation")}:</strong> ${escapeHtml(question.explanation)}</div>
-    </div>
-  `;
+function saveAnswerFromDom() {
+  const question = state.selectedQuestions[state.currentIndex];
+  if (!question) return;
+  const inputs = Array.from($("questionCard").querySelectorAll("input"));
+  const selected = inputs.filter((input) => input.checked).map((input) => input.value).sort();
+  state.answers[question.id] = selected;
+  updateQuestionStatus(question.id);
+  state.dirty = true;
+  renderQuestionSelector();
 }
 
-function saveAnswer(questionId) {
-  const inputs = Array.from($("questionCard").querySelectorAll("input"));
-  const selected = inputs.filter((input) => input.checked).map((input) => input.value);
-  state.answers[questionId] = selected;
-  updateQuestionStatus(questionId);
-  saveCurrentExam();
-  renderQuestion();
+function handleNextQuestion() {
+  saveAnswerFromDom();
+  if (state.feedbackMode === "immediate") {
+    const isLast = state.currentIndex === state.selectedQuestions.length - 1;
+    state.pendingAction = isLast ? "finish" : "next";
+    openFeedbackDialog();
+    return;
+  }
+  if (state.currentIndex === state.selectedQuestions.length - 1) finishExam();
+  else moveQuestion(1);
+}
+
+function openFeedbackDialog() {
+  const question = state.selectedQuestions[state.currentIndex];
+  const selected = state.answers[question.id] || [];
+  const answered = selected.length > 0;
+  const correct = answered && isCorrect(question, selected);
+  const title = !answered ? t("notAnswered") : (correct ? t("correct") : t("incorrect"));
+  const statusClass = !answered ? "unanswered-feedback" : (correct ? "correct" : "incorrect");
+
+  const optionsHtml = sortOptions(question.options || []).map((option) => {
+    const klass = optionHighlightClass(question, option.id, selected);
+    return `<div class="option-row ${klass}"><span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span></div>`;
+  }).join("");
+
+  $("feedbackDialogTitle").textContent = title;
+  $("feedbackDialogContent").innerHTML = `
+    <div class="feedback-box ${statusClass}">
+      <div class="feedback-result"><strong>${escapeHtml(title)}</strong></div>
+      <div class="review-label">${t("correctAnswer")}</div>
+      <div>${escapeHtml(question.correctAnswers.join(", "))}</div>
+      <div class="options feedback-options">${optionsHtml}</div>
+      <div class="review-label">${t("explanation")}</div>
+      <div>${escapeHtml(question.explanation)}</div>
+    </div>
+  `;
+  const dialog = $("feedbackDialog");
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else alert(`${title}\n\n${question.explanation}`);
+}
+
+function proceedAfterFeedback() {
+  if (state.pendingAction === "finish") {
+    state.pendingAction = null;
+    finishExam();
+    return;
+  }
+  state.pendingAction = null;
+  moveQuestion(1);
 }
 
 function toggleUnsure() {
   const question = state.selectedQuestions[state.currentIndex];
+  if (!question) return;
   state.unsure[question.id] = !state.unsure[question.id];
   updateQuestionStatus(question.id);
-  saveCurrentExam();
+  state.dirty = true;
   renderQuestion();
 }
 
 function updateQuestionStatus(questionId) {
-  return getQuestionStatus(questionId);
+  const status = getQuestionStatus(questionId);
+  return status;
 }
 
 function getQuestionStatus(questionId) {
   if (state.unsure[questionId]) return "unsure";
-  if ((state.answers[questionId] || []).length > 0) return "answered";
-  return "unanswered";
+  return (state.answers[questionId] || []).length ? "answered" : "unanswered";
 }
 
 function renderQuestionSelector() {
   const filter = $("questionFilter").value;
   const selector = $("questionSelector");
-  const options = state.selectedQuestions
+  const rows = state.selectedQuestions
     .map((question, index) => ({ question, index, status: getQuestionStatus(question.id) }))
-    .filter((item) => filter === "all" || item.status === filter);
-  selector.innerHTML = options.map((item) => {
-    const statusLabel = statusLabelFor(item.status);
-    return `<option value="${item.index}" ${item.index === state.currentIndex ? "selected" : ""}>${t("question")} ${item.index + 1} - ${statusLabel}</option>`;
-  }).join("");
-  if (!options.some((item) => item.index === state.currentIndex) && options.length > 0) {
-    selector.value = String(options[0].index);
-  }
-  if (!options.length) {
-    selector.innerHTML = `<option>${t("noQuestionsFilter")}</option>`;
-  }
+    .filter((item) => {
+      if (filter === "all") return true;
+      if (filter === "answered") return (state.answers[item.question.id] || []).length > 0;
+      if (filter === "unanswered") return !(state.answers[item.question.id] || []).length;
+      if (filter === "unsure") return Boolean(state.unsure[item.question.id]);
+      return true;
+    });
+  selector.innerHTML = rows.length ? rows.map((item) => `
+    <option value="${item.index}" ${item.index === state.currentIndex ? "selected" : ""}>${t("question")} ${item.index + 1} - ${statusLabelFor(item.status)}</option>
+  `).join("") : `<option>${t("noQuestionsFilter")}</option>`;
 }
 
 function moveQuestion(delta) {
+  saveAnswerFromDom();
   const next = state.currentIndex + delta;
-  if (next >= 0 && next < state.selectedQuestions.length) {
-    state.currentIndex = next;
-    saveCurrentExam();
-    renderQuestion();
-  }
+  if (next < 0 || next >= state.selectedQuestions.length) return;
+  state.currentIndex = next;
+  state.dirty = true;
+  renderQuestion();
 }
 
 function finishExam() {
-  const unanswered = state.selectedQuestions.filter((question) => getQuestionStatus(question.id) === "unanswered").length;
+  saveAnswerFromDom();
+  const unanswered = state.selectedQuestions.filter((question) => !(state.answers[question.id] || []).length).length;
   const unsure = state.selectedQuestions.filter((question) => state.unsure[question.id]).length;
   $("finishDialogText").textContent = t("confirmFinishText", { unanswered, unsure });
   const dialog = $("finishDialog");
@@ -549,15 +675,29 @@ function finishExamConfirmed() {
   const result = calculateScore();
   saveAttemptHistory(result);
   clearCurrentExam();
-  renderResults(result);
   setScreen("result");
+  renderResults(result);
 }
 
-function saveAndExit() {
-  saveCurrentExam(true);
+function confirmExit() {
+  saveAnswerFromDom();
+  const lastSave = state.lastSavedAt ? formatTimeOnly(state.lastSavedAt) : t("neverSaved");
+  $("exitDialogText").textContent = t("confirmExitText", { time: lastSave });
+  const dialog = $("exitDialog");
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else if (confirm($("exitDialogText").textContent)) exitWithoutSaving();
+}
+
+function exitWithoutSaving() {
   stopTimer();
-  showExamStatus(t("savedAndExited"));
-  setScreen("start");
+  state.selectedQuestions = [];
+  state.currentIndex = 0;
+  state.answers = {};
+  state.unsure = {};
+  state.pendingAction = null;
+  state.dirty = false;
+  setScreen("home");
+  switchHomeTab("config");
   renderResumeCard();
   loadAttemptHistory();
 }
@@ -567,10 +707,7 @@ function calculateScore() {
   let unanswered = 0;
   state.selectedQuestions.forEach((question) => {
     const selected = state.answers[question.id] || [];
-    if (!selected.length) {
-      unanswered += 1;
-      return;
-    }
+    if (!selected.length) unanswered += 1;
     if (isCorrect(question, selected)) correct += 1;
   });
   const total = state.selectedQuestions.length;
@@ -582,7 +719,7 @@ function calculateScore() {
 function isCorrect(question, selected) {
   const selectedSorted = [...selected].sort();
   const correctSorted = [...question.correctAnswers].sort();
-  return selectedSorted.length === correctSorted.length && selectedSorted.every((value, idx) => value === correctSorted[idx]);
+  return selectedSorted.length === correctSorted.length && selectedSorted.every((value, index) => value === correctSorted[index]);
 }
 
 function renderResults(result) {
@@ -608,7 +745,7 @@ function renderResults(result) {
 function renderReview() {
   const review = state.selectedQuestions.map((question, index) => {
     const selected = state.answers[question.id] || [];
-    const optionList = question.options.map((option) => {
+    const optionList = sortOptions(question.options || []).map((option) => {
       const klass = optionHighlightClass(question, option.id, selected);
       return `<div class="option-row ${klass}"><span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span></div>`;
     }).join("");
@@ -646,7 +783,6 @@ function startTimer() {
     if (!state.finished && $("examScreen").classList.contains("active")) {
       state.elapsedSeconds += 1;
       updateTimerDisplay();
-      if (state.elapsedSeconds % 5 === 0) saveCurrentExam();
     }
   }, 1000);
 }
@@ -662,10 +798,10 @@ function updateTimerDisplay() {
   if ($("timerPill")) $("timerPill").textContent = formatDuration(state.elapsedSeconds);
 }
 
-function saveCurrentExam(force = false) {
+function saveCurrentExam(force = false, options = {}) {
   if (!state.selectedQuestions.length || state.finished) return;
   const payload = {
-    selectedQuestions: state.selectedQuestions,
+    selectedQuestions: state.selectedQuestions.map((question) => ({ ...question, options: sortOptions(question.options || []) })),
     currentIndex: state.currentIndex,
     answers: state.answers,
     unsure: state.unsure,
@@ -679,13 +815,16 @@ function saveCurrentExam(force = false) {
   };
   localStorage.setItem(STORAGE_KEYS.currentExam, JSON.stringify(payload));
   state.lastSavedAt = payload.savedAt;
-  if (force) renderResumeCard();
+  state.dirty = false;
+  updateSaveLine();
+  if (force || options.automatic) renderResumeCard();
 }
 
 function getSavedExam() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.currentExam));
     if (!saved || !Array.isArray(saved.selectedQuestions) || !saved.selectedQuestions.length) return null;
+    saved.selectedQuestions = saved.selectedQuestions.map((question) => ({ ...question, options: sortOptions(question.options || []) }));
     return saved;
   } catch {
     return null;
@@ -704,7 +843,9 @@ function resumeSavedExam() {
   state.questionCount = saved.questionCount || saved.selectedQuestions.length;
   state.elapsedSeconds = saved.elapsedSeconds || 0;
   state.currentExamId = saved.currentExamId || `exam-${Date.now()}`;
+  state.lastSavedAt = saved.savedAt || null;
   state.finished = false;
+  state.dirty = false;
   $("questionFilter").value = "all";
   setScreen("exam");
   startTimer();
@@ -765,7 +906,7 @@ function saveAttemptHistory(result) {
     appVersion: APP_VERSION.number
   };
   history.unshift(attempt);
-  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history.slice(0, 30)));
+  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history.slice(0, 50)));
   localStorage.setItem(STORAGE_KEYS.lastAttempt, JSON.stringify(attempt));
 }
 
@@ -805,9 +946,7 @@ function getHistory() {
 }
 
 function setScreen(name) {
-  $("startScreen").classList.toggle("active", name === "start");
-  $("resumeScreen").classList.toggle("active", name === "start");
-  $("historyScreen").classList.toggle("active", name === "start");
+  $("homeScreen").classList.toggle("active", name === "home");
   $("examScreen").classList.toggle("active", name === "exam");
   $("resultScreen").classList.toggle("active", name === "result");
   if (name !== "exam") stopTimer();
@@ -824,6 +963,12 @@ function formatDate(iso) {
   catch { return iso; }
 }
 
+function formatTimeOnly(iso) {
+  if (!iso) return "-";
+  try { return new Intl.DateTimeFormat(settings.lang === "en" ? "en-US" : "pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(iso)); }
+  catch { return iso; }
+}
+
 function formatDuration(totalSeconds) {
   const seconds = Math.max(0, Number(totalSeconds) || 0);
   const h = Math.floor(seconds / 3600);
@@ -833,12 +978,19 @@ function formatDuration(totalSeconds) {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 }
 
+function updateSaveLine() {
+  const el = $("saveLine");
+  if (!el) return;
+  const time = state.lastSavedAt ? formatTimeOnly(state.lastSavedAt) : t("neverSaved");
+  el.textContent = `${t("lastSaved")}: ${time}${state.dirty ? " *" : ""}`;
+}
+
 function showExamStatus(message) {
   const el = $("examStatus");
   if (!el) return;
   el.hidden = false;
   el.textContent = message;
-  window.setTimeout(() => { el.hidden = true; }, 3000);
+  window.setTimeout(() => { el.hidden = true; }, 2500);
 }
 
 function escapeHtml(value) {
