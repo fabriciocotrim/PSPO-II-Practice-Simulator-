@@ -29,14 +29,22 @@
           <h2 id="homeTitle" data-i18n="homeTitle">Preparar simulado</h2>
           <p class="notice" data-i18n="languageNotice">As questões, alternativas, comentários e temas são apresentados em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.</p>
         </div>
-        <div class="toggle-stack" aria-label="Configurações rápidas">
-          <div class="toggle-row" role="group" aria-label="Idioma da interface">
-            <button type="button" class="icon-toggle lang-toggle" data-lang="pt-BR" aria-label="Interface em português brasileiro">🇧🇷</button>
-            <button type="button" class="icon-toggle lang-toggle" data-lang="en" aria-label="Interface in English">🇺🇸</button>
+        <div class="settings-switches" aria-label="Configurações rápidas">
+          <div class="switch-field">
+            <span class="switch-label" data-i18n="interfaceLanguage">Idioma</span>
+            <button type="button" class="switch-control lang-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+              <span class="switch-icon switch-left" aria-hidden="true">🇧🇷</span>
+              <span class="switch-icon switch-right" aria-hidden="true">🇺🇸</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
           </div>
-          <div class="toggle-row" role="group" aria-label="Tema visual">
-            <button type="button" class="icon-toggle theme-toggle" data-theme-value="light" aria-label="Modo claro">☀️</button>
-            <button type="button" class="icon-toggle theme-toggle" data-theme-value="dark" aria-label="Modo escuro">🌙</button>
+          <div class="switch-field">
+            <span class="switch-label" data-i18n="visualTheme">Tema</span>
+            <button type="button" class="switch-control theme-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+              <span class="switch-icon switch-left" aria-hidden="true">☀️</span>
+              <span class="switch-icon switch-right" aria-hidden="true">🌙</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
           </div>
         </div>
       </div>
@@ -104,13 +112,23 @@
         </div>
 
         <div class="exam-meta-panel">
-          <div class="toggle-row small-toggles" role="group" aria-label="Idioma da interface">
-            <button type="button" class="icon-toggle lang-toggle" data-lang="pt-BR" aria-label="Interface em português brasileiro">🇧🇷</button>
-            <button type="button" class="icon-toggle lang-toggle" data-lang="en" aria-label="Interface in English">🇺🇸</button>
-          </div>
-          <div class="toggle-row small-toggles" role="group" aria-label="Tema visual">
-            <button type="button" class="icon-toggle theme-toggle" data-theme-value="light" aria-label="Modo claro">☀️</button>
-            <button type="button" class="icon-toggle theme-toggle" data-theme-value="dark" aria-label="Modo escuro">🌙</button>
+          <div class="settings-switches exam-switches" aria-label="Configurações rápidas">
+            <div class="switch-field compact-switch-field">
+              <span class="switch-label" data-i18n="interfaceLanguage">Idioma</span>
+              <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+                <span class="switch-icon switch-left" aria-hidden="true">🇧🇷</span>
+                <span class="switch-icon switch-right" aria-hidden="true">🇺🇸</span>
+                <span class="switch-thumb" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="switch-field compact-switch-field">
+              <span class="switch-label" data-i18n="visualTheme">Tema</span>
+              <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+                <span class="switch-icon switch-left" aria-hidden="true">☀️</span>
+                <span class="switch-icon switch-right" aria-hidden="true">🌙</span>
+                <span class="switch-thumb" aria-hidden="true"></span>
+              </button>
+            </div>
           </div>
           <p class="eyebrow mode-label" id="examModeLabel">Simulado</p>
           <div class="pills">

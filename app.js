@@ -6,9 +6,9 @@ const TOPICS = [
 ];
 
 const APP_VERSION = {
-  number: "1.2.0",
+  number: "1.3.0",
   date: "2026-05-15",
-  time: "20:18 BRT"
+  time: "20:36 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -27,6 +27,8 @@ const I18N = {
     configurationTab: "Configuração",
     historyTab: "Histórico",
     languageNotice: "As questões, alternativas, comentários e temas são apresentados em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.",
+    interfaceLanguage: "Idioma",
+    visualTheme: "Tema",
     selectTopics: "Selecionar temas",
     selectAll: "Selecionar todos",
     questionCount: "Quantidade de questões",
@@ -112,6 +114,8 @@ const I18N = {
     configurationTab: "Configuration",
     historyTab: "History",
     languageNotice: "Questions, answer options, explanations, and topics are shown in English to better simulate the real PSPO II exam environment and reinforce the technical vocabulary used in the certification.",
+    interfaceLanguage: "Language",
+    visualTheme: "Theme",
     selectTopics: "Select topics",
     selectAll: "Select all",
     questionCount: "Number of questions",
@@ -259,15 +263,19 @@ function applyLanguage() {
 }
 
 function updateToggleStates() {
-  document.querySelectorAll(".lang-toggle").forEach((button) => {
-    const active = button.dataset.lang === settings.lang;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+  document.querySelectorAll(".lang-switch").forEach((button) => {
+    const isEnglish = settings.lang === "en";
+    button.dataset.state = isEnglish ? "right" : "left";
+    button.setAttribute("aria-checked", String(isEnglish));
+    button.setAttribute("aria-label", isEnglish ? "Interface in English. Switch to Brazilian Portuguese." : "Interface em português brasileiro. Alternar para inglês.");
+    button.title = isEnglish ? "English" : "Português brasileiro";
   });
-  document.querySelectorAll(".theme-toggle").forEach((button) => {
-    const active = button.dataset.themeValue === settings.theme;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+  document.querySelectorAll(".theme-switch").forEach((button) => {
+    const isDark = settings.theme === "dark";
+    button.dataset.state = isDark ? "right" : "left";
+    button.setAttribute("aria-checked", String(isDark));
+    button.setAttribute("aria-label", isDark ? "Tema escuro ativo. Alternar para modo claro." : "Tema claro ativo. Alternar para modo escuro.");
+    button.title = isDark ? "Dark mode" : "Light mode";
   });
 }
 
@@ -307,17 +315,17 @@ function initializeApp() {
 }
 
 function attachEvents() {
-  document.querySelectorAll(".lang-toggle").forEach((button) => {
+  document.querySelectorAll(".lang-switch").forEach((button) => {
     button.addEventListener("click", () => {
-      settings.lang = button.dataset.lang;
+      settings.lang = settings.lang === "en" ? "pt-BR" : "en";
       saveSettings();
       applyLanguage();
     });
   });
 
-  document.querySelectorAll(".theme-toggle").forEach((button) => {
+  document.querySelectorAll(".theme-switch").forEach((button) => {
     button.addEventListener("click", () => {
-      settings.theme = button.dataset.themeValue;
+      settings.theme = settings.theme === "dark" ? "light" : "dark";
       saveSettings();
       applyTheme();
     });
