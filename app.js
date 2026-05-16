@@ -5,10 +5,19 @@ const TOPICS = [
   "Outcome vs Output", "Experimentation", "Decision Making"
 ];
 
+const TOPIC_GROUPS = [
+  { id: "foundations", title: "Foundations", description: "Scrum Guide, empiricism, values, accountabilities", topics: ["Scrum Guide 2020", "Empiricism", "Scrum Values", "Product Owner Accountability"] },
+  { id: "product-ownership", title: "Product Ownership", description: "Product Goal, backlog ordering, stakeholders", topics: ["Product Goal", "Product Backlog Management", "Stakeholder Management"] },
+  { id: "stances", title: "Stances", description: "Preferred and misunderstood Product Owner stances", topics: ["Product Owner Stances", "Misunderstood Stances"] },
+  { id: "ebm", title: "Evidence-Based Management", description: "KVAs, outcomes, experimentation, value evidence", topics: ["Evidence-Based Management", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate", "Outcome vs Output", "Experimentation", "Decision Making"] },
+  { id: "scaling", title: "Scaling", description: "Nexus, dependencies, integrated increment", topics: ["Nexus"] },
+  { id: "weak-areas", title: "Weak areas", description: "Items repeatedly missed in past attempts", topics: [] }
+];
+
 const APP_VERSION = {
-  number: "1.4.6",
+  number: "1.5.0",
   date: "2026-05-15",
-  time: "22:45 BRT"
+  time: "23:50 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -24,6 +33,15 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Versão carregando...",
     homeTitle: "Preparar simulado",
+    homeSubtitle: "Treine em inglês, com interface simples em português, simulando o vocabulário real da certificação.",
+    prepareSimulation: "Preparar simulado",
+    savedSimulationTab: "Simulado interrompido",
+    savedExamSubtitle: "Tentativa salva neste dispositivo.",
+    historySubtitle: "Tentativas concluídas neste dispositivo.",
+    formatTitle: "Formato",
+    topicModalSubtitle: "Escolha grupos amplos.",
+    applyTopics: "Aplicar tópicos",
+    selectedTopicGroups: "{count} grupos selecionados",
     configurationTab: "Configuração",
     historyTab: "Histórico",
     languageNotice: "As questões, alternativas, comentários e temas são apresentados em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.",
@@ -36,7 +54,7 @@ const I18N = {
     immediateFeedback: "Feedback imediato",
     finalReviewOnly: "Revisão apenas ao final",
     startSimulation: "Iniciar simulado",
-    savedExam: "Simulado salvo",
+    savedExam: "Simulado interrompido",
     resumeSimulation: "Retomar simulado",
     discardSavedExam: "Descartar salvo",
     savedAt: "Salvo em",
@@ -127,6 +145,15 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Loading version...",
     homeTitle: "Prepare simulation",
+    homeSubtitle: "Practice in English with a simple interface, using certification-style vocabulary.",
+    prepareSimulation: "Prepare simulation",
+    savedSimulationTab: "Interrupted simulation",
+    savedExamSubtitle: "Attempt saved locally on this device.",
+    historySubtitle: "Completed attempts on this device.",
+    formatTitle: "Format",
+    topicModalSubtitle: "Choose broad groups.",
+    applyTopics: "Apply topics",
+    selectedTopicGroups: "{count} groups selected",
     configurationTab: "Configuration",
     historyTab: "History",
     languageNotice: "Questions, answer options, explanations, and topics are shown in English to better simulate the real PSPO II exam environment and reinforce the technical vocabulary used in the certification.",
@@ -139,7 +166,7 @@ const I18N = {
     immediateFeedback: "Immediate feedback",
     finalReviewOnly: "Final review only",
     startSimulation: "Start simulation",
-    savedExam: "Saved simulation",
+    savedExam: "Interrupted simulation",
     resumeSimulation: "Resume simulation",
     discardSavedExam: "Discard saved",
     savedAt: "Saved at",
@@ -284,7 +311,10 @@ function applyLanguage() {
     const key = element.dataset.i18n;
     element.textContent = t(key);
   });
+  if ($("homeSubtitle")) $("homeSubtitle").hidden = settings.lang === "en";
   updateToggleStates();
+  updateTopicSummary();
+  updateQuestionCountSlider();
   renderAppVersion();
   updateQuestionBankCount();
   updateFilterWarning();
@@ -336,6 +366,9 @@ function initializeApp() {
   renderTopicSelector();
   attachEvents();
   applyLanguage();
+  updateQuestionCountSlider();
+  setFeedbackMode($("feedbackMode")?.value || "final");
+  updateTopicSummary();
   updateQuestionBankCount();
   updateFilterWarning();
   renderResumeCard();
@@ -364,7 +397,7 @@ function attachEvents() {
     });
   });
 
-  document.querySelectorAll(".tab-button").forEach((button) => {
+  document.querySelectorAll(".icon-tab").forEach((button) => {
     button.addEventListener("click", () => switchHomeTab(button.dataset.tab));
   });
 
@@ -374,18 +407,36 @@ function attachEvents() {
   });
 
   $("selectAllTopics").addEventListener("change", (event) => {
-    document.querySelectorAll(".topic-check").forEach((input) => input.checked = event.target.checked);
+    document.querySelectorAll(".topic-group-check:not(:disabled)").forEach((input) => input.checked = event.target.checked);
     updateFilterWarning();
   });
 
   $("topicsContainer").addEventListener("change", () => {
-    const checks = Array.from(document.querySelectorAll(".topic-check"));
-    $("selectAllTopics").checked = checks.every((input) => input.checked);
+    const checks = Array.from(document.querySelectorAll(".topic-group-check:not(:disabled)"));
+    $("selectAllTopics").checked = checks.length > 0 && checks.every((input) => input.checked);
     updateFilterWarning();
   });
 
-  $("questionCount").addEventListener("change", updateFilterWarning);
-  $("feedbackMode").addEventListener("change", updateFilterWarning);
+  $("questionCount").addEventListener("input", () => {
+    updateQuestionCountSlider();
+    updateFilterWarning();
+  });
+
+  document.querySelectorAll(".segment-button[data-feedback]").forEach((button) => {
+    button.addEventListener("click", () => setFeedbackMode(button.dataset.feedback));
+  });
+
+  $("openTopicsButton")?.addEventListener("click", () => {
+    const dialog = $("topicsDialog");
+    if (dialog && typeof dialog.showModal === "function") dialog.showModal();
+  });
+  $("closeTopicsButton")?.addEventListener("click", () => $("topicsDialog")?.close());
+  $("cancelTopicsButton")?.addEventListener("click", () => $("topicsDialog")?.close());
+  $("applyTopicsButton")?.addEventListener("click", () => {
+    updateTopicSummary();
+    updateFilterWarning();
+    $("topicsDialog")?.close();
+  });
 
   $("prevButton").addEventListener("click", () => moveQuestion(-1));
   $("nextButton").addEventListener("click", handleNextQuestion);
@@ -439,20 +490,51 @@ function attachEvents() {
   });
 }
 
+function setFeedbackMode(mode) {
+  const safeMode = mode === "immediate" ? "immediate" : "final";
+  if ($("feedbackMode")) $("feedbackMode").value = safeMode;
+  document.querySelectorAll(".segment-button[data-feedback]").forEach((button) => {
+    const active = button.dataset.feedback === safeMode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  updateFilterWarning();
+}
+
+function updateQuestionCountSlider() {
+  const input = $("questionCount");
+  if (!input) return;
+  const value = Number(input.value || 40);
+  if ($("questionCountValue")) $("questionCountValue").textContent = String(value);
+  const min = Number(input.min || 10);
+  const max = Number(input.max || 60);
+  const pct = ((value - min) / (max - min)) * 100;
+  input.style.setProperty("--slider-progress", `${pct}%`);
+}
+
+function updateTopicSummary() {
+  const selectedGroups = Array.from(document.querySelectorAll(".topic-group-check:checked"));
+  if ($("selectedTopicSummary")) $("selectedTopicSummary").textContent = t("selectedTopicGroups", { count: selectedGroups.length });
+}
+
 function switchHomeTab(tab) {
-  const safeTab = tab === "history" ? "history" : "config";
-  document.querySelectorAll(".tab-button").forEach((button) => {
+  const allowed = ["config", "saved", "history"];
+  const hasSaved = Boolean(getSavedExam());
+  const safeTab = allowed.includes(tab) && (tab !== "saved" || hasSaved) ? tab : "config";
+  document.querySelectorAll(".icon-tab").forEach((button) => {
     const active = button.dataset.tab === safeTab;
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", String(active));
   });
-  ["config", "history"].forEach((name) => {
+  ["config", "saved", "history"].forEach((name) => {
     const panel = $(`${name}Panel`);
+    if (!panel) return;
     const active = name === safeTab;
     panel.hidden = !active;
     panel.classList.toggle("active", active);
   });
   if (safeTab === "history") loadAttemptHistory();
+  if (safeTab === "saved") renderResumeCard();
 }
 
 function updateQuestionBankCount() {
@@ -471,19 +553,34 @@ function renderAppVersion() {
 
 function renderTopicSelector() {
   const container = $("topicsContainer");
-  container.innerHTML = TOPICS.map((topic) => `
-    <label class="check-row">
-      <input class="topic-check" type="checkbox" value="${escapeHtml(topic)}" checked />
-      <span>${escapeHtml(topic)}</span>
+  if (!container) return;
+  container.innerHTML = TOPIC_GROUPS.map((group) => `
+    <label class="topic-group-card ${group.topics.length ? "" : "topic-group-empty"}">
+      <input class="topic-group-check" type="checkbox" value="${escapeHtml(group.id)}" ${group.topics.length ? "checked" : ""} ${group.topics.length ? "" : "disabled"} />
+      <span class="topic-group-content">
+        <span class="topic-group-title">${escapeHtml(group.title)}</span>
+        <span class="topic-group-description">${escapeHtml(group.description)}</span>
+      </span>
+      <span class="topic-group-checkmark" aria-hidden="true">✓</span>
     </label>
   `).join("");
+  updateTopicSummary();
 }
 
 function getSelectedTopics() {
-  return Array.from(document.querySelectorAll(".topic-check:checked")).map((input) => input.value);
+  const selectedIds = Array.from(document.querySelectorAll(".topic-group-check:checked")).map((input) => input.value);
+  return [...new Set(TOPIC_GROUPS
+    .filter((group) => selectedIds.includes(group.id))
+    .flatMap((group) => group.topics))];
+}
+
+function getSelectedTopicGroupCount() {
+  return Array.from(document.querySelectorAll(".topic-group-check:checked")).length;
 }
 
 function updateFilterWarning() {
+  updateTopicSummary();
+  updateQuestionCountSlider();
   if (!state.questions.length || !$("filterWarning")) return;
   const selectedTopics = getSelectedTopics();
   const desiredCount = Number($("questionCount").value);
@@ -956,27 +1053,39 @@ function clearCurrentExam() {
 function renderResumeCard() {
   const resumeScreen = $("resumeScreen");
   const container = $("resumeContainer");
+  const savedTab = $("savedTab");
   if (!resumeScreen || !container) return;
   const saved = getSavedExam();
   if (!saved) {
+    if (savedTab) {
+      savedTab.disabled = true;
+      savedTab.classList.remove("has-saved");
+    }
     resumeScreen.hidden = true;
     container.innerHTML = "";
+    if ($("savedPanel") && !$('configPanel').classList.contains('active') && !$('historyPanel').classList.contains('active')) switchHomeTab("config");
     return;
+  }
+  if (savedTab) {
+    savedTab.disabled = false;
+    savedTab.classList.add("has-saved");
   }
   resumeScreen.hidden = false;
   const answeredCount = Object.values(saved.answers || {}).filter((arr) => Array.isArray(arr) && arr.length).length;
   const unsureCount = Object.values(saved.unsure || {}).filter(Boolean).length;
   container.innerHTML = `
-    <div class="resume-grid">
+    <div class="resume-grid resume-grid-v150">
       <div class="stat"><span>${t("questions")}</span><strong>${saved.selectedQuestions.length}</strong></div>
       <div class="stat"><span>${t("answeredPlural")}</span><strong>${answeredCount}</strong></div>
       <div class="stat"><span>${t("unsurePlural")}</span><strong>${unsureCount}</strong></div>
       <div class="stat"><span>${t("elapsedTime")}</span><strong>${formatDuration(saved.elapsedSeconds || 0)}</strong></div>
     </div>
     <p class="muted-line">${t("savedAt")}: ${formatDate(saved.savedAt)}</p>
-    <div class="resume-actions">
+    <div class="resume-actions resume-actions-v150">
       <button type="button" class="primary" id="resumeSavedButton">${t("resumeSimulation")}</button>
-      <button type="button" class="secondary" id="discardSavedButton">${t("discardSavedExam")}</button>
+      <button type="button" class="secondary icon-only-danger" id="discardSavedButton" title="${t("discardSavedExam")}" aria-label="${t("discardSavedExam")}">
+        <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+      </button>
     </div>
   `;
   $("resumeSavedButton")?.addEventListener("click", resumeSavedExam);
@@ -1011,25 +1120,18 @@ function loadAttemptHistory() {
     container.textContent = t("noHistory");
     return;
   }
-  container.className = "";
-  container.innerHTML = `
-    <table class="history-table">
-      <thead><tr><th>${t("date")}</th><th>${t("score")}</th><th>${t("duration")}</th><th>${t("topics")}</th><th>${t("questions")}</th><th>${t("mode")}</th><th>${t("appVersion")}</th></tr></thead>
-      <tbody>
-        ${history.map((item) => `
-          <tr>
-            <td>${formatDate(item.dateTime)}</td>
-            <td>${item.score}%</td>
-            <td>${formatDuration(item.durationSeconds || 0)}</td>
-            <td>${escapeHtml((item.topics || []).join(", "))}</td>
-            <td>${item.questionCount}</td>
-            <td>${item.feedbackMode === "immediate" ? t("immediateFeedback") : t("finalReviewOnly")}</td>
-            <td>${escapeHtml(item.appVersion || "-")}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
+  container.className = "history-cards";
+  container.innerHTML = history.slice(0, 8).map((item) => `
+    <article class="history-card-v150">
+      <div class="history-score">${item.score}%</div>
+      <div class="history-main">
+        <div class="history-meta"><strong>${item.questionCount}</strong> ${t("questions")} · ${item.feedbackMode === "immediate" ? t("immediateFeedback") : t("finalReviewOnly")}</div>
+        <div class="history-date">${formatDate(item.dateTime)}</div>
+        <div class="history-topics">${escapeHtml((item.topics || []).slice(0, 5).join(", "))}${(item.topics || []).length > 5 ? "…" : ""}</div>
+      </div>
+      <div class="history-version">${escapeHtml(item.appVersion || "-")}</div>
+    </article>
+  `).join("");
 }
 
 function getHistory() {

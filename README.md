@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.4.6** — 2026-05-15 — 22:45 BRT
+**1.5.0** — 2026-05-15 — 23:50 BRT
 
 ## Características
 
@@ -12,7 +12,7 @@ Simulador independente para prática da certificação PSPO II.
 - Questões, alternativas, comentários e temas em inglês para simular melhor o ambiente real da certificação.
 - Alternância de idioma e tema por switch visual com controle deslizante.
 - Banco de questões em `questions.json`.
-- Seleção por temas.
+- Seleção por grupos de temas, com refinamento em modal.
 - Simulados com 10, 20, 30, 40, 50 ou 60 questões.
 - Feedback imediato agora exibido em modal ao clicar em próxima questão.
 - Modo revisão apenas ao final.
@@ -24,17 +24,20 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
-## Versão 1.4.6
+## Versão 1.5.0
 
 Alterações principais:
 
-- Tela de simulado mobile redesenhada com os mesmos conceitos aprovados no desktop.
-- Modo claro mobile minimalista com fundo branco levemente pigmentado em cinza quente.
-- Modo escuro mobile em grafite, com highlights discretos em verde-sálvia.
-- Remoção da expressão “Simulador independente” do cabeçalho visual.
-- Navegação mobile acima da questão: anterior, dúvida, seletor e próxima.
-- Botão de finalizar simulado com troféu posicionado ao final da área da questão no mobile.
-- Comunicação visual reforçada para questões de múltiplas respostas.
+- Tela inicial redesenhada em desktop e mobile.
+- Seleção de tópicos agrupada e movida para modal.
+- Remoção da lista longa de checkboxes da tela principal.
+- Abas de configuração, simulado interrompido e histórico representadas por ícones com tooltips.
+- Quantidade de questões controlada por slider de 10 a 60, em passos de 10.
+- Botão de iniciar simulado integrado ao card de formato.
+- Simulado interrompido em painel próprio.
+- Histórico exibido em cards, não mais em tabela poluída.
+- Light mode minimalista com cinza quente.
+- Dark mode grafite com verde-sálvia discreto.
 - Cache PWA atualizado para evitar uso de versão antiga.
 
 ## Estrutura
@@ -86,13 +89,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.4.6 mobile exam UI
+Release v1.5.0 home screen redesign
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.6
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.5.0
 ```
 
 ## Como adicionar questões
