@@ -1439,3 +1439,357 @@ html[data-theme="dark"] .icon-button:hover {
     display: block;
   }
 }
+
+
+/* ==========================================================
+   v1.4.4 - Graphite dark mode + minimal day mode + multi-answer communication
+   Scope: desktop simulation screen and global color system.
+   ========================================================== */
+:root {
+  --bg: #f6f6f4;
+  --surface: #fbfbfa;
+  --surface-soft: #f1f1ef;
+  --surface-raised: rgba(255, 255, 255, 0.82);
+  --surface-sunken: #f3f3f1;
+  --text: #1c1917;
+  --muted: #57534e;
+  --muted-strong: #292524;
+  --line: #a8a29e;
+  --line-soft: rgba(68, 64, 60, 0.14);
+  --primary: #1c1917;
+  --primary-hover: #292524;
+  --primary-text: #ffffff;
+  --accent: #477058;
+  --accent-strong: #274f3a;
+  --accent-soft: #eef4ef;
+  --accent-line: #b8d2c0;
+  --notice-bg: #f2f7f3;
+  --notice-text: #284d38;
+  --ok-bg: #eef4ef;
+  --ok-text: #274f3a;
+  --ok-border: #b8d2c0;
+  --warn-bg: #f7f1df;
+  --warn-text: #5c4318;
+  --warn-border: #d8c28a;
+  --secondary-bg: rgba(255,255,255,0.78);
+  --secondary-text: #44403c;
+  --secondary-border: #d6d3d1;
+  --shadow: 0 18px 50px rgba(68,64,60,0.08);
+  --shadow-soft: 0 1px 2px rgba(68,64,60,0.05), 0 12px 32px rgba(68,64,60,0.06);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --bg: #191919;
+  --surface: #242424;
+  --surface-soft: #2b2b2b;
+  --surface-raised: rgba(255,255,255,0.04);
+  --surface-sunken: #202020;
+  --text: #f5f5f4;
+  --muted: #d4d4d4;
+  --muted-strong: #e7e5e4;
+  --line: rgba(255,255,255,0.18);
+  --line-soft: rgba(255,255,255,0.10);
+  --primary: #16a34a;
+  --primary-hover: #15803d;
+  --primary-text: #ffffff;
+  --accent: #22c55e;
+  --accent-strong: #bbf7d0;
+  --accent-soft: rgba(34,197,94,0.10);
+  --accent-line: rgba(34,197,94,0.30);
+  --notice-bg: rgba(34,197,94,0.08);
+  --notice-text: #dcfce7;
+  --ok-bg: rgba(34,197,94,0.10);
+  --ok-text: #dcfce7;
+  --ok-border: rgba(34,197,94,0.32);
+  --warn-bg: rgba(34,197,94,0.10);
+  --warn-text: #bbf7d0;
+  --warn-border: rgba(34,197,94,0.28);
+  --secondary-bg: rgba(255,255,255,0.035);
+  --secondary-text: #e7e5e4;
+  --secondary-border: rgba(255,255,255,0.10);
+  --shadow: none;
+  --shadow-soft: none;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text);
+}
+
+body[data-screen="exam"] .app-shell {
+  padding-top: 16px;
+}
+
+.card,
+.modal,
+.resume-box,
+.score-card,
+.review-item {
+  background: var(--surface) !important;
+  border-color: var(--line-soft) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.exam-card {
+  background: var(--surface) !important;
+  border-color: var(--line-soft) !important;
+  box-shadow: var(--shadow) !important;
+  border-radius: 24px;
+}
+
+.exam-topline {
+  border-bottom-color: var(--line-soft) !important;
+}
+
+.exam-title-block h2,
+.compact-exam-topline h2,
+.question-text {
+  color: var(--text) !important;
+}
+
+.save-line,
+.mode-label,
+.app-footer,
+.history-empty,
+.muted-line,
+.version-line {
+  color: var(--muted) !important;
+}
+
+/* Switches: fully neutral, no colored icons. */
+.switch-control,
+.lang-switch[data-state="left"],
+.lang-switch[data-state="right"],
+.theme-switch[data-state="left"],
+.theme-switch[data-state="right"],
+.switch-control[data-state="left"],
+.switch-control[data-state="right"] {
+  background: #e7e5e4 !important;
+  border-color: #d6d3d1 !important;
+  color: #57534e !important;
+  box-shadow: inset 0 1px 2px rgba(68,64,60,.10) !important;
+}
+
+html[data-theme="dark"] .switch-control,
+html[data-theme="dark"] .lang-switch[data-state="left"],
+html[data-theme="dark"] .lang-switch[data-state="right"],
+html[data-theme="dark"] .theme-switch[data-state="left"],
+html[data-theme="dark"] .theme-switch[data-state="right"],
+html[data-theme="dark"] .switch-control[data-state="left"],
+html[data-theme="dark"] .switch-control[data-state="right"] {
+  background: #3a3a3a !important;
+  border-color: rgba(255,255,255,0.14) !important;
+  color: #d4d4d4 !important;
+}
+
+.switch-icon,
+.theme-switch .switch-icon,
+.compact-switch .switch-icon {
+  color: currentColor !important;
+  opacity: .72 !important;
+  filter: grayscale(1) saturate(0) !important;
+}
+
+.switch-thumb {
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(68,64,60,.22) !important;
+}
+html[data-theme="dark"] .switch-thumb {
+  background: #d4d4d4 !important;
+}
+
+/* Icon buttons inherit font color; no colored save/exit/finish glyphs. */
+.icon-button,
+#finishNowButton.finish-icon-button,
+#prevButton,
+#unsureButton {
+  background: var(--secondary-bg) !important;
+  color: var(--secondary-text) !important;
+  border-color: var(--secondary-border) !important;
+  box-shadow: none !important;
+}
+
+.icon-button:hover,
+#finishNowButton.finish-icon-button:hover,
+#prevButton:hover,
+#unsureButton:hover {
+  background: var(--surface-soft) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+
+.primary,
+#nextButton.primary {
+  background: var(--primary) !important;
+  color: var(--primary-text) !important;
+  border-color: var(--primary) !important;
+}
+.primary:hover,
+#nextButton.primary:hover {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.timer-pill {
+  background: var(--surface-raised) !important;
+  border-color: var(--line-soft) !important;
+  color: var(--text) !important;
+}
+
+/* Graphite control surface / minimal day surface. */
+.nav-buttons.icon-nav {
+  background: var(--surface-soft);
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  padding: 10px;
+  grid-template-columns: 44px 44px minmax(190px, 280px) 52px 44px !important;
+  width: max-content;
+  max-width: 100%;
+}
+
+.nav-question-selector {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  color: var(--text) !important;
+}
+
+.question-card {
+  border-top: 0 !important;
+}
+
+.question-meta {
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  background: var(--surface-raised) !important;
+  color: var(--muted-strong) !important;
+  border-color: var(--line-soft) !important;
+  font-weight: 600;
+}
+
+.tag-emphasis {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent-line) !important;
+  color: var(--accent-strong) !important;
+}
+
+.tag-muted {
+  background: transparent !important;
+  color: var(--muted) !important;
+}
+
+.multi-answer-hint {
+  margin: 0 0 14px;
+  border: 1px solid var(--accent-line);
+  background: var(--notice-bg);
+  color: var(--notice-text);
+  border-radius: 16px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 550;
+}
+
+.question-text {
+  font-size: clamp(1.05rem, 1.75vw, 1.25rem);
+  line-height: 1.42;
+  margin-bottom: 14px;
+}
+
+.option-row {
+  min-height: 44px;
+  padding: 10px 14px;
+  gap: 12px;
+  align-items: center;
+  border-radius: 12px;
+  background: var(--surface-raised) !important;
+  color: var(--text) !important;
+  border-color: var(--line-soft) !important;
+  font-weight: 520 !important;
+  box-shadow: none !important;
+}
+
+.option-row:hover {
+  border-color: var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.option-row strong {
+  font-weight: 700;
+}
+
+.option-row input[type="radio"],
+.option-row input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.option-row:has(input:checked) {
+  border-color: var(--accent-line) !important;
+  background: var(--accent-soft) !important;
+  box-shadow: inset 3px 0 0 var(--accent) !important;
+}
+
+html[data-theme="dark"] .option-row:has(input:checked) {
+  border-color: var(--accent-line) !important;
+  background: var(--accent-soft) !important;
+}
+
+.multi-option input[type="checkbox"] {
+  border-radius: 4px;
+}
+
+#unsureButton.unsure-active {
+  background: var(--accent-soft) !important;
+  color: var(--accent-strong) !important;
+  border-color: var(--accent-line) !important;
+}
+
+html[data-theme="dark"] #unsureButton.unsure-active {
+  background: var(--accent-soft) !important;
+  color: var(--accent-strong) !important;
+  border-color: var(--accent-line) !important;
+}
+
+/* Feedback and review states keep correctness visible but aligned to palette. */
+.option-row.correct {
+  background: var(--ok-bg) !important;
+  color: var(--ok-text) !important;
+  border-color: var(--ok-border) !important;
+}
+.option-row.incorrect {
+  background: var(--danger-bg) !important;
+  color: var(--danger-text) !important;
+  border-color: var(--danger-border) !important;
+}
+.feedback-box.correct {
+  background: var(--ok-bg) !important;
+  color: var(--ok-text) !important;
+  border-color: var(--ok-border) !important;
+}
+.feedback-box.incorrect {
+  background: var(--danger-bg) !important;
+  color: var(--danger-text) !important;
+  border-color: var(--danger-border) !important;
+}
+.feedback-box.unanswered-feedback {
+  background: var(--warn-bg) !important;
+  color: var(--warn-text) !important;
+  border-color: var(--warn-border) !important;
+}
+
+/* Remove bank size from production footer; footer remains for build metadata only. */
+.app-footer {
+  font-weight: 500;
+  opacity: .88;
+}
+
+@media (min-width: 720px) {
+  body[data-screen="exam"] .app-shell { max-width: 1120px; }
+}

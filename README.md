@@ -4,14 +4,14 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.3.0** — 2026-05-15 — 20:36 BRT
+**1.4.4** — 2026-05-15 — 22:25 BRT
 
 ## Características
 
 - Interface em português brasileiro ou inglês.
 - Questões, alternativas, comentários e temas em inglês para simular melhor o ambiente real da certificação.
 - Alternância de idioma e tema por switch visual com controle deslizante.
-- Banco com 400 questões em `questions.json`.
+- Banco de questões em `questions.json`.
 - Seleção por temas.
 - Simulados com 10, 20, 30, 40, 50 ou 60 questões.
 - Feedback imediato agora exibido em modal ao clicar em próxima questão.
@@ -73,13 +73,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.4.2 desktop exam navigation
+Release v1.4.4 graphite day minimal multianswer
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.2
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.4
 ```
 
 ## Como adicionar questões
@@ -131,3 +131,19 @@ Alterações principais:
 - Finalizar simulado convertido em ícone de bandeira;
 - cache PWA atualizado para `v1.4.2`.
 
+
+
+## Versão 1.4.4
+
+Alterações principais:
+
+- modo escuro redesenhado em grafite, com detalhes discretos em verde;
+- modo claro minimalista, com fundo branco levemente acinzentado e highlights em verde-sálvia;
+- remoção do tamanho do banco do footer;
+- comunicação explícita para questões de múltiplas respostas;
+- chip “Múltiplas respostas / Multiple answers”;
+- aviso curto para seleção de todas as alternativas corretas;
+- alternativas múltiplas com checkbox visual mais evidente;
+- switches e ícones sem cores chamativas;
+- preservação das questões, alternativas, comentários e temas em inglês;
+- cache PWA atualizado para `v1.4.4`.

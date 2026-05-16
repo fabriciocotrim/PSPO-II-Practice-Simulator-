@@ -6,9 +6,9 @@ const TOPICS = [
 ];
 
 const APP_VERSION = {
-  number: "1.4.2",
+  number: "1.4.4",
   date: "2026-05-15",
-  time: "21:52 BRT"
+  time: "22:25 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -109,7 +109,7 @@ const I18N = {
     confirmExitText: "Suas últimas alterações após {time} não salvas serão perdidas. Tem certeza que deseja sair?",
     questionBankCount: "{count} questões",
     versionText: "Versão {number} · {date} · {time}",
-    versionFooter: "Versão {number} · {date} · {time} · Banco: {count} questões",
+    versionFooter: "Versão {number} · Build: {date} · {time}",
     date: "Data",
     score: "Nota",
     topics: "Temas",
@@ -117,7 +117,10 @@ const I18N = {
     mode: "Modo",
     appVersion: "Versão",
     loadingError: "Erro ao carregar questões.",
-    cannotLoadQuestions: "Não foi possível carregar questions.json."
+    cannotLoadQuestions: "Não foi possível carregar questions.json.",
+    singleAnswer: "Resposta única",
+    multipleAnswers: "Múltiplas respostas",
+    multiAnswerHelp: "Selecione todas as alternativas corretas antes de avançar. A correção é rigorosa."
   },
   en: {
     htmlLang: "en",
@@ -209,7 +212,7 @@ const I18N = {
     confirmExitText: "Your unsaved changes after {time} will be lost. Are you sure you want to exit?",
     questionBankCount: "{count} questions",
     versionText: "Version {number} · {date} · {time}",
-    versionFooter: "Version {number} · {date} · {time} · Bank: {count} questions",
+    versionFooter: "Version {number} · Build: {date} · {time}",
     date: "Date",
     score: "Score",
     topics: "Topics",
@@ -217,7 +220,10 @@ const I18N = {
     mode: "Mode",
     appVersion: "Version",
     loadingError: "Error loading questions.",
-    cannotLoadQuestions: "Could not load questions.json."
+    cannotLoadQuestions: "Could not load questions.json.",
+    singleAnswer: "Single answer",
+    multipleAnswers: "Multiple answers",
+    multiAnswerHelp: "Select all correct options before continuing. Strict scoring is applied."
   }
 };
 
@@ -268,7 +274,7 @@ function saveSettings() {
 
 function applyTheme() {
   document.documentElement.dataset.theme = settings.theme === "dark" ? "dark" : "light";
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", settings.theme === "dark" ? "#020617" : "#172554");
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", settings.theme === "dark" ? "#191919" : "#f6f6f4");
   updateToggleStates();
 }
 
@@ -566,23 +572,26 @@ function renderQuestion() {
   updateSaveLine();
   updateActionButtonLabels();
 
-  const inputType = question.type === "multiple" ? "checkbox" : "radio";
+  const isMultiple = question.type === "multiple";
+  const inputType = isMultiple ? "checkbox" : "radio";
   const optionsHtml = sortOptions(question.options || []).map((option) => {
     const checked = userAnswers.includes(option.id) ? "checked" : "";
     return `
-      <label class="option-row">
+      <label class="option-row ${isMultiple ? "multi-option" : "single-option"}">
         <input type="${inputType}" name="answer" value="${escapeHtml(option.id)}" ${checked} />
         <span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span>
       </label>
     `;
   }).join("");
 
+  const multiHint = isMultiple ? `<div class="multi-answer-hint">${escapeHtml(t("multiAnswerHelp"))}</div>` : "";
   $("questionCard").innerHTML = `
     <div class="question-meta">
       ${renderQuestionTags(question)}
     </div>
+    ${multiHint}
     <div class="question-text">${escapeHtml(question.question)}</div>
-    <div class="options">${optionsHtml}</div>
+    <div class="options ${isMultiple ? "multi-options" : "single-options"}">${optionsHtml}</div>
   `;
 
   $("questionCard").querySelectorAll("input").forEach((input) => input.addEventListener("change", saveAnswerFromDom));
@@ -590,7 +599,10 @@ function renderQuestion() {
 }
 
 function renderQuestionTags(question) {
-  const typeTag = `<span class="tag">${question.type === "multiple" ? "Multiple answer" : "Single answer"}</span>`;
+  const isMultiple = question.type === "multiple";
+  const typeLabel = isMultiple ? t("multipleAnswers") : t("singleAnswer");
+  const typeIcon = isMultiple ? "☑" : "○";
+  const typeTag = `<span class="tag ${isMultiple ? "tag-emphasis" : ""}"><span aria-hidden="true">${typeIcon}</span> ${escapeHtml(typeLabel)}</span>`;
   const topics = question.topics || [];
   const visibleTopics = topics.slice(0, 2).map((topic) => `<span class="tag">${escapeHtml(topic)}</span>`);
   const remaining = topics.length - visibleTopics.length;
