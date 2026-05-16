@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.6.0** — 2026-05-16 — 00:28 BRT
+**1.6.0** — 2026-05-16 — 02:05 BRT
 
 ## Características
 
@@ -26,21 +26,16 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão 1.6.0
 
-Correção pontual: remoção da duplicidade visual do título “Preparar simulado” nas versões desktop e mobile.
-
-
 Alterações principais:
 
-- Tela inicial redesenhada em desktop e mobile.
-- Seleção de tópicos agrupada e movida para modal.
-- Remoção da lista longa de checkboxes da tela principal.
-- Abas de configuração, simulado interrompido e histórico representadas por ícones com tooltips.
-- Quantidade de questões controlada por slider de 10 a 60, em passos de 10.
-- Botão de iniciar simulado integrado ao card de formato.
-- Simulado interrompido em painel próprio.
-- Histórico exibido em cards, não mais em tabela poluída.
-- Light mode minimalista com cinza quente.
-- Dark mode grafite com verde-sálvia discreto.
+- Nova tela de resultado final em light mode e dark mode.
+- Filtros múltiplos de revisão com checkbox visual: todas, corretas, erros, não respondidas e dúvidas.
+- Botão principal de revisão integrado à mesma linha dos filtros, reduzindo carga cognitiva.
+- Remoção dos botões redundantes “Novo simulado” e “Início” da área central do resultado.
+- Navegação para início mantida apenas no botão de casa do topo.
+- Contagem da revisão corrigida: dúvidas não são somadas em duplicidade, pois podem estar dentro de corretas, erros ou não respondidas.
+- Desempenho por tópico mostra erros no formato `X erros de Y`.
+- Tooltips e rótulos de acessibilidade revisados para português e inglês.
 - Cache PWA atualizado para evitar uso de versão antiga.
 
 ## Estrutura
@@ -92,13 +87,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.6.0 duplicate heading fix
+Release v1.6.0 result screen final polish
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.6.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.6.0-final
 ```
 
 ## Como adicionar questões

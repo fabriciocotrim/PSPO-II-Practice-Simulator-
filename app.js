@@ -17,7 +17,7 @@ const TOPIC_GROUPS = [
 const APP_VERSION = {
   number: "1.6.0",
   date: "2026-05-16",
-  time: "01:30 BRT"
+  time: "02:05 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -138,7 +138,26 @@ const I18N = {
     cannotLoadQuestions: "Não foi possível carregar questions.json.",
     singleAnswer: "Resposta única",
     multipleAnswers: "Múltiplas respostas",
-    multiAnswerHelp: "Selecione todas as alternativas corretas antes de avançar. A correção é rigorosa."
+    multiAnswerHelp: "Selecione todas as alternativas corretas antes de avançar. A correção é rigorosa.",
+    quickSettings: "Configurações rápidas",
+    resultQuickSettings: "Configurações rápidas do resultado",
+    homeSections: "Seções da tela inicial",
+    configTabTooltip: "Configuração",
+    savedTabTooltip: "Simulado interrompido",
+    historyTabTooltip: "Histórico",
+    questionCountTooltip: "Quantidade de questões",
+    feedbackModeTooltip: "Modo de feedback",
+    topicButtonTooltip: "Selecionar tópicos",
+    closeTooltip: "Fechar",
+    topicsGroupTooltip: "Temas",
+    examQuickActionsTooltip: "Ações rápidas do simulado",
+    examNavigationTooltip: "Navegação do simulado",
+    versionInfoTooltip: "Informações da versão",
+    resultHomeTooltip: "Voltar para início",
+    switchToEnglishTooltip: "Alternar para inglês",
+    switchToPortugueseTooltip: "Alternar para português brasileiro",
+    switchToDarkTooltip: "Alternar para modo escuro",
+    switchToLightTooltip: "Alternar para modo claro"
   },
   en: {
     htmlLang: "en",
@@ -250,7 +269,26 @@ const I18N = {
     cannotLoadQuestions: "Could not load questions.json.",
     singleAnswer: "Single answer",
     multipleAnswers: "Multiple answers",
-    multiAnswerHelp: "Select all correct options before continuing. Strict scoring is applied."
+    multiAnswerHelp: "Select all correct options before continuing. Strict scoring is applied.",
+    quickSettings: "Quick settings",
+    resultQuickSettings: "Result quick settings",
+    homeSections: "Home sections",
+    configTabTooltip: "Configuration",
+    savedTabTooltip: "Interrupted simulation",
+    historyTabTooltip: "History",
+    questionCountTooltip: "Number of questions",
+    feedbackModeTooltip: "Feedback mode",
+    topicButtonTooltip: "Select topics",
+    closeTooltip: "Close",
+    topicsGroupTooltip: "Topics",
+    examQuickActionsTooltip: "Exam quick actions",
+    examNavigationTooltip: "Exam navigation",
+    versionInfoTooltip: "Version information",
+    resultHomeTooltip: "Back to home",
+    switchToEnglishTooltip: "Switch to English",
+    switchToPortugueseTooltip: "Switch to Brazilian Portuguese",
+    switchToDarkTooltip: "Switch to dark mode",
+    switchToLightTooltip: "Switch to light mode"
   }
 };
 
@@ -315,6 +353,7 @@ function applyLanguage() {
   });
   if ($("homeSubtitle")) $("homeSubtitle").hidden = settings.lang === "en";
   updateToggleStates();
+  updateStaticTooltips();
   updateTopicSummary();
   updateQuestionCountSlider();
   renderAppVersion();
@@ -331,18 +370,46 @@ function applyLanguage() {
 function updateToggleStates() {
   document.querySelectorAll(".lang-switch").forEach((button) => {
     const isEnglish = settings.lang === "en";
+    const label = isEnglish ? t("switchToPortugueseTooltip") : t("switchToEnglishTooltip");
     button.dataset.state = isEnglish ? "right" : "left";
     button.setAttribute("aria-checked", String(isEnglish));
-    button.setAttribute("aria-label", isEnglish ? "Interface in English. Switch to Brazilian Portuguese." : "Interface em português brasileiro. Alternar para inglês.");
-    button.title = isEnglish ? "English" : "Português brasileiro";
+    button.setAttribute("aria-label", label);
+    button.title = label;
   });
   document.querySelectorAll(".theme-switch").forEach((button) => {
     const isDark = settings.theme === "dark";
+    const label = isDark ? t("switchToLightTooltip") : t("switchToDarkTooltip");
     button.dataset.state = isDark ? "right" : "left";
     button.setAttribute("aria-checked", String(isDark));
-    button.setAttribute("aria-label", isDark ? "Tema escuro ativo. Alternar para modo claro." : "Tema claro ativo. Alternar para modo escuro.");
-    button.title = isDark ? "Dark mode" : "Light mode";
+    button.setAttribute("aria-label", label);
+    button.title = label;
   });
+}
+
+function setTooltip(selector, key, includeTitle = true) {
+  document.querySelectorAll(selector).forEach((element) => {
+    const label = t(key);
+    element.setAttribute("aria-label", label);
+    if (includeTitle) element.title = label;
+  });
+}
+
+function updateStaticTooltips() {
+  setTooltip(".settings-switches", "quickSettings", false);
+  setTooltip(".result-header-controls", "resultQuickSettings", false);
+  setTooltip(".icon-tabs", "homeSections", false);
+  setTooltip("#configTab", "configTabTooltip");
+  setTooltip("#savedTab", "savedTabTooltip");
+  setTooltip("#historyTab", "historyTabTooltip");
+  setTooltip("#questionCount", "questionCountTooltip", false);
+  setTooltip(".segmented-actions", "feedbackModeTooltip", false);
+  setTooltip("#openTopicsButton", "topicButtonTooltip");
+  setTooltip("#resultHomeButton", "resultHomeTooltip");
+  setTooltip("#closeTopicsButton", "closeTooltip");
+  setTooltip("#topicsContainer", "topicsGroupTooltip", false);
+  setTooltip(".exam-quick-actions", "examQuickActionsTooltip", false);
+  setTooltip(".nav-buttons.icon-nav", "examNavigationTooltip", false);
+  setTooltip(".app-footer", "versionInfoTooltip", false);
 }
 
 async function loadQuestions() {
@@ -864,6 +931,7 @@ function finishExamConfirmed() {
   const result = calculateScore();
   saveAttemptHistory(result);
   clearCurrentExam();
+  state.resultReviewFilters = ["incorrect"];
   setScreen("result");
   renderResults(result);
 }
@@ -913,7 +981,7 @@ function isCorrect(question, selected) {
 
 function renderResults(result) {
   state.lastResult = result;
-  if (!Array.isArray(state.resultReviewFilters) || !state.resultReviewFilters.length) state.resultReviewFilters = ["incorrect"];
+  if (!Array.isArray(state.resultReviewFilters)) state.resultReviewFilters = ["incorrect"];
   const filterData = getResultFilterData(result);
   const allSelected = state.resultReviewFilters.length === filterData.filters.length;
   const noneSelected = state.resultReviewFilters.length === 0;
@@ -936,30 +1004,14 @@ function renderResults(result) {
         <div class="result-filter-grid-v160">
           ${filterCardHtml({ id: "__all", label: toggleAllLabel, value: result.total, icon: svgIcon("list"), tone: "neutral", active: allSelected, actionLabel: toggleAllAction })}
           ${filterData.filters.map((filter) => filterCardHtml({ ...filter, active: state.resultReviewFilters.includes(filter.id) })).join("")}
+          <button type="button" class="result-review-inline-v160" data-result-action="review" ${noneSelected ? "disabled" : ""} title="${escapeHtml(noneSelected ? resultCopy().selectGroup : `${resultCopy().review} ${filterLabel}`)}" aria-label="${escapeHtml(noneSelected ? resultCopy().selectGroup : `${resultCopy().review} ${filterLabel}`)}">
+            <span class="result-review-inline-icon-v160">${svgIcon("review")}</span>
+            <span class="result-review-inline-text-v160">
+              <strong>${escapeHtml(noneSelected ? resultCopy().selectGroup : `${resultCopy().review} ${filterLabel}`)}</strong>
+              <small>${escapeHtml(noneSelected ? resultCopy().chooseOne : resultCopy().selectedQuestions(selectedCount))}</small>
+            </span>
+          </button>
         </div>
-      </div>
-    </section>
-
-    <section class="result-action-grid-v160">
-      <button type="button" class="result-action-card-v160 primary" data-result-action="review" ${noneSelected ? "disabled" : ""}>
-        <span class="result-action-icon-v160">${svgIcon("review")}</span>
-        <span class="result-action-text-v160">
-          <strong>${escapeHtml(noneSelected ? resultCopy().selectGroup : `${resultCopy().review} ${filterLabel}`)}</strong>
-          <small>${escapeHtml(noneSelected ? resultCopy().chooseOne : resultCopy().selectedQuestions(selectedCount))}</small>
-        </span>
-        ${svgIcon("chevron", "button-icon result-chevron-v160")}
-      </button>
-      <div class="result-secondary-actions-v160">
-        <button type="button" class="result-action-card-v160" data-result-action="new">
-          <span class="result-action-icon-v160">${svgIcon("refresh")}</span>
-          <span class="result-action-text-v160"><strong>${escapeHtml(t("newSimulation"))}</strong><small>${escapeHtml(resultCopy().backToConfig)}</small></span>
-          ${svgIcon("chevron", "button-icon result-chevron-v160")}
-        </button>
-        <button type="button" class="result-action-card-v160" data-result-action="home">
-          <span class="result-action-icon-v160">${svgIcon("home")}</span>
-          <span class="result-action-text-v160"><strong>${escapeHtml(resultCopy().home)}</strong><small>${escapeHtml(resultCopy().backHome)}</small></span>
-          ${svgIcon("chevron", "button-icon result-chevron-v160")}
-        </button>
       </div>
     </section>
 
@@ -1142,8 +1194,6 @@ function handleResultClick(event) {
   const actionButton = event.target.closest("[data-result-action]");
   if (!actionButton) return;
   const action = actionButton.dataset.resultAction;
-  if (action === "new") startNewAttemptFromResult();
-  if (action === "home") goHomeFromResult();
   if (action === "toggle-topics") toggleTopicVisibility();
   if (action === "review") showFilteredReview();
 }
