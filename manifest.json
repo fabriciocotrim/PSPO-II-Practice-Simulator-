@@ -2,7 +2,7 @@
   "name": "PSPO II Practice Simulator",
   "short_name": "PSPO II",
   "description": "Simulador independente para prática da certificação PSPO II.",
-  "start_url": "./?v=1.6.2",
+  "start_url": "./?v=1.7.0",
   "scope": "./",
   "display": "standalone",
   "background_color": "#191919",

@@ -15,9 +15,9 @@ const TOPIC_GROUPS = [
 ];
 
 const APP_VERSION = {
-  number: "1.6.2",
+  number: "1.7.0",
   date: "2026-05-16",
-  time: "13:45 BRT"
+  time: "22:55 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -311,7 +311,8 @@ const state = {
   dirty: false,
   pendingAction: null,
   lastResult: null,
-  resultReviewFilters: ["incorrect"]
+  resultReviewFilters: [],
+  resultReviewActiveId: null
 };
 
 const $ = (id) => document.getElementById(id);
@@ -931,7 +932,8 @@ function finishExamConfirmed() {
   const result = calculateScore();
   saveAttemptHistory(result);
   clearCurrentExam();
-  state.resultReviewFilters = ["incorrect"];
+  state.resultReviewFilters = [];
+  state.resultReviewActiveId = null;
   setScreen("result");
   renderResults(result);
 }
@@ -1281,6 +1283,8 @@ function svgIcon(name, className = "button-icon") {
     x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
     minus: '<path d="M5 12h14"/>',
     flag: '<path d="M5 22V4"/><path d="M5 4h12l-2 5 2 5H5"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
     chevron: '<path d="m9 18 6-6-6-6"/>'
   };
   return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || ""}</svg>`;
@@ -1533,3 +1537,377 @@ loadQuestions()
       $("filterWarning").textContent = error.message || t("loadingError");
     }
   });
+
+
+/* -------------------------------------------------------
+   v1.7.0 - Focused result review overrides
+------------------------------------------------------- */
+
+function resultCopy() {
+  if (settings.lang === "en") {
+    return {
+      all: "All",
+      review: "Review answers",
+      finalResult: "Final result",
+      notPassed: "Not passed",
+      passed: "Passed",
+      correct: "Correct",
+      incorrect: "Errors",
+      unanswered: "Unanswered",
+      unsure: "Marked",
+      marked: "Marked",
+      duration: "Time",
+      completion: "Completion",
+      topic: "Topic",
+      questionMap: "Question map",
+      questionMapHelp: "Select a question to review it.",
+      previous: "Previous",
+      next: "Next",
+      close: "Close",
+      yourAnswer: "Your answer",
+      correctAnswer: "Correct answer",
+      explanation: "Explanation",
+      noQuestionsFilter: "No questions match the selected filters.",
+      selected: "Selected",
+      resultCount: (shown, total) => `${shown} of ${total}`,
+      questionCounter: (current, total) => `${current}/${total}`,
+      mapCounter: (current, total) => `Q${current}/${total}`
+    };
+  }
+  return {
+    all: "Todas",
+    review: "Revisão das respostas",
+    finalResult: "Resultado final",
+    notPassed: "Não aprovado",
+    passed: "Aprovado",
+    correct: "Corretas",
+    incorrect: "Erradas",
+    unanswered: "Sem resposta",
+    unsure: "Marcadas",
+    marked: "Marcadas",
+    duration: "Tempo",
+    completion: "Conclusão",
+    topic: "Tópico",
+    questionMap: "Mapa das questões",
+    questionMapHelp: "Selecione uma questão para revisar.",
+    previous: "Anterior",
+    next: "Próxima",
+    close: "Fechar",
+    yourAnswer: "Sua resposta",
+    correctAnswer: "Resposta correta",
+    explanation: "Explicação",
+    noQuestionsFilter: "Nenhuma questão corresponde aos filtros selecionados.",
+    selected: "Selecionado",
+    resultCount: (shown, total) => `${shown} de ${total}`,
+    questionCounter: (current, total) => `${current}/${total}`,
+    mapCounter: (current, total) => `Q${current}/${total}`
+  };
+}
+
+function getResultFilterData(result) {
+  const copy = resultCopy();
+  return {
+    filters: [
+      { id: "correct", label: copy.correct, value: result.correct, tone: "good", icon: svgIcon("check") },
+      { id: "incorrect", label: copy.incorrect, value: result.incorrect, tone: "bad", icon: svgIcon("x") },
+      { id: "unanswered", label: copy.unanswered, value: result.unanswered, tone: "neutral", icon: svgIcon("minus") },
+      { id: "unsure", label: copy.marked, value: getUnsureCount(), tone: "marked", icon: svgIcon("flag") }
+    ],
+    copy
+  };
+}
+
+function getFilteredReviewItems() {
+  const filters = Array.isArray(state.resultReviewFilters) ? state.resultReviewFilters : [];
+  return state.selectedQuestions
+    .map((question, index) => ({ question, index }))
+    .filter(({ question }) => !filters.length || questionMatchesResultFilter(question, filters));
+}
+
+function ensureActiveReviewQuestion(items) {
+  if (!items.length) {
+    state.resultReviewActiveId = null;
+    return null;
+  }
+  const current = items.find((item) => item.question.id === state.resultReviewActiveId);
+  if (current) return current;
+  state.resultReviewActiveId = items[0].question.id;
+  return items[0];
+}
+
+function currentReviewPosition(items, activeId = state.resultReviewActiveId) {
+  const idx = items.findIndex((item) => item.question.id === activeId);
+  return idx >= 0 ? idx : 0;
+}
+
+function renderResults(result) {
+  state.lastResult = result;
+  if (!Array.isArray(state.resultReviewFilters)) state.resultReviewFilters = [];
+
+  const copy = resultCopy();
+  const filterData = getResultFilterData(result);
+  const items = getFilteredReviewItems();
+  const activeItem = ensureActiveReviewQuestion(items);
+  const activeIndex = activeItem ? currentReviewPosition(items, activeItem.question.id) : 0;
+
+  const summary = `
+    <section class="v170-page-head">
+      <div>
+        <p class="v170-kicker">PSPO II Practice Simulator</p>
+        <h2>${escapeHtml(copy.review)}</h2>
+      </div>
+    </section>
+
+    <section class="v170-summary-panel" aria-label="${escapeHtml(copy.finalResult)}">
+      <div class="v170-main-stats">
+        <div class="v170-score-card ${result.passed ? "pass" : "fail"}">
+          <span>${escapeHtml(copy.finalResult)}</span>
+          <strong>${result.percentage}%</strong>
+          <small>${escapeHtml(result.passed ? copy.passed : copy.notPassed)}</small>
+        </div>
+        <div class="v170-time-card">
+          <span>${svgIcon("clock")} ${escapeHtml(copy.duration)}</span>
+          <strong>${escapeHtml(formatDuration(result.durationSeconds))}</strong>
+          <small>${escapeHtml(copy.completion)}</small>
+        </div>
+      </div>
+
+      <div class="v170-filter-cards" aria-label="${escapeHtml(copy.questionMap)}">
+        ${filterData.filters.map((filter) => resultStatusCardHtml(filter)).join("")}
+      </div>
+
+      <div class="v170-desktop-filters" aria-label="Filtros da revisão">
+        <button type="button" class="v170-filter-pill ${state.resultReviewFilters.length ? "" : "active"}" data-v170-filter="__all" aria-pressed="${state.resultReviewFilters.length ? "false" : "true"}">${escapeHtml(copy.all)}</button>
+        ${filterData.filters.map((filter) => resultFilterPillHtml(filter)).join("")}
+        <span class="v170-filter-count">${escapeHtml(copy.resultCount(items.length, result.total))}</span>
+      </div>
+    </section>
+
+    ${items.length ? focusedReviewLayoutHtml({ items, activeItem, activeIndex, copy, result }) : `<div class="v170-empty">${escapeHtml(copy.noQuestionsFilter)}</div>`}
+  `;
+
+  const resultSummary = $("resultSummary");
+  if (resultSummary) resultSummary.innerHTML = summary;
+  const reviewContainer = $("reviewContainer");
+  if (reviewContainer) {
+    reviewContainer.hidden = true;
+    reviewContainer.innerHTML = "";
+  }
+}
+
+function resultStatusCardHtml(filter) {
+  const active = Array.isArray(state.resultReviewFilters) && state.resultReviewFilters.includes(filter.id);
+  return `
+    <button type="button" class="v170-status-card ${escapeHtml(filter.tone)} ${active ? "active" : ""}" data-v170-filter="${escapeHtml(filter.id)}" aria-pressed="${active ? "true" : "false"}">
+      <span class="v170-status-card-label">${escapeHtml(filter.label)}</span>
+      <strong>${escapeHtml(String(filter.value))}</strong>
+      <span class="v170-card-selected" aria-hidden="true">${svgIcon("check")}</span>
+    </button>
+  `;
+}
+
+function resultFilterPillHtml(filter) {
+  const active = Array.isArray(state.resultReviewFilters) && state.resultReviewFilters.includes(filter.id);
+  return `
+    <button type="button" class="v170-filter-pill ${active ? "active" : ""}" data-v170-filter="${escapeHtml(filter.id)}" aria-pressed="${active ? "true" : "false"}">
+      ${escapeHtml(filter.label)}
+    </button>
+  `;
+}
+
+function focusedReviewLayoutHtml({ items, activeItem, activeIndex, copy, result }) {
+  const question = activeItem.question;
+  const index = activeItem.index;
+  const countLabel = copy.questionCounter(activeIndex + 1, items.length);
+  return `
+    <section class="v170-review-layout">
+      <aside class="v170-question-map" aria-label="${escapeHtml(copy.questionMap)}">
+        <div class="v170-map-head">
+          <div>
+            <h3>${escapeHtml(copy.questionMap)}</h3>
+            <p>${escapeHtml(copy.questionMapHelp)}</p>
+          </div>
+          <span>${escapeHtml(copy.resultCount(items.length, result.total))}</span>
+        </div>
+        <div class="v170-map-grid">
+          ${items.map((item) => questionMapButtonHtml(item.question, item.index, item.question.id === question.id)).join("")}
+        </div>
+        <div class="v170-map-legend">
+          <span><i class="good"></i>${escapeHtml(copy.correct)}</span>
+          <span><i class="bad"></i>${escapeHtml(copy.incorrect)}</span>
+          <span><i class="neutral"></i>${escapeHtml(copy.unanswered)}</span>
+          <span><i class="marked"></i>${escapeHtml(copy.marked)}</span>
+        </div>
+      </aside>
+
+      <article class="v170-question-card">
+        ${reviewQuestionHtml(question, index, countLabel, copy)}
+      </article>
+    </section>
+
+    <nav class="v170-mobile-nav" aria-label="Navegação da revisão">
+      <button type="button" class="v170-nav-button secondary" data-v170-nav="prev">← ${escapeHtml(copy.previous)}</button>
+      <button type="button" class="v170-nav-button map" data-v170-map="open">
+        ${svgIcon("grid")}<span>${escapeHtml(copy.questionMap.split(" ")[0])}</span><small>${escapeHtml(copy.mapCounter(activeIndex + 1, items.length))}</small>
+      </button>
+      <button type="button" class="v170-nav-button primary" data-v170-nav="next">${escapeHtml(copy.next)} →</button>
+    </nav>
+
+    <section class="v170-mobile-map-sheet" data-v170-sheet hidden>
+      <button type="button" class="v170-sheet-backdrop" data-v170-map="close" aria-label="${escapeHtml(copy.close)}"></button>
+      <div class="v170-sheet-panel" role="dialog" aria-modal="true" aria-label="${escapeHtml(copy.questionMap)}">
+        <div class="v170-sheet-handle"></div>
+        <div class="v170-map-head">
+          <div>
+            <h3>${escapeHtml(copy.questionMap)}</h3>
+            <p>${escapeHtml(copy.questionMapHelp)}</p>
+          </div>
+          <button type="button" class="v170-sheet-close" data-v170-map="close">${escapeHtml(copy.close)}</button>
+        </div>
+        <div class="v170-map-grid mobile">
+          ${items.map((item) => questionMapButtonHtml(item.question, item.index, item.question.id === question.id)).join("")}
+        </div>
+        <div class="v170-map-legend mobile">
+          <span><i class="good"></i>${escapeHtml(copy.correct)}</span>
+          <span><i class="bad"></i>${escapeHtml(copy.incorrect)}</span>
+          <span><i class="neutral"></i>${escapeHtml(copy.unanswered)}</span>
+          <span><i class="marked"></i>${escapeHtml(copy.marked)}</span>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function questionMapButtonHtml(question, index, active) {
+  const status = getResultQuestionStatus(question);
+  const marked = Boolean(state.unsure[question.id]);
+  return `
+    <button type="button" class="v170-map-button ${escapeHtml(status)} ${marked ? "marked" : ""} ${active ? "active" : ""}" data-v170-question="${escapeHtml(question.id)}" aria-label="${escapeHtml(t("question"))} ${index + 1}" aria-current="${active ? "true" : "false"}">
+      ${index + 1}
+      ${marked ? `<span></span>` : ""}
+    </button>
+  `;
+}
+
+function reviewQuestionHtml(question, index, countLabel, copy) {
+  const selected = state.answers[question.id] || [];
+  const status = getResultQuestionStatus(question);
+  const marked = Boolean(state.unsure[question.id]);
+  const optionList = sortOptions(question.options || []).map((option) => {
+    const klass = optionHighlightClass(question, option.id, selected);
+    const isUserAnswer = selected.includes(option.id);
+    const isCorrectAnswer = question.correctAnswers.includes(option.id);
+    const badges = [
+      isUserAnswer ? `<span class="v170-answer-badge user">${escapeHtml(copy.yourAnswer)}</span>` : "",
+      isCorrectAnswer ? `<span class="v170-answer-badge correct">${escapeHtml(copy.correctAnswer)}</span>` : ""
+    ].join("");
+    return `<div class="v170-option ${klass}"><span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span>${badges}</div>`;
+  }).join("");
+  const userAnswer = selected.length ? selected.join(", ") : t("unanswered");
+
+  return `
+    <div class="v170-question-head">
+      <div class="v170-question-tags">
+        <span class="v170-question-number">${escapeHtml(t("question"))} ${index + 1}</span>
+        <span class="v170-status-badge ${escapeHtml(status)}">${escapeHtml(statusLabelFor(status))}</span>
+        ${marked ? `<span class="v170-status-badge marked">${escapeHtml(copy.marked)}</span>` : ""}
+      </div>
+      <span class="v170-question-position">${escapeHtml(countLabel)}</span>
+    </div>
+    <h3>${escapeHtml(question.question)}</h3>
+    <p class="v170-topic">${escapeHtml(copy.topic)}: ${escapeHtml((question.topics || []).join(", ") || "Uncategorized")}</p>
+    <div class="v170-options">${optionList}</div>
+    <section class="v170-answer-summary">
+      <div>
+        <span>${escapeHtml(copy.yourAnswer)}</span>
+        <strong>${escapeHtml(userAnswer)}</strong>
+      </div>
+      <div class="correct">
+        <span>${escapeHtml(copy.correctAnswer)}</span>
+        <strong>${escapeHtml(question.correctAnswers.join(", "))}</strong>
+      </div>
+    </section>
+    <section class="v170-explanation">
+      <span>${escapeHtml(copy.explanation)}</span>
+      <p>${escapeHtml(question.explanation)}</p>
+    </section>
+  `;
+}
+
+function handleResultClick(event) {
+  const filterButton = event.target.closest("[data-v170-filter]");
+  if (filterButton) {
+    const filter = filterButton.dataset.v170Filter;
+    if (filter === "__all") {
+      state.resultReviewFilters = [];
+    } else {
+      const current = Array.isArray(state.resultReviewFilters) ? state.resultReviewFilters : [];
+      state.resultReviewFilters = current.includes(filter)
+        ? current.filter((item) => item !== filter)
+        : [...current, filter];
+    }
+    const items = getFilteredReviewItems();
+    ensureActiveReviewQuestion(items);
+    renderResults(state.lastResult || calculateScore());
+    return;
+  }
+
+  const questionButton = event.target.closest("[data-v170-question]");
+  if (questionButton) {
+    state.resultReviewActiveId = questionButton.dataset.v170Question;
+    closeMobileReviewMap();
+    renderResults(state.lastResult || calculateScore());
+    return;
+  }
+
+  const navButton = event.target.closest("[data-v170-nav]");
+  if (navButton) {
+    moveFocusedReview(navButton.dataset.v170Nav);
+    return;
+  }
+
+  const mapButton = event.target.closest("[data-v170-map]");
+  if (mapButton) {
+    if (mapButton.dataset.v170Map === "open") openMobileReviewMap();
+    if (mapButton.dataset.v170Map === "close") closeMobileReviewMap();
+    return;
+  }
+
+  const actionButton = event.target.closest("[data-result-action]");
+  if (!actionButton) return;
+  const action = actionButton.dataset.resultAction;
+  if (action === "toggle-topics") toggleTopicVisibility();
+}
+
+function moveFocusedReview(direction) {
+  const items = getFilteredReviewItems();
+  if (!items.length) return;
+  const currentIndex = currentReviewPosition(items);
+  const nextIndex = direction === "prev"
+    ? Math.max(0, currentIndex - 1)
+    : Math.min(items.length - 1, currentIndex + 1);
+  state.resultReviewActiveId = items[nextIndex].question.id;
+  renderResults(state.lastResult || calculateScore());
+}
+
+function openMobileReviewMap() {
+  const sheet = document.querySelector("[data-v170-sheet]");
+  if (sheet) sheet.hidden = false;
+}
+
+function closeMobileReviewMap() {
+  const sheet = document.querySelector("[data-v170-sheet]");
+  if (sheet) sheet.hidden = true;
+}
+
+function showFilteredReview() {
+  renderResults(state.lastResult || calculateScore());
+  $("resultSummary")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderReview(options = {}) {
+  const container = $("reviewContainer");
+  if (!container) return;
+  container.hidden = true;
+  container.innerHTML = "";
+}
