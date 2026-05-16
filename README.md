@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.6.0** — 2026-05-16 — 02:05 BRT
+**1.6.2** — 2026-05-16 — 13:45 BRT
 
 ## Características
 
@@ -24,7 +24,7 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
-## Versão 1.6.0
+## Versão 1.6.2
 
 Alterações principais:
 
@@ -87,13 +87,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.6.0 result screen final polish
+Release v1.6.2 mobile result screen polish
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.6.0-final
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.6.2
 ```
 
 ## Como adicionar questões
@@ -163,10 +163,22 @@ Alterações principais:
 - cache PWA atualizado para `v1.4.4`.
 
 
+
+## v1.6.2
+
+- Resultado final mobile alinhado ao layout aprovado no Canvas.
+- Filtros do resultado mantidos em grade 2x3 no mobile.
+- Botão de revisão posicionado ao lado de “Dúvidas”.
+- Botão “Todas / Desmarcar” preservado.
+- Contagem de revisão mantém união de questões, sem duplicar questões marcadas como dúvida.
+- Desempenho por tópico mantém “X erros de Y questões”.
+- Light mode e dark mode preservados.
+- Cache PWA atualizado para v1.6.2.
+
 ## v1.6.0
 
 - Redesenho da tela de resultado final em light e dark mode.
 - Filtros múltiplos de revisão por corretas, erros, não respondidas e dúvidas, com contagem por união de questões.
 - Botão Todas/Desmarcar.
 - Desempenho por tópico com erros no total de questões do tópico.
-- Cache PWA atualizado para v1.6.0.
+- Cache PWA atualizado para v1.6.2.
