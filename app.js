@@ -6,9 +6,9 @@ const TOPICS = [
 ];
 
 const APP_VERSION = {
-  number: "1.4.1",
+  number: "1.4.2",
   date: "2026-05-15",
-  time: "21:30 BRT"
+  time: "21:52 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -65,6 +65,11 @@ const I18N = {
     filter: "Filtro",
     allQuestions: "Todas",
     goTo: "Ir para",
+    goToQuestion: "Ir para questão",
+    examTimerTooltip: "Tempo de prova",
+    selectorQuestionAnswered: "Questão {number}",
+    selectorQuestionUnanswered: "Questão {number} - não respondida",
+    selectorQuestionUnsure: "Questão {number} - dúvida",
     finishSimulation: "Finalizar simulado",
     saveState: "Salvar",
     exitSimulation: "Sair",
@@ -160,6 +165,11 @@ const I18N = {
     filter: "Filter",
     allQuestions: "All",
     goTo: "Go to",
+    goToQuestion: "Go to question",
+    examTimerTooltip: "Exam timer",
+    selectorQuestionAnswered: "Question {number}",
+    selectorQuestionUnanswered: "Question {number} - unanswered",
+    selectorQuestionUnsure: "Question {number} - unsure",
     finishSimulation: "Finish simulation",
     saveState: "Save",
     exitSimulation: "Exit",
@@ -390,7 +400,6 @@ function attachEvents() {
       renderQuestion();
     }
   });
-  $("questionFilter").addEventListener("change", renderQuestionSelector);
 
   $("cancelFinishButton").addEventListener("click", () => $("finishDialog").close());
   $("confirmFinishButton").addEventListener("click", () => {
@@ -519,7 +528,6 @@ function startSimulation() {
   state.lastSavedAt = null;
   state.dirty = false;
   state.pendingAction = null;
-  $("questionFilter").value = "all";
   setScreen("exam");
   startTimer();
   saveCurrentExam(true);
@@ -550,8 +558,9 @@ function renderQuestion() {
   $("examModeLabel").textContent = state.feedbackMode === "immediate" ? t("immediateFeedback") : t("finalReviewOnly");
   $("prevButton").disabled = state.currentIndex === 0;
   $("prevButton").textContent = "←";
-  $("nextButton").textContent = isLastQuestion ? "✓" : "→";
-  $("nextButton").classList.toggle("finish-primary", isLastQuestion);
+  $("nextButton").textContent = "→";
+  $("nextButton").disabled = isLastQuestion;
+  $("nextButton").classList.toggle("finish-primary", false);
   $("unsureButton").textContent = state.unsure[question.id] ? "⚑" : "⚐";
   $("unsureButton").classList.toggle("unsure-active", Boolean(state.unsure[question.id]));
   updateSaveLine();
@@ -597,7 +606,7 @@ function updateActionButtonLabels() {
     ["saveButton", t("saveProgress")],
     ["exitButton", t("exitExamTooltip")],
     ["prevButton", t("previousQuestionTooltip")],
-    ["nextButton", isLastQuestion ? t("finishSimulationTooltip") : t("nextQuestionTooltip")],
+    ["nextButton", t("nextQuestionTooltip")],
     ["finishNowButton", t("finishSimulationTooltip")],
     ["unsureButton", unsureActive ? t("removeUnsureTooltip") : t("markUnsureTooltip")]
   ];
@@ -607,6 +616,16 @@ function updateActionButtonLabels() {
     el.title = label;
     el.setAttribute("aria-label", label);
   });
+  const timer = $("timerPill");
+  if (timer) {
+    timer.title = t("examTimerTooltip");
+    timer.setAttribute("aria-label", t("examTimerTooltip"));
+  }
+  const selector = $("questionSelector");
+  if (selector) {
+    selector.title = t("goToQuestion");
+    selector.setAttribute("aria-label", t("goToQuestion"));
+  }
 }
 
 function saveAnswerFromDom() {
@@ -622,14 +641,13 @@ function saveAnswerFromDom() {
 
 function handleNextQuestion() {
   saveAnswerFromDom();
+  if (state.currentIndex >= state.selectedQuestions.length - 1) return;
   if (state.feedbackMode === "immediate") {
-    const isLast = state.currentIndex === state.selectedQuestions.length - 1;
-    state.pendingAction = isLast ? "finish" : "next";
+    state.pendingAction = "next";
     openFeedbackDialog();
     return;
   }
-  if (state.currentIndex === state.selectedQuestions.length - 1) finishExam();
-  else moveQuestion(1);
+  moveQuestion(1);
 }
 
 function openFeedbackDialog() {
@@ -691,20 +709,20 @@ function getQuestionStatus(questionId) {
 }
 
 function renderQuestionSelector() {
-  const filter = $("questionFilter").value;
   const selector = $("questionSelector");
+  if (!selector) return;
   const rows = state.selectedQuestions
-    .map((question, index) => ({ question, index, status: getQuestionStatus(question.id) }))
-    .filter((item) => {
-      if (filter === "all") return true;
-      if (filter === "answered") return (state.answers[item.question.id] || []).length > 0;
-      if (filter === "unanswered") return !(state.answers[item.question.id] || []).length;
-      if (filter === "unsure") return Boolean(state.unsure[item.question.id]);
-      return true;
-    });
+    .map((question, index) => ({ question, index, status: getQuestionStatus(question.id) }));
   selector.innerHTML = rows.length ? rows.map((item) => `
-    <option value="${item.index}" ${item.index === state.currentIndex ? "selected" : ""}>${t("question")} ${item.index + 1} - ${statusLabelFor(item.status)}</option>
+    <option value="${item.index}" ${item.index === state.currentIndex ? "selected" : ""}>${questionSelectorLabel(item.index, item.status)}</option>
   `).join("") : `<option>${t("noQuestionsFilter")}</option>`;
+}
+
+function questionSelectorLabel(index, status) {
+  const number = index + 1;
+  if (status === "unsure") return t("selectorQuestionUnsure", { number });
+  if (status === "unanswered") return t("selectorQuestionUnanswered", { number });
+  return t("selectorQuestionAnswered", { number });
 }
 
 function moveQuestion(delta) {
@@ -903,7 +921,6 @@ function resumeSavedExam() {
   state.lastSavedAt = saved.savedAt || null;
   state.finished = false;
   state.dirty = false;
-  $("questionFilter").value = "all";
   setScreen("exam");
   startTimer();
   renderQuestion();

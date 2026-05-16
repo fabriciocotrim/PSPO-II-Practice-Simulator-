@@ -30,16 +30,16 @@
           <div class="switch-field">
             <span class="switch-label" data-i18n="interfaceLanguage">Idioma</span>
             <button type="button" class="switch-control lang-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
-              <span class="switch-icon switch-left" aria-hidden="true">🇧🇷</span>
-              <span class="switch-icon switch-right" aria-hidden="true">🇺🇸</span>
+              <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+              <span class="switch-icon switch-right" aria-hidden="true">US</span>
               <span class="switch-thumb" aria-hidden="true"></span>
             </button>
           </div>
           <div class="switch-field">
             <span class="switch-label" data-i18n="visualTheme">Tema</span>
             <button type="button" class="switch-control theme-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
-              <span class="switch-icon switch-left" aria-hidden="true">☀️</span>
-              <span class="switch-icon switch-right" aria-hidden="true">🌙</span>
+              <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+              <span class="switch-icon switch-right" aria-hidden="true">☾</span>
               <span class="switch-thumb" aria-hidden="true"></span>
             </button>
           </div>
@@ -110,49 +110,31 @@
 
         <div class="exam-meta-panel">
           <div class="settings-switches exam-switches" aria-label="Configurações rápidas">
-            <div class="switch-field compact-switch-field">
-              <span class="switch-label" data-i18n="interfaceLanguage">Idioma</span>
-              <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
-                <span class="switch-icon switch-left" aria-hidden="true">🇧🇷</span>
-                <span class="switch-icon switch-right" aria-hidden="true">🇺🇸</span>
-                <span class="switch-thumb" aria-hidden="true"></span>
-              </button>
-            </div>
-            <div class="switch-field compact-switch-field">
-              <span class="switch-label" data-i18n="visualTheme">Tema</span>
-              <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
-                <span class="switch-icon switch-left" aria-hidden="true">☀️</span>
-                <span class="switch-icon switch-right" aria-hidden="true">🌙</span>
-                <span class="switch-thumb" aria-hidden="true"></span>
-              </button>
-            </div>
+            <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+              <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+              <span class="switch-icon switch-right" aria-hidden="true">US</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+              <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+              <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
           </div>
           <p class="eyebrow mode-label" id="examModeLabel">Simulado</p>
           <div class="pills">
             <div class="progress-pill" id="progressPill">0/0</div>
-            <div class="timer-wrap">
-              <span class="timer-label" data-i18n="timeLabel">Tempo</span>
-              <div class="timer-pill" id="timerPill" aria-label="Cronômetro">00:00</div>
-            </div>
+            <div class="timer-pill" id="timerPill" aria-label="Cronômetro" title="Tempo de prova">00:00</div>
           </div>
           <div class="exam-quick-actions" aria-label="Ações rápidas do simulado">
-            <button id="saveButton" type="button" class="icon-button" title="Salvar progresso" aria-label="Salvar progresso">💾</button>
-            <button id="exitButton" type="button" class="icon-button" title="Sair do simulado" aria-label="Sair do simulado">↩</button>
+            <button id="saveButton" type="button" class="icon-button" title="Salvar progresso" aria-label="Salvar progresso">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+            </button>
+            <button id="exitButton" type="button" class="icon-button" title="Sair do simulado" aria-label="Sair do simulado">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg>
+            </button>
           </div>
         </div>
-      </div>
-
-      <div class="exam-controls compact-controls">
-        <label for="questionFilter" data-i18n="filter">Filtro</label>
-        <select id="questionFilter">
-          <option value="all" data-i18n="allQuestions">Todas</option>
-          <option value="unanswered" data-i18n="unansweredPlural">Não respondidas</option>
-          <option value="answered" data-i18n="answeredPlural">Respondidas</option>
-          <option value="unsure" data-i18n="unsurePlural">Em dúvida</option>
-        </select>
-
-        <label for="questionSelector" data-i18n="goTo">Ir para</label>
-        <select id="questionSelector"></select>
       </div>
 
       <div id="examStatus" class="status-message" hidden></div>
@@ -161,12 +143,12 @@
       <nav class="nav-buttons icon-nav" aria-label="Navegação do simulado">
         <button id="prevButton" type="button" class="secondary nav-icon-button" title="Questão anterior" aria-label="Questão anterior">←</button>
         <button id="unsureButton" type="button" class="secondary nav-icon-button" title="Marcar questão como dúvida" aria-label="Marcar questão como dúvida">⚐</button>
+        <select id="questionSelector" class="nav-question-selector" title="Ir para questão" aria-label="Ir para questão"></select>
         <button id="nextButton" type="button" class="primary nav-icon-button" title="Próxima questão" aria-label="Próxima questão">→</button>
+        <button id="finishNowButton" type="button" class="secondary nav-icon-button finish-icon-button" title="Finalizar simulado" aria-label="Finalizar simulado">
+          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4"/><path d="M4 5h12l-2 4 2 4H4"/></svg>
+        </button>
       </nav>
-
-      <div class="finish-row">
-        <button id="finishNowButton" type="button" class="secondary finish-button" title="Finalizar simulado" aria-label="Finalizar simulado" data-i18n="finishSimulation">Finalizar simulado</button>
-      </div>
     </section>
 
     <section id="resultScreen" class="card screen" aria-labelledby="resultTitle">

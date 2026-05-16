@@ -73,13 +73,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.3.0 switch controls
+Release v1.4.2 desktop exam navigation
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.3.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.2
 ```
 
 ## Como adicionar questões
@@ -113,29 +113,21 @@ Para questões de múltipla resposta, use:
 
 Este app é independente. Não é produto oficial, afiliado, validado nem endossado pela Scrum.org.
 
-## Versão 1.4.1
+## Versão 1.4.2
 
 Alterações principais:
 
-- refinamento visual da tela de simulado;
-- contraste reforçado para textos secundários e estados em modo claro/escuro;
-- superfícies em camadas no dark mode;
-- bordas e sombras sutis no light mode;
-- inputs com borda mais visível;
-- espaçamento padronizado em múltiplos de 8px;
-- alinhamento vertical centralizado em linhas com controle/texto;
-- redução de ruído visual em divisores;
-- cache PWA atualizado para `v1.4.1`.
+- foco na versão desktop da tela de simulado;
+- cabeçalho externo oculto durante a prova;
+- labels Idioma/Tema removidas da área de prova;
+- label Tempo removido e mantido como tooltip/acessibilidade;
+- switches neutralizados, sem ícones coloridos;
+- botão Salvar substituído por ícone SVG monocromático;
+- botão Sair substituído por ícone SVG monocromático;
+- filtro de questões removido da tela de prova;
+- seletor de questão reduzido e movido para a linha de navegação;
+- opções do seletor ajustadas para `Questão X`, `Questão Y - não respondida` e `Questão Z - dúvida`;
+- linha de navegação reorganizada com anterior, dúvida, seletor, próxima e finalizar;
+- Finalizar simulado convertido em ícone de bandeira;
+- cache PWA atualizado para `v1.4.2`.
 
-
-## Changelog v1.4.1
-
-- Redução de carga cognitiva na tela de simulado.
-- Cabeçalho externo oculto durante a prova.
-- Metadados técnicos mantidos no rodapé.
-- Botões Salvar e Sair convertidos para ícones com tooltip e aria-label.
-- Navegação principal convertida para setas e ícone de dúvida.
-- Botão Finalizar simulado reposicionado para o final da tela.
-- Switches de idioma e tema neutralizados visualmente para não competir com a questão.
-- Tags de tema limitadas a tipo + até 2 temas + contador de excedentes.
-- Ajustes de contraste, superfícies e tipografia para reduzir ruído visual em light/dark mode.
