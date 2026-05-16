@@ -112,3 +112,30 @@ Para questões de múltipla resposta, use:
 ## Aviso
 
 Este app é independente. Não é produto oficial, afiliado, validado nem endossado pela Scrum.org.
+
+## Versão 1.4.1
+
+Alterações principais:
+
+- refinamento visual da tela de simulado;
+- contraste reforçado para textos secundários e estados em modo claro/escuro;
+- superfícies em camadas no dark mode;
+- bordas e sombras sutis no light mode;
+- inputs com borda mais visível;
+- espaçamento padronizado em múltiplos de 8px;
+- alinhamento vertical centralizado em linhas com controle/texto;
+- redução de ruído visual em divisores;
+- cache PWA atualizado para `v1.4.1`.
+
+
+## Changelog v1.4.1
+
+- Redução de carga cognitiva na tela de simulado.
+- Cabeçalho externo oculto durante a prova.
+- Metadados técnicos mantidos no rodapé.
+- Botões Salvar e Sair convertidos para ícones com tooltip e aria-label.
+- Navegação principal convertida para setas e ícone de dúvida.
+- Botão Finalizar simulado reposicionado para o final da tela.
+- Switches de idioma e tema neutralizados visualmente para não competir com a questão.
+- Tags de tema limitadas a tipo + até 2 temas + contador de excedentes.
+- Ajustes de contraste, superfícies e tipografia para reduzir ruído visual em light/dark mode.

@@ -15,11 +15,8 @@
     <div class="title-block">
       <p class="eyebrow" data-i18n="independentSimulator">Simulador independente</p>
       <h1>PSPO II Practice Simulator</h1>
-      <p class="version-line" id="appVersionLine">Versão carregando...</p>
     </div>
-    <div class="header-side">
-      <div class="header-badge" id="questionBankCount">Carregando...</div>
-    </div>
+    <div class="header-side" aria-hidden="true"></div>
   </header>
 
   <main id="app" class="app-shell" aria-live="polite">
@@ -138,13 +135,11 @@
               <div class="timer-pill" id="timerPill" aria-label="Cronômetro">00:00</div>
             </div>
           </div>
+          <div class="exam-quick-actions" aria-label="Ações rápidas do simulado">
+            <button id="saveButton" type="button" class="icon-button" title="Salvar progresso" aria-label="Salvar progresso">💾</button>
+            <button id="exitButton" type="button" class="icon-button" title="Sair do simulado" aria-label="Sair do simulado">↩</button>
+          </div>
         </div>
-      </div>
-
-      <div class="top-actions" aria-label="Ações do simulado">
-        <button id="finishNowButton" type="button" class="secondary" data-i18n="finishSimulation">Finalizar simulado</button>
-        <button id="saveButton" type="button" class="secondary" data-i18n="saveState">Salvar</button>
-        <button id="exitButton" type="button" class="secondary" data-i18n="exitSimulation">Sair</button>
       </div>
 
       <div class="exam-controls compact-controls">
@@ -163,11 +158,15 @@
       <div id="examStatus" class="status-message" hidden></div>
       <article id="questionCard" class="question-card"></article>
 
-      <nav class="nav-buttons" aria-label="Navegação do simulado">
-        <button id="prevButton" type="button" class="secondary" data-i18n="previousQuestion">Questão anterior</button>
-        <button id="unsureButton" type="button" class="secondary" data-i18n="markUnsure">Marcar como dúvida</button>
-        <button id="nextButton" type="button" class="primary" data-i18n="nextQuestion">Próxima questão</button>
+      <nav class="nav-buttons icon-nav" aria-label="Navegação do simulado">
+        <button id="prevButton" type="button" class="secondary nav-icon-button" title="Questão anterior" aria-label="Questão anterior">←</button>
+        <button id="unsureButton" type="button" class="secondary nav-icon-button" title="Marcar questão como dúvida" aria-label="Marcar questão como dúvida">⚐</button>
+        <button id="nextButton" type="button" class="primary nav-icon-button" title="Próxima questão" aria-label="Próxima questão">→</button>
       </nav>
+
+      <div class="finish-row">
+        <button id="finishNowButton" type="button" class="secondary finish-button" title="Finalizar simulado" aria-label="Finalizar simulado" data-i18n="finishSimulation">Finalizar simulado</button>
+      </div>
     </section>
 
     <section id="resultScreen" class="card screen" aria-labelledby="resultTitle">

@@ -6,9 +6,9 @@ const TOPICS = [
 ];
 
 const APP_VERSION = {
-  number: "1.4.0",
+  number: "1.4.1",
   date: "2026-05-15",
-  time: "20:55 BRT"
+  time: "21:30 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -54,6 +54,14 @@ const I18N = {
     noHistory: "Nenhuma tentativa registrada ainda.",
     simulation: "Simulado",
     question: "Questão",
+    of: "de",
+    saveProgress: "Salvar progresso",
+    exitExamTooltip: "Sair do simulado",
+    previousQuestionTooltip: "Questão anterior",
+    nextQuestionTooltip: "Próxima questão",
+    finishSimulationTooltip: "Finalizar simulado",
+    markUnsureTooltip: "Marcar questão como dúvida",
+    removeUnsureTooltip: "Remover marcação de dúvida",
     filter: "Filtro",
     allQuestions: "Todas",
     goTo: "Ir para",
@@ -141,6 +149,14 @@ const I18N = {
     noHistory: "No attempts recorded yet.",
     simulation: "Simulation",
     question: "Question",
+    of: "of",
+    saveProgress: "Save progress",
+    exitExamTooltip: "Exit simulation",
+    previousQuestionTooltip: "Previous question",
+    nextQuestionTooltip: "Next question",
+    finishSimulationTooltip: "Finish simulation",
+    markUnsureTooltip: "Mark question as unsure",
+    removeUnsureTooltip: "Remove unsure mark",
     filter: "Filter",
     allQuestions: "All",
     goTo: "Go to",
@@ -259,6 +275,7 @@ function applyLanguage() {
   renderResumeCard();
   loadAttemptHistory();
   updateSaveLine();
+  updateActionButtonLabels();
   if ($("examScreen")?.classList.contains("active")) renderQuestion();
 }
 
@@ -526,15 +543,19 @@ function renderQuestion() {
   const question = state.selectedQuestions[state.currentIndex];
   if (!question) return;
   const userAnswers = state.answers[question.id] || [];
-  $("examTitle").textContent = `${t("question")} ${state.currentIndex + 1}`;
+  const isLastQuestion = state.currentIndex === state.selectedQuestions.length - 1;
+  $("examTitle").textContent = `${t("question")} ${state.currentIndex + 1} ${t("of")} ${state.selectedQuestions.length}`;
   $("progressPill").textContent = `${state.currentIndex + 1}/${state.selectedQuestions.length}`;
   $("timerPill").textContent = formatDuration(state.elapsedSeconds);
   $("examModeLabel").textContent = state.feedbackMode === "immediate" ? t("immediateFeedback") : t("finalReviewOnly");
   $("prevButton").disabled = state.currentIndex === 0;
-  $("nextButton").textContent = state.currentIndex === state.selectedQuestions.length - 1 ? t("finishSimulation") : t("nextQuestion");
-  $("unsureButton").textContent = state.unsure[question.id] ? t("removeUnsure") : t("markUnsure");
+  $("prevButton").textContent = "←";
+  $("nextButton").textContent = isLastQuestion ? "✓" : "→";
+  $("nextButton").classList.toggle("finish-primary", isLastQuestion);
+  $("unsureButton").textContent = state.unsure[question.id] ? "⚑" : "⚐";
   $("unsureButton").classList.toggle("unsure-active", Boolean(state.unsure[question.id]));
   updateSaveLine();
+  updateActionButtonLabels();
 
   const inputType = question.type === "multiple" ? "checkbox" : "radio";
   const optionsHtml = sortOptions(question.options || []).map((option) => {
@@ -549,8 +570,7 @@ function renderQuestion() {
 
   $("questionCard").innerHTML = `
     <div class="question-meta">
-      <span class="tag">${question.type === "multiple" ? "Multiple answer" : "Single answer"}</span>
-      ${(question.topics || []).map((topic) => `<span class="tag">${escapeHtml(topic)}</span>`).join("")}
+      ${renderQuestionTags(question)}
     </div>
     <div class="question-text">${escapeHtml(question.question)}</div>
     <div class="options">${optionsHtml}</div>
@@ -558,6 +578,35 @@ function renderQuestion() {
 
   $("questionCard").querySelectorAll("input").forEach((input) => input.addEventListener("change", saveAnswerFromDom));
   renderQuestionSelector();
+}
+
+function renderQuestionTags(question) {
+  const typeTag = `<span class="tag">${question.type === "multiple" ? "Multiple answer" : "Single answer"}</span>`;
+  const topics = question.topics || [];
+  const visibleTopics = topics.slice(0, 2).map((topic) => `<span class="tag">${escapeHtml(topic)}</span>`);
+  const remaining = topics.length - visibleTopics.length;
+  const moreTag = remaining > 0 ? `<span class="tag tag-muted">+${remaining} topics</span>` : "";
+  return [typeTag, ...visibleTopics, moreTag].filter(Boolean).join("");
+}
+
+function updateActionButtonLabels() {
+  const question = state.selectedQuestions[state.currentIndex];
+  const isLastQuestion = question && state.currentIndex === state.selectedQuestions.length - 1;
+  const unsureActive = question && Boolean(state.unsure[question.id]);
+  const controls = [
+    ["saveButton", t("saveProgress")],
+    ["exitButton", t("exitExamTooltip")],
+    ["prevButton", t("previousQuestionTooltip")],
+    ["nextButton", isLastQuestion ? t("finishSimulationTooltip") : t("nextQuestionTooltip")],
+    ["finishNowButton", t("finishSimulationTooltip")],
+    ["unsureButton", unsureActive ? t("removeUnsureTooltip") : t("markUnsureTooltip")]
+  ];
+  controls.forEach(([id, label]) => {
+    const el = $(id);
+    if (!el) return;
+    el.title = label;
+    el.setAttribute("aria-label", label);
+  });
 }
 
 function saveAnswerFromDom() {
@@ -954,6 +1003,7 @@ function getHistory() {
 }
 
 function setScreen(name) {
+  document.body.dataset.screen = name;
   $("homeScreen").classList.toggle("active", name === "home");
   $("examScreen").classList.toggle("active", name === "exam");
   $("resultScreen").classList.toggle("active", name === "result");
