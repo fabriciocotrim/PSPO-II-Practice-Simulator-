@@ -15,9 +15,9 @@ const TOPIC_GROUPS = [
 ];
 
 const APP_VERSION = {
-  number: "1.5.0",
-  date: "2026-05-15",
-  time: "23:50 BRT"
+  number: "1.5.1",
+  date: "2026-05-16",
+  time: "00:28 BRT"
 };
 
 const STORAGE_KEYS = {

@@ -2344,6 +2344,11 @@ html[data-theme="dark"] .home-v150 .switch-control {
   border-bottom: 1px solid var(--line-soft, var(--line));
 }
 
+
+.home-card-head-tabs-only {
+  justify-content: flex-end;
+}
+
 .icon-tabs {
   display: inline-flex;
   align-items: center;
