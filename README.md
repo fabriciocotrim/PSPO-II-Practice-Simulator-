@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.4.5** — 2026-05-15 — 22:42 BRT
+**1.4.6** — 2026-05-15 — 22:45 BRT
 
 ## Características
 
@@ -24,13 +24,17 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
-## Versão 1.4.5
+## Versão 1.4.6
 
 Alterações principais:
 
-- Barra de navegação recolocada acima do corpo da questão, como no protótipo aprovado.
-- Distribuição dos botões de navegação refeita: anterior/dúvida à esquerda, seletor no centro, próxima/finalizar à direita.
-- Botão de finalizar simulado substituído por ícone de troféu.
+- Tela de simulado mobile redesenhada com os mesmos conceitos aprovados no desktop.
+- Modo claro mobile minimalista com fundo branco levemente pigmentado em cinza quente.
+- Modo escuro mobile em grafite, com highlights discretos em verde-sálvia.
+- Remoção da expressão “Simulador independente” do cabeçalho visual.
+- Navegação mobile acima da questão: anterior, dúvida, seletor e próxima.
+- Botão de finalizar simulado com troféu posicionado ao final da área da questão no mobile.
+- Comunicação visual reforçada para questões de múltiplas respostas.
 - Cache PWA atualizado para evitar uso de versão antiga.
 
 ## Estrutura
@@ -82,13 +86,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.4.5 desktop navigation restore
+Release v1.4.6 mobile exam UI
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.5
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.6
 ```
 
 ## Como adicionar questões

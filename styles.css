@@ -1867,3 +1867,367 @@ body[data-screen="exam"] #nextButton.nav-icon-button {
     min-width: 0 !important;
   }
 }
+
+/* ==========================================================
+   v1.4.6 - Mobile exam screen refinement
+   Objective: apply approved desktop concepts to mobile.
+   ========================================================== */
+.mobile-finish-row { display: none; }
+
+@media (max-width: 719px) {
+  html[data-theme="light"] {
+    --bg: #f6f6f4;
+    --surface: #fbfbfa;
+    --surface-soft: #f1f1ef;
+    --surface-raised: rgba(255,255,255,0.82);
+    --surface-sunken: #fbfbfa;
+    --text: #1c1917;
+    --muted: #57534e;
+    --muted-strong: #292524;
+    --line: #a8a29e;
+    --line-soft: rgba(68,64,60,0.12);
+    --primary: #1c1917;
+    --primary-hover: #292524;
+    --accent: #5f8f6d;
+    --accent-strong: #274f3a;
+    --accent-soft: #f1f6f2;
+    --accent-line: #9fbea8;
+    --notice-bg: #f2f7f3;
+    --notice-text: #284d38;
+  }
+
+  html[data-theme="dark"] {
+    --bg: #191919;
+    --surface: #242424;
+    --surface-soft: #2b2b2b;
+    --surface-raised: rgba(255,255,255,0.04);
+    --surface-sunken: #202020;
+    --text: #f5f5f4;
+    --muted: #d4d4d4;
+    --muted-strong: #e7e5e4;
+    --line: rgba(255,255,255,0.18);
+    --line-soft: rgba(255,255,255,0.10);
+    --primary: #16a34a;
+    --primary-hover: #15803d;
+    --accent: #22c55e;
+    --accent-strong: #bbf7d0;
+    --accent-soft: rgba(34,197,94,0.10);
+    --accent-line: rgba(34,197,94,0.30);
+    --notice-bg: rgba(34,197,94,0.08);
+    --notice-text: #dcfce7;
+  }
+
+  body[data-screen="exam"] {
+    background: var(--bg) !important;
+  }
+
+  body[data-screen="exam"] .app-header {
+    display: block !important;
+    max-width: 430px !important;
+    margin: 0 auto !important;
+    padding: 4px 12px 10px !important;
+  }
+
+  body[data-screen="exam"] .app-header .eyebrow,
+  body[data-screen="exam"] .header-side {
+    display: none !important;
+  }
+
+  body[data-screen="exam"] .app-header h1 {
+    margin: 0 !important;
+    font-size: 22px !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.02em !important;
+    color: var(--text) !important;
+  }
+
+  body[data-screen="exam"] .app-shell {
+    max-width: 430px !important;
+    padding: 0 12px 12px !important;
+  }
+
+  body[data-screen="exam"] .exam-card {
+    max-width: 430px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 28px !important;
+    background: var(--surface) !important;
+    border-color: var(--line-soft) !important;
+    box-shadow: 0 18px 50px rgba(68,64,60,0.10) !important;
+  }
+
+  html[data-theme="dark"] body[data-screen="exam"] .exam-card {
+    box-shadow: none !important;
+  }
+
+  body[data-screen="exam"] .exam-topline {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: start !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid var(--line-soft) !important;
+    background: color-mix(in srgb, var(--surface) 95%, transparent) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  body[data-screen="exam"] .exam-title-block h2,
+  body[data-screen="exam"] .compact-exam-topline h2 {
+    margin: 0 !important;
+    font-size: 20px !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  body[data-screen="exam"] .save-line {
+    margin-top: 2px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--muted) !important;
+  }
+
+  body[data-screen="exam"] .exam-meta-panel {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    max-width: 210px !important;
+  }
+
+  body[data-screen="exam"] .mode-label {
+    display: none !important;
+  }
+
+  body[data-screen="exam"] .pills {
+    order: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  body[data-screen="exam"] .progress-pill {
+    display: inline-flex !important;
+    min-height: 26px !important;
+    min-width: 0 !important;
+    padding: 4px 10px !important;
+    border-radius: 999px !important;
+    border: 1px solid var(--accent-line) !important;
+    background: var(--accent-soft) !important;
+    color: var(--accent-strong) !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+  }
+
+  body[data-screen="exam"] .timer-pill {
+    display: inline-flex !important;
+    min-height: 26px !important;
+    min-width: 58px !important;
+    padding: 4px 10px !important;
+    border-radius: 999px !important;
+    border: 1px solid var(--line-soft) !important;
+    background: var(--surface-raised) !important;
+    color: var(--text) !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+  }
+
+  body[data-screen="exam"] .exam-quick-actions {
+    order: 1 !important;
+    display: inline-flex !important;
+    gap: 6px !important;
+    margin: 0 !important;
+  }
+
+  body[data-screen="exam"] .exam-switches {
+    order: 2 !important;
+    width: 100% !important;
+    display: inline-flex !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+  }
+
+  body[data-screen="exam"] .compact-switch,
+  body[data-screen="exam"] .switch-control {
+    --switch-width: 56px !important;
+    --switch-height: 28px !important;
+    --switch-pad: 3px !important;
+    min-height: var(--switch-height) !important;
+    min-width: var(--switch-width) !important;
+  }
+
+  body[data-screen="exam"] .switch-icon {
+    font-size: 10px !important;
+    font-weight: 750 !important;
+    opacity: .72 !important;
+  }
+
+  body[data-screen="exam"] .theme-switch .switch-icon {
+    font-size: 12px !important;
+  }
+
+  body[data-screen="exam"] .icon-button,
+  body[data-screen="exam"] .exam-quick-actions .icon-button {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+  }
+
+  body[data-screen="exam"] .nav-buttons.icon-nav {
+    display: grid !important;
+    grid-template-columns: 44px 44px minmax(0, 1fr) 52px !important;
+    gap: 8px !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 12px 16px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--line-soft) !important;
+    border-radius: 0 !important;
+    background: var(--surface-soft) !important;
+  }
+
+  body[data-screen="exam"] .nav-cluster {
+    display: contents !important;
+  }
+
+  body[data-screen="exam"] .nav-question-selector {
+    justify-self: stretch !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    border-radius: 12px !important;
+    background: var(--surface) !important;
+    border-color: var(--line) !important;
+    color: var(--text) !important;
+    font-size: 14px !important;
+    font-weight: 650 !important;
+  }
+
+  body[data-screen="exam"] .nav-icon-button,
+  body[data-screen="exam"] #prevButton.nav-icon-button,
+  body[data-screen="exam"] #unsureButton.nav-icon-button,
+  body[data-screen="exam"] #nextButton.nav-icon-button,
+  body[data-screen="exam"] #finishNowButton.nav-icon-button {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    border-radius: 12px !important;
+    padding: 0 !important;
+  }
+
+  body[data-screen="exam"] #nextButton.nav-icon-button {
+    width: 52px !important;
+    min-width: 52px !important;
+    justify-self: end !important;
+  }
+
+  body[data-screen="exam"] #finishNowButton.nav-icon-button {
+    display: none !important;
+  }
+
+  body[data-screen="exam"] #questionCard {
+    padding: 16px !important;
+    border-top: 0 !important;
+  }
+
+  body[data-screen="exam"] .question-card {
+    padding: 16px !important;
+    border-top: 0 !important;
+  }
+
+  body[data-screen="exam"] .question-meta {
+    margin-bottom: 12px !important;
+    gap: 6px !important;
+  }
+
+  body[data-screen="exam"] .tag {
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    border-radius: 999px !important;
+  }
+
+  body[data-screen="exam"] .multi-answer-hint {
+    margin: 0 0 14px !important;
+    padding: 8px 12px !important;
+    border-radius: 14px !important;
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    font-weight: 550 !important;
+  }
+
+  body[data-screen="exam"] .question-text {
+    margin: 0 0 14px !important;
+    font-size: 18px !important;
+    line-height: 1.32 !important;
+    letter-spacing: -0.01em !important;
+    font-weight: 800 !important;
+  }
+
+  body[data-screen="exam"] .options {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  body[data-screen="exam"] .option-row {
+    min-height: 48px !important;
+    align-items: flex-start !important;
+    padding: 12px 12px !important;
+    gap: 10px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    font-weight: 500 !important;
+  }
+
+  body[data-screen="exam"] .option-row input[type="radio"],
+  body[data-screen="exam"] .option-row input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px !important;
+    margin-top: 2px !important;
+  }
+
+  body[data-screen="exam"] .mobile-finish-row {
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: 14px !important;
+  }
+
+  body[data-screen="exam"] .mobile-finish-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    background: var(--secondary-bg) !important;
+    color: var(--secondary-text) !important;
+    border-color: var(--secondary-border) !important;
+  }
+
+  body[data-screen="exam"] .app-footer {
+    max-width: 430px !important;
+    margin: 10px auto 0 !important;
+    padding: 0 12px 12px !important;
+    font-size: 11px !important;
+    color: var(--muted) !important;
+    text-align: center !important;
+  }
+}
