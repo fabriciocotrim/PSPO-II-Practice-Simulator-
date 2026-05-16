@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#172554" />
+  <meta name="theme-color" content="#f6f6f4" />
   <meta name="description" content="Simulador independente para prática da certificação PSPO II." />
   <title>PSPO II Practice Simulator</title>
   <link rel="manifest" href="manifest.json" />
@@ -15,7 +15,21 @@
     <div class="title-block">
       <h1>PSPO II Practice Simulator</h1>
     </div>
-    <div class="header-side" aria-hidden="true"></div>
+    <div class="header-side result-header-controls" aria-label="Configurações rápidas do resultado">
+      <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+        <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+        <span class="switch-icon switch-right" aria-hidden="true">US</span>
+        <span class="switch-thumb" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+        <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+        <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+        <span class="switch-thumb" aria-hidden="true"></span>
+      </button>
+      <button id="resultHomeButton" type="button" class="icon-button result-home-button" title="Voltar para início" aria-label="Voltar para início">
+        <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+      </button>
+    </div>
   </header>
 
   <main id="app" class="app-shell" aria-live="polite">
@@ -170,11 +184,10 @@
       <article id="questionCard" class="question-card"></article>
     </section>
 
-    <section id="resultScreen" class="card screen" aria-labelledby="resultTitle">
-      <h2 id="resultTitle" data-i18n="finalResult">Resultado final</h2>
-      <div id="resultSummary" class="result-summary"></div>
-      <div id="reviewContainer" class="review-list"></div>
-      <button id="newAttemptButton" type="button" class="primary wide" data-i18n="newSimulation">Novo simulado</button>
+    <section id="resultScreen" class="card screen result-card-v160" aria-labelledby="resultTitle">
+      <h2 id="resultTitle" class="sr-only" data-i18n="finalResult">Resultado final</h2>
+      <div id="resultSummary" class="result-summary-v160"></div>
+      <div id="reviewContainer" class="review-list result-review-v160" hidden></div>
     </section>
   </main>
 

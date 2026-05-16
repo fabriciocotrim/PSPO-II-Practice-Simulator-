@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.5.1** — 2026-05-16 — 00:28 BRT
+**1.6.0** — 2026-05-16 — 00:28 BRT
 
 ## Características
 
@@ -24,7 +24,7 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
-## Versão 1.5.1
+## Versão 1.6.0
 
 Correção pontual: remoção da duplicidade visual do título “Preparar simulado” nas versões desktop e mobile.
 
@@ -92,13 +92,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.5.1 duplicate heading fix
+Release v1.6.0 duplicate heading fix
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.5.1
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.6.0
 ```
 
 ## Como adicionar questões
@@ -166,3 +166,12 @@ Alterações principais:
 - switches e ícones sem cores chamativas;
 - preservação das questões, alternativas, comentários e temas em inglês;
 - cache PWA atualizado para `v1.4.4`.
+
+
+## v1.6.0
+
+- Redesenho da tela de resultado final em light e dark mode.
+- Filtros múltiplos de revisão por corretas, erros, não respondidas e dúvidas, com contagem por união de questões.
+- Botão Todas/Desmarcar.
+- Desempenho por tópico com erros no total de questões do tópico.
+- Cache PWA atualizado para v1.6.0.

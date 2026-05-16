@@ -15,9 +15,9 @@ const TOPIC_GROUPS = [
 ];
 
 const APP_VERSION = {
-  number: "1.5.1",
+  number: "1.6.0",
   date: "2026-05-16",
-  time: "00:28 BRT"
+  time: "01:30 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -114,7 +114,7 @@ const I18N = {
     passMessage: "Parabéns. Você atingiu o limite de aprovação da PSPO II.",
     failMessage: "Você ficou abaixo do limite de aprovação da PSPO II. Revise seus pontos fracos e tente novamente.",
     correctPlural: "Corretas",
-    incorrectPlural: "Incorretas",
+    incorrectPlural: "Erros",
     threshold: "Limite",
     duration: "Duração",
     yourAnswer: "Sua resposta",
@@ -226,7 +226,7 @@ const I18N = {
     passMessage: "Congratulations. You reached the PSPO II passing threshold.",
     failMessage: "You are below the PSPO II passing threshold. Review your weak areas and try again.",
     correctPlural: "Correct",
-    incorrectPlural: "Incorrect",
+    incorrectPlural: "Errors",
     threshold: "Threshold",
     duration: "Duration",
     yourAnswer: "Your answer",
@@ -271,7 +271,9 @@ const state = {
   currentExamId: null,
   lastSavedAt: null,
   dirty: false,
-  pendingAction: null
+  pendingAction: null,
+  lastResult: null,
+  resultReviewFilters: ["incorrect"]
 };
 
 const $ = (id) => document.getElementById(id);
@@ -323,6 +325,7 @@ function applyLanguage() {
   updateSaveLine();
   updateActionButtonLabels();
   if ($("examScreen")?.classList.contains("active")) renderQuestion();
+  if ($("resultScreen")?.classList.contains("active") && state.lastResult) renderResults(state.lastResult);
 }
 
 function updateToggleStates() {
@@ -476,13 +479,9 @@ function attachEvents() {
     proceedAfterFeedback();
   });
 
-  $("newAttemptButton").addEventListener("click", () => {
-    clearCurrentExam();
-    setScreen("home");
-    switchHomeTab("config");
-    renderResumeCard();
-    loadAttemptHistory();
-  });
+  $("newAttemptButton")?.addEventListener("click", startNewAttemptFromResult);
+  $("resultHomeButton")?.addEventListener("click", goHomeFromResult);
+  $("resultScreen")?.addEventListener("click", handleResultClick);
 
   window.addEventListener("beforeunload", () => saveCurrentExam(false, { automatic: true }));
   document.addEventListener("visibilitychange", () => {
@@ -901,7 +900,7 @@ function calculateScore() {
     if (isCorrect(question, selected)) correct += 1;
   });
   const total = state.selectedQuestions.length;
-  const incorrect = total - correct;
+  const incorrect = Math.max(0, total - correct - unanswered);
   const percentage = total ? Math.round((correct / total) * 100) : 0;
   return { correct, incorrect, unanswered, total, percentage, passed: percentage >= 85, durationSeconds: state.elapsedSeconds };
 }
@@ -913,48 +912,328 @@ function isCorrect(question, selected) {
 }
 
 function renderResults(result) {
-  const statusText = result.passed ? t("passed") : t("notPassed");
-  const message = result.passed ? t("passMessage") : t("failMessage");
+  state.lastResult = result;
+  if (!Array.isArray(state.resultReviewFilters) || !state.resultReviewFilters.length) state.resultReviewFilters = ["incorrect"];
+  const filterData = getResultFilterData(result);
+  const allSelected = state.resultReviewFilters.length === filterData.filters.length;
+  const noneSelected = state.resultReviewFilters.length === 0;
+  const selectedCount = countResultReviewQuestions(state.resultReviewFilters);
+  const filterLabel = getResultFilterLabel(state.resultReviewFilters, filterData.filters);
+  const topics = getTopicPerformance(showingAllTopics());
+  const topicRows = topics.map((topic) => topicRowHtml(topic)).join("");
+  const toggleAllLabel = allSelected ? resultCopy().deselect : resultCopy().all;
+  const toggleAllAction = allSelected ? resultCopy().deselectAll : resultCopy().selectAll;
+
   $("resultSummary").innerHTML = `
-    <div class="score-card ${result.passed ? "pass" : "fail"}">
-      <div>${t("status")}: <strong>${statusText}</strong></div>
-      <div class="score-number">${result.percentage}%</div>
-      <div>${message}</div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat"><span>${t("correctPlural")}</span><strong>${result.correct}</strong></div>
-      <div class="stat"><span>${t("incorrectPlural")}</span><strong>${result.incorrect}</strong></div>
-      <div class="stat"><span>${t("unansweredPlural")}</span><strong>${result.unanswered}</strong></div>
-      <div class="stat"><span>${t("threshold")}</span><strong>85%</strong></div>
-      <div class="stat"><span>${t("duration")}</span><strong>${formatDuration(result.durationSeconds)}</strong></div>
-    </div>
+    <section class="result-hero-v160">
+      <div class="result-score-block-v160">
+        <div class="result-eyebrow-v160">${escapeHtml(t("finalResult"))}</div>
+        <div class="result-score-v160 ${result.passed ? "pass" : "fail"}">${result.percentage}%</div>
+        <div class="result-status-v160 ${result.passed ? "pass" : "fail"}">${escapeHtml(result.passed ? t("passed") : t("notPassed"))}</div>
+      </div>
+      <div class="result-details-v160">
+        <p class="result-message-v160">${escapeHtml(result.passed ? t("passMessage") : t("failMessage"))}</p>
+        <div class="result-filter-grid-v160">
+          ${filterCardHtml({ id: "__all", label: toggleAllLabel, value: result.total, icon: svgIcon("list"), tone: "neutral", active: allSelected, actionLabel: toggleAllAction })}
+          ${filterData.filters.map((filter) => filterCardHtml({ ...filter, active: state.resultReviewFilters.includes(filter.id) })).join("")}
+        </div>
+      </div>
+    </section>
+
+    <section class="result-action-grid-v160">
+      <button type="button" class="result-action-card-v160 primary" data-result-action="review" ${noneSelected ? "disabled" : ""}>
+        <span class="result-action-icon-v160">${svgIcon("review")}</span>
+        <span class="result-action-text-v160">
+          <strong>${escapeHtml(noneSelected ? resultCopy().selectGroup : `${resultCopy().review} ${filterLabel}`)}</strong>
+          <small>${escapeHtml(noneSelected ? resultCopy().chooseOne : resultCopy().selectedQuestions(selectedCount))}</small>
+        </span>
+        ${svgIcon("chevron", "button-icon result-chevron-v160")}
+      </button>
+      <div class="result-secondary-actions-v160">
+        <button type="button" class="result-action-card-v160" data-result-action="new">
+          <span class="result-action-icon-v160">${svgIcon("refresh")}</span>
+          <span class="result-action-text-v160"><strong>${escapeHtml(t("newSimulation"))}</strong><small>${escapeHtml(resultCopy().backToConfig)}</small></span>
+          ${svgIcon("chevron", "button-icon result-chevron-v160")}
+        </button>
+        <button type="button" class="result-action-card-v160" data-result-action="home">
+          <span class="result-action-icon-v160">${svgIcon("home")}</span>
+          <span class="result-action-text-v160"><strong>${escapeHtml(resultCopy().home)}</strong><small>${escapeHtml(resultCopy().backHome)}</small></span>
+          ${svgIcon("chevron", "button-icon result-chevron-v160")}
+        </button>
+      </div>
+    </section>
+
+    <section class="topic-performance-v160">
+      <div class="topic-performance-head-v160">
+        <h3>${escapeHtml(resultCopy().topicPerformance)}</h3>
+      </div>
+      <div class="topic-performance-grid-v160">${topicRows}</div>
+      <button type="button" class="topic-toggle-v160" data-result-action="toggle-topics">
+        ${svgIcon("list")} ${escapeHtml(showingAllTopics() ? resultCopy().showCriticalTopics : resultCopy().showAllTopics)}
+      </button>
+    </section>
   `;
-  renderReview();
+  renderReview({ hidden: true });
 }
 
-function renderReview() {
-  const review = state.selectedQuestions.map((question, index) => {
-    const selected = state.answers[question.id] || [];
-    const optionList = sortOptions(question.options || []).map((option) => {
-      const klass = optionHighlightClass(question, option.id, selected);
-      return `<div class="option-row ${klass}"><span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span></div>`;
-    }).join("");
-    const userAnswer = selected.length ? selected.join(", ") : t("unanswered");
-    return `
-      <article class="review-item">
-        <h3>${t("question")} ${index + 1}</h3>
-        <div class="question-text">${escapeHtml(question.question)}</div>
-        <div class="options">${optionList}</div>
-        <div class="review-label">${t("yourAnswer")}</div>
-        <div>${escapeHtml(userAnswer)}</div>
-        <div class="review-label">${t("correctAnswer")}</div>
-        <div>${escapeHtml(question.correctAnswers.join(", "))}</div>
-        <div class="review-label">${t("explanation")}</div>
-        <div>${escapeHtml(question.explanation)}</div>
-      </article>
-    `;
+function resultCopy() {
+  if (settings.lang === "en") {
+    return {
+      all: "All",
+      deselect: "Deselect",
+      selectAll: "Select all",
+      deselectAll: "Deselect all",
+      review: "Review",
+      selectGroup: "Select a group",
+      chooseOne: "Choose at least one question type to review.",
+      selectedQuestions: (count) => `${count} question${count === 1 ? "" : "s"} selected for review.`,
+      backToConfig: "Back to setup.",
+      home: "Home",
+      backHome: "Return to the home screen.",
+      topicPerformance: "Performance by topic",
+      showAllTopics: "Show all topics",
+      showCriticalTopics: "Show only critical areas",
+      errorsOf: (missed, total) => `${missed} error${missed === 1 ? "" : "s"} of ${total}`,
+      correct: "correct",
+      incorrect: "incorrect",
+      unanswered: "unanswered",
+      unsure: "unsure",
+      allAnswers: "all answers"
+    };
+  }
+  return {
+    all: "Todas",
+    deselect: "Desmarcar",
+    selectAll: "Selecionar todas",
+    deselectAll: "Desmarcar todas",
+    review: "Revisar",
+    selectGroup: "Selecione um grupo",
+    chooseOne: "Escolha ao menos um tipo de questão para revisar.",
+    selectedQuestions: (count) => `${count} ${count === 1 ? "questão selecionada" : "questões selecionadas"} para revisão.`,
+    backToConfig: "Volta para configuração.",
+    home: "Início",
+    backHome: "Retorna à página inicial.",
+    topicPerformance: "Desempenho por tópico",
+    showAllTopics: "Mostrar todos os tópicos",
+    showCriticalTopics: "Mostrar só áreas críticas",
+    errorsOf: (missed, total) => `${missed} ${missed === 1 ? "erro" : "erros"} de ${total}`,
+    correct: "corretas",
+    incorrect: "erros",
+    unanswered: "não respondidas",
+    unsure: "dúvidas",
+    allAnswers: "todas as respostas"
+  };
+}
+
+function getResultFilterData(result) {
+  const copy = resultCopy();
+  return {
+    filters: [
+      { id: "correct", label: t("correctPlural"), value: result.correct, tone: "good", icon: svgIcon("check") },
+      { id: "incorrect", label: t("incorrectPlural"), value: result.incorrect, tone: "bad", icon: svgIcon("x") },
+      { id: "unanswered", label: t("unansweredPlural"), value: result.unanswered, tone: "neutral", icon: svgIcon("minus") },
+      { id: "unsure", label: t("unsurePlural"), value: getUnsureCount(), tone: "neutral", icon: svgIcon("flag") }
+    ],
+    copy
+  };
+}
+
+function filterCardHtml({ id, label, value, tone, icon, active, actionLabel }) {
+  return `
+    <button type="button" class="result-filter-card-v160 ${tone || "neutral"} ${active ? "active" : "inactive"}" data-result-filter="${escapeHtml(id)}" aria-pressed="${active ? "true" : "false"}" title="${escapeHtml(actionLabel || label)}" aria-label="${escapeHtml(actionLabel || label)}">
+      <span class="result-filter-head-v160"><span>${escapeHtml(label)}</span><span class="result-filter-check-v160">${svgIcon("check", "button-icon check-icon-v160")}</span></span>
+      <span class="result-filter-foot-v160"><strong>${escapeHtml(String(value))}</strong><span>${icon}</span></span>
+    </button>
+  `;
+}
+
+function getResultQuestionStatus(question) {
+  const selected = state.answers[question.id] || [];
+  if (!selected.length) return "unanswered";
+  return isCorrect(question, selected) ? "correct" : "incorrect";
+}
+
+function getUnsureCount() {
+  return state.selectedQuestions.filter((question) => Boolean(state.unsure[question.id])).length;
+}
+
+function questionMatchesResultFilter(question, filters) {
+  if (!filters || !filters.length) return false;
+  if (filters.includes("unsure") && state.unsure[question.id]) return true;
+  const status = getResultQuestionStatus(question);
+  return filters.includes(status);
+}
+
+function countResultReviewQuestions(filters) {
+  return state.selectedQuestions.filter((question) => questionMatchesResultFilter(question, filters)).length;
+}
+
+function getResultFilterLabel(filters, filterData) {
+  const copy = resultCopy();
+  if (!filters.length) return copy.selectGroup;
+  if (filters.length === filterData.length) return copy.allAnswers;
+  const labelMap = { correct: copy.correct, incorrect: copy.incorrect, unanswered: copy.unanswered, unsure: copy.unsure };
+  const labels = filters.map((id) => labelMap[id]).filter(Boolean);
+  if (labels.length === 1) return labels[0];
+  if (labels.length === 2) return `${labels[0]} ${settings.lang === "en" ? "and" : "e"} ${labels[1]}`;
+  return `${labels.slice(0, -1).join(", ")} ${settings.lang === "en" ? "and" : "e"} ${labels[labels.length - 1]}`;
+}
+
+function showingAllTopics() {
+  return $("resultSummary")?.dataset.showAllTopics === "true";
+}
+
+function toggleTopicVisibility() {
+  const node = $("resultSummary");
+  if (!node) return;
+  node.dataset.showAllTopics = showingAllTopics() ? "false" : "true";
+  renderResults(state.lastResult || calculateScore());
+}
+
+function getTopicPerformance(showAll = false) {
+  const map = new Map();
+  state.selectedQuestions.forEach((question) => {
+    const topics = Array.isArray(question.topics) && question.topics.length ? question.topics : ["Uncategorized"];
+    const status = getResultQuestionStatus(question);
+    topics.forEach((topic) => {
+      if (!map.has(topic)) map.set(topic, { title: topic, total: 0, missed: 0, correct: 0 });
+      const item = map.get(topic);
+      item.total += 1;
+      if (status === "correct") item.correct += 1;
+      else item.missed += 1;
+    });
+  });
+  const rows = Array.from(map.values()).map((item) => ({
+    ...item,
+    score: item.total ? Math.round((item.correct / item.total) * 100) : 0
+  })).sort((a, b) => a.score - b.score || b.missed - a.missed || a.title.localeCompare(b.title));
+  return showAll ? rows : rows.slice(0, 3);
+}
+
+function topicRowHtml(topic) {
+  const tone = topic.score < 60 ? "bad" : topic.score >= 85 ? "good" : "neutral";
+  return `
+    <article class="topic-row-v160 ${tone}">
+      <div>
+        <div class="topic-title-v160">${escapeHtml(topic.title)}</div>
+        <div class="topic-bar-v160"><span style="width: ${Math.max(0, Math.min(100, topic.score))}%"></span></div>
+      </div>
+      <div class="topic-score-v160">${topic.score}%</div>
+      <div class="topic-errors-v160">${escapeHtml(resultCopy().errorsOf(topic.missed, topic.total))}</div>
+    </article>
+  `;
+}
+
+function handleResultClick(event) {
+  const filterButton = event.target.closest("[data-result-filter]");
+  if (filterButton) {
+    const filter = filterButton.dataset.resultFilter;
+    if (filter === "__all") {
+      const allIds = getResultFilterData(state.lastResult || calculateScore()).filters.map((item) => item.id);
+      state.resultReviewFilters = state.resultReviewFilters.length === allIds.length ? [] : allIds;
+    } else {
+      state.resultReviewFilters = state.resultReviewFilters.includes(filter)
+        ? state.resultReviewFilters.filter((item) => item !== filter)
+        : [...state.resultReviewFilters, filter];
+    }
+    renderResults(state.lastResult || calculateScore());
+    return;
+  }
+  const actionButton = event.target.closest("[data-result-action]");
+  if (!actionButton) return;
+  const action = actionButton.dataset.resultAction;
+  if (action === "new") startNewAttemptFromResult();
+  if (action === "home") goHomeFromResult();
+  if (action === "toggle-topics") toggleTopicVisibility();
+  if (action === "review") showFilteredReview();
+}
+
+function showFilteredReview() {
+  if (!state.resultReviewFilters.length) return;
+  renderReview({ hidden: false });
+  $("reviewContainer")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function startNewAttemptFromResult() {
+  clearCurrentExam();
+  setScreen("home");
+  switchHomeTab("config");
+  renderResumeCard();
+  loadAttemptHistory();
+}
+
+function goHomeFromResult() {
+  clearCurrentExam();
+  setScreen("home");
+  switchHomeTab("config");
+  renderResumeCard();
+  loadAttemptHistory();
+}
+
+function renderReview(options = {}) {
+  const hidden = options.hidden !== false;
+  const container = $("reviewContainer");
+  if (!container) return;
+  container.hidden = hidden;
+  if (hidden) {
+    container.innerHTML = "";
+    return;
+  }
+  const filteredQuestions = state.selectedQuestions
+    .map((question, index) => ({ question, index }))
+    .filter(({ question }) => questionMatchesResultFilter(question, state.resultReviewFilters))
+    .sort((a, b) => {
+      const order = { incorrect: 0, unanswered: 1, unsure: 2, correct: 3 };
+      const aStatus = getResultQuestionStatus(a.question);
+      const bStatus = getResultQuestionStatus(b.question);
+      return (order[aStatus] ?? 9) - (order[bStatus] ?? 9) || a.index - b.index;
+    });
+  if (!filteredQuestions.length) {
+    container.innerHTML = `<div class="review-empty-v160">${escapeHtml(t("noQuestionsFilter"))}</div>`;
+    return;
+  }
+  container.innerHTML = filteredQuestions.map(({ question, index }) => reviewItemHtml(question, index)).join("");
+}
+
+function reviewItemHtml(question, index) {
+  const selected = state.answers[question.id] || [];
+  const status = getResultQuestionStatus(question);
+  const optionList = sortOptions(question.options || []).map((option) => {
+    const klass = optionHighlightClass(question, option.id, selected);
+    return `<div class="option-row ${klass}"><span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span></div>`;
   }).join("");
-  $("reviewContainer").innerHTML = review;
+  const userAnswer = selected.length ? selected.join(", ") : t("unanswered");
+  return `
+    <article class="review-item review-item-v160 ${status}">
+      <div class="review-item-head-v160">
+        <h3>${escapeHtml(t("question"))} ${index + 1}</h3>
+        <span>${escapeHtml(statusLabelFor(status))}${state.unsure[question.id] ? ` · ${escapeHtml(t("unsure"))}` : ""}</span>
+      </div>
+      <div class="question-text">${escapeHtml(question.question)}</div>
+      <div class="options">${optionList}</div>
+      <div class="review-label">${escapeHtml(t("yourAnswer"))}</div>
+      <div>${escapeHtml(userAnswer)}</div>
+      <div class="review-label">${escapeHtml(t("correctAnswer"))}</div>
+      <div>${escapeHtml(question.correctAnswers.join(", "))}</div>
+      <div class="review-label">${escapeHtml(t("explanation"))}</div>
+      <div>${escapeHtml(question.explanation)}</div>
+    </article>
+  `;
+}
+
+function svgIcon(name, className = "button-icon") {
+  const icons = {
+    home: '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
+    refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>',
+    review: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5Z"/><path d="m9 11 2 2 4-5"/>',
+    list: '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
+    check: '<path d="m20 6-11 11-5-5"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    minus: '<path d="M5 12h14"/>',
+    flag: '<path d="M5 22V4"/><path d="M5 4h12l-2 5 2 5H5"/>',
+    chevron: '<path d="m9 18 6-6-6-6"/>'
+  };
+  return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || ""}</svg>`;
 }
 
 function optionHighlightClass(question, optionId, selected) {
@@ -1149,7 +1428,7 @@ function setScreen(name) {
 }
 
 function statusLabelFor(status) {
-  return { unanswered: t("unanswered"), answered: t("answered"), unsure: t("unsure") }[status] || status;
+  return { unanswered: t("unanswered"), answered: t("answered"), unsure: t("unsure"), correct: t("correct"), incorrect: t("incorrect") }[status] || status;
 }
 
 function formatDate(iso) {
