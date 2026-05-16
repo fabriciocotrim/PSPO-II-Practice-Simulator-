@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#172554" />
+  <meta name="description" content="Simulador independente para prática da certificação PSPO II." />
+  <title>PSPO II Practice Simulator</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="title-block">
+      <p class="eyebrow" data-i18n="independentSimulator">Simulador independente</p>
+      <h1>PSPO II Practice Simulator</h1>
+    </div>
+    <div class="header-side" aria-hidden="true"></div>
+  </header>
+
+  <main id="app" class="app-shell" aria-live="polite">
+    <section id="homeScreen" class="card screen active" aria-labelledby="homeTitle">
+      <div class="home-head">
+        <div>
+          <h2 id="homeTitle" data-i18n="homeTitle">Preparar simulado</h2>
+          <p class="notice" data-i18n="languageNotice">As questões, alternativas, comentários e temas são apresentados em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.</p>
+        </div>
+        <div class="settings-switches" aria-label="Configurações rápidas">
+          <div class="switch-field">
+            <span class="switch-label" data-i18n="interfaceLanguage">Idioma</span>
+            <button type="button" class="switch-control lang-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+              <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+              <span class="switch-icon switch-right" aria-hidden="true">US</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="switch-field">
+            <span class="switch-label" data-i18n="visualTheme">Tema</span>
+            <button type="button" class="switch-control theme-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+              <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+              <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Seções da tela inicial">
+        <button id="configTab" type="button" class="tab-button active" role="tab" aria-selected="true" aria-controls="configPanel" data-tab="config" data-i18n="configurationTab">Configuração</button>
+        <button id="historyTab" type="button" class="tab-button" role="tab" aria-selected="false" aria-controls="historyPanel" data-tab="history" data-i18n="historyTab">Histórico</button>
+      </div>
+
+      <div id="configPanel" class="tab-panel active" role="tabpanel" aria-labelledby="configTab">
+        <section id="resumeScreen" class="resume-box" aria-labelledby="resumeTitle" hidden>
+          <h3 id="resumeTitle" data-i18n="savedExam">Simulado salvo</h3>
+          <div id="resumeContainer"></div>
+        </section>
+
+        <form id="startForm" class="form-grid">
+          <fieldset>
+            <legend data-i18n="selectTopics">Selecionar temas</legend>
+            <div class="field-row compact">
+              <label class="check-row select-all-row">
+                <input type="checkbox" id="selectAllTopics" checked />
+                <span data-i18n="selectAll">Selecionar todos</span>
+              </label>
+            </div>
+            <div id="topicsContainer" class="topic-grid" role="group" aria-label="Temas"></div>
+          </fieldset>
+
+          <fieldset class="two-col compact-fieldset">
+            <div>
+              <label for="questionCount" data-i18n="questionCount">Quantidade de questões</label>
+              <select id="questionCount" name="questionCount">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40" selected>40</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+              </select>
+            </div>
+            <div>
+              <label for="feedbackMode" data-i18n="feedbackMode">Modo de feedback</label>
+              <select id="feedbackMode" name="feedbackMode">
+                <option value="immediate" data-i18n="immediateFeedback">Feedback imediato</option>
+                <option value="final" selected data-i18n="finalReviewOnly">Revisão apenas ao final</option>
+              </select>
+            </div>
+          </fieldset>
+
+          <div id="filterWarning" class="warning" hidden></div>
+          <button id="startButton" type="submit" class="primary" data-i18n="startSimulation">Iniciar simulado</button>
+        </form>
+      </div>
+
+      <div id="historyPanel" class="tab-panel" role="tabpanel" aria-labelledby="historyTab" hidden>
+        <h3 data-i18n="recentHistory">Histórico recente</h3>
+        <div id="historyContainer" class="history-empty">Nenhuma tentativa registrada ainda.</div>
+      </div>
+    </section>
+
+    <section id="examScreen" class="card screen exam-card" aria-labelledby="examTitle">
+      <div class="exam-topline compact-exam-topline">
+        <div class="exam-title-block">
+          <h2 id="examTitle">Questão</h2>
+          <p class="save-line" id="saveLine">Último salvamento: -</p>
+        </div>
+
+        <div class="exam-meta-panel">
+          <div class="settings-switches exam-switches" aria-label="Configurações rápidas">
+            <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+              <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+              <span class="switch-icon switch-right" aria-hidden="true">US</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+              <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+              <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+          </div>
+          <p class="eyebrow mode-label" id="examModeLabel">Simulado</p>
+          <div class="pills">
+            <div class="progress-pill" id="progressPill">0/0</div>
+            <div class="timer-pill" id="timerPill" aria-label="Cronômetro" title="Tempo de prova">00:00</div>
+          </div>
+          <div class="exam-quick-actions" aria-label="Ações rápidas do simulado">
+            <button id="saveButton" type="button" class="icon-button" title="Salvar progresso" aria-label="Salvar progresso">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+            </button>
+            <button id="exitButton" type="button" class="icon-button" title="Sair do simulado" aria-label="Sair do simulado">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="examStatus" class="status-message" hidden></div>
+      <article id="questionCard" class="question-card"></article>
+
+      <nav class="nav-buttons icon-nav" aria-label="Navegação do simulado">
+        <button id="prevButton" type="button" class="secondary nav-icon-button" title="Questão anterior" aria-label="Questão anterior">←</button>
+        <button id="unsureButton" type="button" class="secondary nav-icon-button" title="Marcar questão como dúvida" aria-label="Marcar questão como dúvida">⚐</button>
+        <select id="questionSelector" class="nav-question-selector" title="Ir para questão" aria-label="Ir para questão"></select>
+        <button id="nextButton" type="button" class="primary nav-icon-button" title="Próxima questão" aria-label="Próxima questão">→</button>
+        <button id="finishNowButton" type="button" class="secondary nav-icon-button finish-icon-button" title="Finalizar simulado" aria-label="Finalizar simulado">
+          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4"/><path d="M4 5h12l-2 4 2 4H4"/></svg>
+        </button>
+      </nav>
+    </section>
+
+    <section id="resultScreen" class="card screen" aria-labelledby="resultTitle">
+      <h2 id="resultTitle" data-i18n="finalResult">Resultado final</h2>
+      <div id="resultSummary" class="result-summary"></div>
+      <div id="reviewContainer" class="review-list"></div>
+      <button id="newAttemptButton" type="button" class="primary wide" data-i18n="newSimulation">Novo simulado</button>
+    </section>
+  </main>
+
+  <dialog id="feedbackDialog" class="modal feedback-modal" aria-labelledby="feedbackDialogTitle">
+    <h2 id="feedbackDialogTitle">Feedback</h2>
+    <div id="feedbackDialogContent"></div>
+    <div class="modal-actions">
+      <button id="feedbackBackButton" type="button" class="secondary" data-i18n="back">Voltar</button>
+      <button id="feedbackProceedButton" type="button" class="primary" data-i18n="proceed">Prosseguir</button>
+    </div>
+  </dialog>
+
+  <dialog id="finishDialog" class="modal" aria-labelledby="finishDialogTitle">
+    <h2 id="finishDialogTitle" data-i18n="confirmFinish">Confirmar encerramento</h2>
+    <p id="finishDialogText"></p>
+    <div class="modal-actions">
+      <button id="cancelFinishButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
+      <button id="confirmFinishButton" type="button" class="primary" data-i18n="confirmFinishButton">Confirmar encerramento</button>
+    </div>
+  </dialog>
+
+  <dialog id="exitDialog" class="modal" aria-labelledby="exitDialogTitle">
+    <h2 id="exitDialogTitle" data-i18n="confirmExit">Confirmar saída</h2>
+    <p id="exitDialogText"></p>
+    <div class="modal-actions">
+      <button id="cancelExitButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
+      <button id="confirmExitButton" type="button" class="primary danger-action" data-i18n="confirmExitButton">Confirmar saída</button>
+    </div>
+  </dialog>
+
+  <footer class="app-footer" aria-label="Informações da versão">
+    <span id="appVersionFooter">Versão carregando...</span>
+  </footer>
+
+  <script src="questions-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
