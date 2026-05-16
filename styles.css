@@ -1793,3 +1793,77 @@ html[data-theme="dark"] #unsureButton.unsure-active {
 @media (min-width: 720px) {
   body[data-screen="exam"] .app-shell { max-width: 1120px; }
 }
+
+
+/* ==========================================================
+   v1.4.5 - Desktop navigation restored above question body
+   ========================================================== */
+:root {
+  --nav-select-width: clamp(240px, 28vw, 320px);
+}
+
+body[data-screen="exam"] .question-card {
+  padding-top: 14px !important;
+}
+
+body[data-screen="exam"] .nav-buttons.icon-nav {
+  display: grid !important;
+  grid-template-columns: minmax(92px, 1fr) auto minmax(104px, 1fr) !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 12px 0 14px !important;
+  padding: 12px !important;
+  border-radius: 16px !important;
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--line-soft) !important;
+}
+
+.nav-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-cluster-left { justify-self: start; }
+.nav-cluster-right { justify-self: end; }
+
+body[data-screen="exam"] .nav-question-selector {
+  justify-self: center !important;
+  width: var(--nav-select-width) !important;
+  max-width: 320px !important;
+  min-width: 240px !important;
+}
+
+body[data-screen="exam"] .nav-icon-button,
+body[data-screen="exam"] #prevButton.nav-icon-button,
+body[data-screen="exam"] #unsureButton.nav-icon-button,
+body[data-screen="exam"] #nextButton.nav-icon-button,
+body[data-screen="exam"] #finishNowButton.nav-icon-button {
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+}
+
+body[data-screen="exam"] #nextButton.nav-icon-button {
+  width: 52px !important;
+  min-width: 52px !important;
+}
+
+#finishNowButton .trophy-icon {
+  width: 19px !important;
+  height: 19px !important;
+}
+
+@media (max-width: 719px) {
+  body[data-screen="exam"] .nav-buttons.icon-nav {
+    grid-template-columns: 44px 44px minmax(160px, 1fr) 52px 44px !important;
+  }
+  body[data-screen="exam"] .nav-cluster { display: contents; }
+  body[data-screen="exam"] .nav-question-selector {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

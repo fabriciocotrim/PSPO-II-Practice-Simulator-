@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.4.4** — 2026-05-15 — 22:25 BRT
+**1.4.5** — 2026-05-15 — 22:42 BRT
 
 ## Características
 
@@ -23,6 +23,15 @@ Simulador independente para prática da certificação PSPO II.
 - Histórico local de resultados.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
+
+## Versão 1.4.5
+
+Alterações principais:
+
+- Barra de navegação recolocada acima do corpo da questão, como no protótipo aprovado.
+- Distribuição dos botões de navegação refeita: anterior/dúvida à esquerda, seletor no centro, próxima/finalizar à direita.
+- Botão de finalizar simulado substituído por ícone de troféu.
+- Cache PWA atualizado para evitar uso de versão antiga.
 
 ## Estrutura
 
@@ -73,13 +82,13 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.4.4 graphite day minimal multianswer
+Release v1.4.5 desktop navigation restore
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.4
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.4.5
 ```
 
 ## Como adicionar questões

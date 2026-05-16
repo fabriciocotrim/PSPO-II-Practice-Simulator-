@@ -138,17 +138,22 @@
       </div>
 
       <div id="examStatus" class="status-message" hidden></div>
-      <article id="questionCard" class="question-card"></article>
 
       <nav class="nav-buttons icon-nav" aria-label="Navegação do simulado">
-        <button id="prevButton" type="button" class="secondary nav-icon-button" title="Questão anterior" aria-label="Questão anterior">←</button>
-        <button id="unsureButton" type="button" class="secondary nav-icon-button" title="Marcar questão como dúvida" aria-label="Marcar questão como dúvida">⚐</button>
+        <div class="nav-cluster nav-cluster-left">
+          <button id="prevButton" type="button" class="secondary nav-icon-button" title="Questão anterior" aria-label="Questão anterior">←</button>
+          <button id="unsureButton" type="button" class="secondary nav-icon-button" title="Marcar questão como dúvida" aria-label="Marcar questão como dúvida">⚐</button>
+        </div>
         <select id="questionSelector" class="nav-question-selector" title="Ir para questão" aria-label="Ir para questão"></select>
-        <button id="nextButton" type="button" class="primary nav-icon-button" title="Próxima questão" aria-label="Próxima questão">→</button>
-        <button id="finishNowButton" type="button" class="secondary nav-icon-button finish-icon-button" title="Finalizar simulado" aria-label="Finalizar simulado">
-          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4"/><path d="M4 5h12l-2 4 2 4H4"/></svg>
-        </button>
+        <div class="nav-cluster nav-cluster-right">
+          <button id="nextButton" type="button" class="primary nav-icon-button" title="Próxima questão" aria-label="Próxima questão">→</button>
+          <button id="finishNowButton" type="button" class="secondary nav-icon-button finish-icon-button" title="Finalizar simulado" aria-label="Finalizar simulado">
+            <svg class="button-icon trophy-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M5 5H3v2a4 4 0 0 0 4 4"/><path d="M19 5h2v2a4 4 0 0 1-4 4"/></svg>
+          </button>
+        </div>
       </nav>
+
+      <article id="questionCard" class="question-card"></article>
     </section>
 
     <section id="resultScreen" class="card screen" aria-labelledby="resultTitle">

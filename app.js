@@ -6,9 +6,9 @@ const TOPICS = [
 ];
 
 const APP_VERSION = {
-  number: "1.4.4",
+  number: "1.4.5",
   date: "2026-05-15",
-  time: "22:25 BRT"
+  time: "22:42 BRT"
 };
 
 const STORAGE_KEYS = {
