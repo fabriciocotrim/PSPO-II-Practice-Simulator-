@@ -66,7 +66,7 @@ const TOPIC_GROUPS_BY_LANG = {
 };
 
 const APP_VERSION = {
-  number: "1.9.0",
+  number: "1.9.1",
   date: "2026-05-17",
   time: "08:00 BRT"
 };
@@ -84,7 +84,6 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Versão carregando...",
     homeTitle: "Preparar simulado",
-    homeSubtitle: "Escolha o idioma do banco de questões e simule a experiência da certificação PSPO II.",
     prepareSimulation: "Preparar simulado",
     savedSimulationTab: "Simulado interrompido",
     savedExamSubtitle: "Tentativa salva neste dispositivo.",
@@ -93,7 +92,7 @@ const I18N = {
     topicModalSubtitle: "Escolha grupos amplos.",
     applyTopics: "Aplicar tópicos",
     selectedTopicGroups: "{count} grupos selecionados",
-    configurationTab: "Configuração",
+    configurationTab: "Início",
     historyTab: "Histórico",
     languageNotice: "O idioma selecionado define interface, questões, alternativas, comentários e temas do simulado.",
     interfaceLanguage: "Idioma",
@@ -189,8 +188,9 @@ const I18N = {
     quickSettings: "Configurações rápidas",
     resultQuickSettings: "Configurações rápidas do resultado",
     homeSections: "Seções da tela inicial",
-    configTabTooltip: "Configuração",
-    savedTabTooltip: "Simulado interrompido",
+    configTabTooltip: "Início",
+    savedTabTooltip: "Retomar simulado",
+    noSavedTabTooltip: "Nenhum simulado salvo",
     historyTabTooltip: "Histórico",
     questionCountTooltip: "Quantidade de questões",
     topicButtonTooltip: "Selecionar tópicos",
@@ -210,7 +210,6 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Loading version...",
     homeTitle: "Prepare simulation",
-    homeSubtitle: "Choose the question bank language and simulate the PSPO II certification experience.",
     prepareSimulation: "Prepare simulation",
     savedSimulationTab: "Interrupted simulation",
     savedExamSubtitle: "Attempt saved locally on this device.",
@@ -219,7 +218,7 @@ const I18N = {
     topicModalSubtitle: "Choose broad groups.",
     applyTopics: "Apply topics",
     selectedTopicGroups: "{count} groups selected",
-    configurationTab: "Configuration",
+    configurationTab: "Home",
     historyTab: "History",
     languageNotice: "The selected language defines the interface, questions, answer options, explanations, and topics for the simulation.",
     interfaceLanguage: "Language",
@@ -315,8 +314,9 @@ const I18N = {
     quickSettings: "Quick settings",
     resultQuickSettings: "Result quick settings",
     homeSections: "Home sections",
-    configTabTooltip: "Configuration",
-    savedTabTooltip: "Interrupted simulation",
+    configTabTooltip: "Home",
+    savedTabTooltip: "Resume simulation",
+    noSavedTabTooltip: "No saved simulation",
     historyTabTooltip: "History",
     questionCountTooltip: "Number of questions",
     topicButtonTooltip: "Select topics",
@@ -392,7 +392,6 @@ function applyLanguage() {
     const key = element.dataset.i18n;
     element.textContent = t(key);
   });
-  if ($("homeSubtitle")) $("homeSubtitle").hidden = false;
   updateToggleStates();
   updateStaticTooltips();
   updateTopicSummary();
@@ -1411,6 +1410,9 @@ function renderResumeCard() {
     if (savedTab) {
       savedTab.disabled = true;
       savedTab.classList.remove("has-saved");
+      savedTab.setAttribute("aria-disabled", "true");
+      savedTab.setAttribute("aria-label", t("noSavedTabTooltip"));
+      savedTab.title = t("noSavedTabTooltip");
     }
     resumeScreen.hidden = true;
     container.innerHTML = "";
@@ -1420,6 +1422,9 @@ function renderResumeCard() {
   if (savedTab) {
     savedTab.disabled = false;
     savedTab.classList.add("has-saved");
+    savedTab.removeAttribute("aria-disabled");
+    savedTab.setAttribute("aria-label", t("savedTabTooltip"));
+    savedTab.title = t("savedTabTooltip");
   }
   resumeScreen.hidden = false;
   const answeredCount = Object.values(saved.answers || {}).filter((arr) => Array.isArray(arr) && arr.length).length;

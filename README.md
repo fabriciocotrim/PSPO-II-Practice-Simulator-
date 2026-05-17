@@ -4,7 +4,7 @@ Simulador bilíngue independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.9.0** — 2026-05-17 — 08:00 BRT
+**1.9.1** — 2026-05-17 — 08:00 BRT
 
 ## Características
 
@@ -24,6 +24,26 @@ Simulador bilíngue independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
+
+## Versão 1.9.1
+
+Alterações principais:
+
+- Substitui o ícone de engrenagem da tela inicial por ícone de Home.
+- Padroniza a navegação visual entre tela inicial, simulado e resultados.
+- Corrige o estado visual do botão de retomar simulado salvo.
+- Quando não há simulado salvo, o botão de retomar fica esmaecido e indisponível.
+- Remove a frase de apoio abaixo do título da tela inicial por ser redundante.
+- Mantém o suporte bilíngue PT/EN da v1.9.0.
+- Não altera o banco de questões.
+- Não inicia modularização.
+- Atualiza `APP_VERSION`, `CACHE_NAME`, `manifest.json` e `README.md`.
+
+URL de teste:
+
+```text
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.9.1
+```
 
 ## Versão 1.9.0
 
