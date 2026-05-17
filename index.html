@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f6f6f4" />
+  <meta name="description" content="Simulador independente para prática da certificação PSPO II." />
+  <title>PSPO II Practice Simulator</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="title-block">
+      <h1>PSPO II Practice Simulator</h1>
+    </div>
+    <div class="header-side result-header-controls" aria-label="Configurações rápidas do resultado">
+      <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+        <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+        <span class="switch-icon switch-right" aria-hidden="true">US</span>
+        <span class="switch-thumb" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+        <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+        <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+        <span class="switch-thumb" aria-hidden="true"></span>
+      </button>
+      <button id="resultHomeButton" type="button" class="icon-button result-home-button" title="Voltar para início" aria-label="Voltar para início">
+        <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="app" class="app-shell" aria-live="polite">
+    <section id="homeScreen" class="card screen active home-v150" aria-labelledby="homeTitle">
+      <div class="home-head home-head-v150">
+        <div>
+          <h2 id="homeTitle" data-i18n="homeTitle">Preparar simulado</h2>
+          <p id="homeSubtitle" class="home-subtitle" data-i18n="homeSubtitle">Treine em inglês, com interface simples em português, simulando o vocabulário real da certificação.</p>
+        </div>
+        <div class="settings-switches home-switches" aria-label="Configurações rápidas">
+          <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+            <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+            <span class="switch-icon switch-right" aria-hidden="true">US</span>
+            <span class="switch-thumb" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+            <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+            <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+            <span class="switch-thumb" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="home-card-head home-card-head-tabs-only">
+        <div class="icon-tabs" role="tablist" aria-label="Seções da tela inicial">
+          <button id="configTab" type="button" class="icon-tab active" role="tab" aria-selected="true" aria-controls="configPanel" data-tab="config" title="Configuração" aria-label="Configuração">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2.1 2.1 0 0 1-2.97 2.97l-.04-.04a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.66V21a2.1 2.1 0 0 1-4.2 0v-.06a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-1.98.36l-.04.04a2.1 2.1 0 0 1-2.97-2.97l.04-.04A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-1.66-1.1H2.9a2.1 2.1 0 0 1 0-4.2h.06A1.8 1.8 0 0 0 4.6 8a1.8 1.8 0 0 0-.36-1.98l-.04-.04a2.1 2.1 0 0 1 2.97-2.97l.04.04A1.8 1.8 0 0 0 9.2 3.4a1.8 1.8 0 0 0 1.1-1.66V1.7a2.1 2.1 0 0 1 4.2 0v.06a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 1.98-.36l.04-.04a2.1 2.1 0 0 1 2.97 2.97l-.04.04A1.8 1.8 0 0 0 19.4 8a1.8 1.8 0 0 0 1.66 1.1h.06a2.1 2.1 0 0 1 0 4.2h-.06A1.8 1.8 0 0 0 19.4 15Z"/></svg>
+          </button>
+          <button id="savedTab" type="button" class="icon-tab" role="tab" aria-selected="false" aria-controls="savedPanel" data-tab="saved" title="Simulado interrompido" aria-label="Simulado interrompido" disabled>
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+          </button>
+          <button id="historyTab" type="button" class="icon-tab" role="tab" aria-selected="false" aria-controls="historyPanel" data-tab="history" title="Histórico" aria-label="Histórico">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="configPanel" class="tab-panel active" role="tabpanel" aria-labelledby="configTab">
+        <form id="startForm" class="start-form-v150">
+          <section class="format-box">
+            <h3 data-i18n="formatTitle">Formato</h3>
+            <div class="format-stack">
+              <div class="slider-card">
+                <div class="slider-head">
+                  <label for="questionCount" data-i18n="questionCount">Quantidade</label>
+                  <output id="questionCountValue" for="questionCount">40</output>
+                </div>
+                <input id="questionCount" name="questionCount" type="range" min="10" max="60" step="10" value="40" aria-label="Quantidade de questões" />
+                <div class="slider-scale" aria-hidden="true"><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span></div>
+              </div>
+
+              <div class="field-block">
+                <div class="field-label" data-i18n="feedbackMode">Modo de feedback</div>
+                <input id="feedbackMode" name="feedbackMode" type="hidden" value="final" />
+                <div class="segmented-actions" role="group" aria-label="Modo de feedback">
+                  <button id="feedbackFinalButton" type="button" class="segment-button active" data-feedback="final" data-i18n="finalReviewOnly">Revisão apenas ao final</button>
+                  <button id="feedbackImmediateButton" type="button" class="segment-button" data-feedback="immediate" data-i18n="immediateFeedback">Feedback imediato</button>
+                </div>
+              </div>
+
+              <div class="field-block">
+                <div class="field-label" data-i18n="selectTopics">Selecionar temas</div>
+                <button id="openTopicsButton" type="button" class="topic-summary-button" aria-label="Selecionar tópicos">
+                  <span id="selectedTopicSummary">4 grupos selecionados</span>
+                  <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </button>
+              </div>
+
+              <div id="filterWarning" class="warning" hidden></div>
+              <button id="startButton" type="submit" class="primary start-button-v150" data-i18n="startSimulation">Iniciar simulado</button>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div id="savedPanel" class="tab-panel" role="tabpanel" aria-labelledby="savedTab" hidden>
+        <section id="resumeScreen" class="resume-box-v150" aria-labelledby="resumeTitle" hidden>
+          <div class="panel-title-row">
+            <div>
+              <h3 id="resumeTitle" data-i18n="savedExam">Simulado interrompido</h3>
+              <p class="muted-line" data-i18n="savedExamSubtitle">Tentativa salva neste dispositivo.</p>
+            </div>
+          </div>
+          <div id="resumeContainer"></div>
+        </section>
+      </div>
+
+      <div id="historyPanel" class="tab-panel" role="tabpanel" aria-labelledby="historyTab" hidden>
+        <section class="history-panel-v150">
+          <div class="panel-title-row">
+            <div>
+              <h3 data-i18n="recentHistory">Histórico recente</h3>
+              <p class="muted-line" data-i18n="historySubtitle">Tentativas concluídas neste dispositivo.</p>
+            </div>
+          </div>
+          <div id="historyContainer" class="history-empty">Nenhuma tentativa registrada ainda.</div>
+        </section>
+      </div>
+    </section>
+    <section id="examScreen" class="card screen exam-card" aria-labelledby="examTitle">
+      <div class="exam-topline compact-exam-topline">
+        <div class="exam-title-block">
+          <h2 id="examTitle">Questão</h2>
+          <p class="save-line" id="saveLine">Último salvamento: -</p>
+        </div>
+
+        <div class="exam-meta-panel">
+          <div class="settings-switches exam-switches" aria-label="Configurações rápidas">
+            <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+              <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+              <span class="switch-icon switch-right" aria-hidden="true">US</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+              <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+              <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </button>
+          </div>
+          <p class="eyebrow mode-label" id="examModeLabel">Simulado</p>
+          <div class="pills">
+            <div class="progress-pill" id="progressPill">0/0</div>
+            <div class="timer-pill" id="timerPill" aria-label="Cronômetro" title="Tempo de prova">00:00</div>
+          </div>
+          <div class="exam-quick-actions" aria-label="Ações rápidas do simulado">
+            <button id="saveButton" type="button" class="icon-button" title="Salvar progresso" aria-label="Salvar progresso">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+            </button>
+            <button id="exitButton" type="button" class="icon-button" title="Sair do simulado" aria-label="Sair do simulado">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="examStatus" class="status-message" hidden></div>
+
+      <nav class="nav-buttons icon-nav" aria-label="Navegação do simulado">
+        <div class="nav-cluster nav-cluster-left">
+          <button id="prevButton" type="button" class="secondary nav-icon-button" title="Questão anterior" aria-label="Questão anterior">←</button>
+          <button id="unsureButton" type="button" class="secondary nav-icon-button" title="Marcar questão como dúvida" aria-label="Marcar questão como dúvida">⚐</button>
+        </div>
+        <select id="questionSelector" class="nav-question-selector" title="Ir para questão" aria-label="Ir para questão"></select>
+        <div class="nav-cluster nav-cluster-right">
+          <button id="nextButton" type="button" class="primary nav-icon-button" title="Próxima questão" aria-label="Próxima questão">→</button>
+          <button id="finishNowButton" type="button" class="secondary nav-icon-button finish-icon-button" title="Finalizar simulado" aria-label="Finalizar simulado">
+            <svg class="button-icon trophy-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M5 5H3v2a4 4 0 0 0 4 4"/><path d="M19 5h2v2a4 4 0 0 1-4 4"/></svg>
+          </button>
+        </div>
+      </nav>
+
+      <article id="questionCard" class="question-card"></article>
+    </section>
+
+    <section id="resultScreen" class="card screen result-card-v160" aria-labelledby="resultTitle">
+      <h2 id="resultTitle" class="sr-only" data-i18n="finalResult">Resultado final</h2>
+      <div id="resultSummary" class="result-summary-v160"></div>
+      <div id="reviewContainer" class="review-list result-review-v160" hidden></div>
+    </section>
+  </main>
+
+
+  <dialog id="topicsDialog" class="modal topics-modal" aria-labelledby="topicsDialogTitle">
+    <div class="modal-header-v150">
+      <div>
+        <h2 id="topicsDialogTitle" data-i18n="selectTopics">Selecionar temas</h2>
+        <p class="muted-line" data-i18n="topicModalSubtitle">Escolha grupos amplos.</p>
+      </div>
+      <button id="closeTopicsButton" type="button" class="icon-button" aria-label="Fechar" title="Fechar">
+        <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <label class="check-row select-all-row topic-group-select-all">
+      <input type="checkbox" id="selectAllTopics" checked />
+      <span data-i18n="selectAll">Selecionar todos</span>
+    </label>
+    <div id="topicsContainer" class="topic-group-grid" role="group" aria-label="Temas"></div>
+    <div class="modal-actions">
+      <button id="cancelTopicsButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
+      <button id="applyTopicsButton" type="button" class="primary" data-i18n="applyTopics">Aplicar tópicos</button>
+    </div>
+  </dialog>
+
+  <dialog id="feedbackDialog" class="modal feedback-modal" aria-labelledby="feedbackDialogTitle">
+    <h2 id="feedbackDialogTitle">Feedback</h2>
+    <div id="feedbackDialogContent"></div>
+    <div class="modal-actions">
+      <button id="feedbackBackButton" type="button" class="secondary" data-i18n="back">Voltar</button>
+      <button id="feedbackProceedButton" type="button" class="primary" data-i18n="proceed">Prosseguir</button>
+    </div>
+  </dialog>
+
+  <dialog id="finishDialog" class="modal" aria-labelledby="finishDialogTitle">
+    <h2 id="finishDialogTitle" data-i18n="confirmFinish">Confirmar encerramento</h2>
+    <p id="finishDialogText"></p>
+    <div class="modal-actions">
+      <button id="cancelFinishButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
+      <button id="confirmFinishButton" type="button" class="primary" data-i18n="confirmFinishButton">Confirmar encerramento</button>
+    </div>
+  </dialog>
+
+  <dialog id="exitDialog" class="modal" aria-labelledby="exitDialogTitle">
+    <h2 id="exitDialogTitle" data-i18n="confirmExit">Confirmar saída</h2>
+    <p id="exitDialogText"></p>
+    <div class="modal-actions">
+      <button id="cancelExitButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
+      <button id="confirmExitButton" type="button" class="primary danger-action" data-i18n="confirmExitButton">Confirmar saída</button>
+    </div>
+  </dialog>
+
+  <footer class="app-footer" aria-label="Informações da versão">
+    <span id="appVersionFooter">Versão carregando...</span>
+  </footer>
+
+  <script src="questions-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
