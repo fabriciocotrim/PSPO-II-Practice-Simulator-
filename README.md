@@ -4,11 +4,11 @@ Simulador bilíngue independente para prática da certificação PSPO II.
 
 ## Versão atual
 
-v2.0.0 — Modularização leve do PSPO II
+v2.0.1 — Ajustes visuais pós-modularização
 
 URL de teste:
 
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.0.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.0.1
 
 ## Produto
 
@@ -22,7 +22,7 @@ https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.0.0
 - Light mode e dark mode preservados.
 - Desktop e mobile preservados.
 
-## Estrutura modular da v2.0.0
+## Estrutura modular mantida
 
 ```txt
 /exams/
@@ -56,21 +56,18 @@ O app carrega:
 
 ## Release name
 
-v2.0.0 — Modularização leve do PSPO II
+v2.0.1 — Ajustes visuais pós-modularização
 
 ## Release notes
 
-- Criada estrutura modular `/exams/pspo-ii/`.
-- Adicionado `exam-config.json` para centralizar variáveis do exame.
-- Adicionado `topics.json` para externalizar grupos e tópicos.
-- Separados bancos de questões em `questions.pt-BR.json` e `questions.en-US.json`.
-- App passa a carregar configurações, tópicos e questões a partir do pacote do exame.
-- Mantido PSPO II como único exame disponível nesta versão.
-- Mantida experiência visual da v1.9.1.
-- Mantido suporte bilíngue PT/EN.
-- Mantida revisão final/focada.
+- Corrigido o toggle de idioma no light mode para não ficar escuro ao alternar para inglês.
+- Padronizado o botão de voltar/sair do simulado com ícone de casinha.
+- Centralizado o ícone de lixeira no botão de descartar simulado salvo, em desktop e mobile.
+- Mantida a modularização leve da v2.0.0.
+- Mantida a experiência visual geral da v1.9.1.
+- Mantidos bancos bilíngues PT/EN sem alteração de conteúdo.
 - Atualizados `APP_VERSION`, `CACHE_NAME`, `manifest.json` e `README.md`.
-- URL de teste: https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.0.0
+- URL de teste: https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.0.1
 
 ## Aviso
 

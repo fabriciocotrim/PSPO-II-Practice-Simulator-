@@ -2,9 +2,9 @@ const EXAM_ID = "pspo-ii";
 const EXAM_BASE_PATH = `exams/${EXAM_ID}`;
 
 const APP_VERSION = {
-  number: "2.0.0",
+  number: "2.0.1",
   date: "2026-05-17",
-  time: "10:30 BRT"
+  time: "10:44 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -92,8 +92,8 @@ const I18N = {
     status: "Status",
     passed: "Aprovado",
     notPassed: "Não aprovado",
-    passMessage: "Parabéns. Você atingiu o limite de aprovação da PSPO II.",
-    failMessage: "Você ficou abaixo do limite de aprovação da PSPO II. Revise seus pontos fracos e tente novamente.",
+    passMessage: "Parabéns. Você atingiu o limite de aprovação da {certificationName}.",
+    failMessage: "Você ficou abaixo do limite de aprovação da {certificationName}. Revise seus pontos fracos e tente novamente.",
     correctPlural: "Corretas",
     incorrectPlural: "Erros",
     threshold: "Limite",
@@ -218,8 +218,8 @@ const I18N = {
     status: "Status",
     passed: "Passed",
     notPassed: "Not passed",
-    passMessage: "Congratulations. You reached the PSPO II passing threshold.",
-    failMessage: "You are below the PSPO II passing threshold. Review your weak areas and try again.",
+    passMessage: "Congratulations. You reached the {certificationName} passing threshold.",
+    failMessage: "You are below the {certificationName} passing threshold. Review your weak areas and try again.",
     correctPlural: "Correct",
     incorrectPlural: "Errors",
     threshold: "Threshold",
@@ -278,7 +278,7 @@ const state = {
   answers: {},
   unsure: {},
   selectedTopics: [],
-  questionCount: 40,
+  questionCount: 0,
   finished: false,
   elapsedSeconds: 0,
   timerId: null,
@@ -306,7 +306,7 @@ function loadSettings() {
   const fallbackTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings)) || {};
-    return { lang: parsed.lang || "pt-BR", theme: parsed.theme || fallbackTheme };
+    return { lang: parsed.lang === "en-US" || parsed.lang === "en" ? "en" : "pt-BR", theme: parsed.theme || fallbackTheme };
   } catch {
     return { lang: "pt-BR", theme: fallbackTheme };
   }
@@ -345,7 +345,7 @@ function applyLanguage() {
 
 function updateToggleStates() {
   document.querySelectorAll(".lang-switch").forEach((button) => {
-    const isEnglish = settings.lang === "en";
+    const isEnglish = getActiveLanguage() === "en";
     const label = isEnglish ? t("switchToPortugueseTooltip") : t("switchToEnglishTooltip");
     button.dataset.state = isEnglish ? "right" : "left";
     button.setAttribute("aria-checked", String(isEnglish));
@@ -587,7 +587,7 @@ function initializeApp() {
 function attachEvents() {
   document.querySelectorAll(".lang-switch").forEach((button) => {
     button.addEventListener("click", () => {
-      setLanguage(settings.lang === "en" ? "pt-BR" : "en");
+      setLanguage(getActiveLanguage() === "en" ? "pt-BR" : "en");
     });
   });
 
@@ -1061,7 +1061,7 @@ function renderResults(result) {
         <div class="result-status-v160 ${result.passed ? "pass" : "fail"}">${escapeHtml(result.passed ? t("passed") : t("notPassed"))}</div>
       </div>
       <div class="result-details-v160">
-        <p class="result-message-v160">${escapeHtml(result.passed ? t("passMessage") : t("failMessage"))}</p>
+        <p class="result-message-v160">${escapeHtml(result.passed ? t("passMessage", { certificationName: examConfig.certificationName || "" }) : t("failMessage", { certificationName: examConfig.certificationName || "" }))}</p>
         <div class="result-filter-grid-v160">
           ${filterCardHtml({ id: "__all", label: toggleAllLabel, value: result.total, icon: svgIcon("list"), tone: "neutral", active: allSelected, actionLabel: toggleAllAction })}
           ${filterData.filters.map((filter) => filterCardHtml({ ...filter, active: state.resultReviewFilters.includes(filter.id) })).join("")}
