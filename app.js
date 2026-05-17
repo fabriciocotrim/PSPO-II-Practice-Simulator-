@@ -1,23 +1,74 @@
-const TOPICS = [
-  "Scrum Guide 2020", "Empiricism", "Scrum Values", "Product Owner Accountability", "Product Goal",
-  "Product Backlog Management", "Stakeholder Management", "Nexus", "Product Owner Stances", "Misunderstood Stances",
-  "Evidence-Based Management", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate",
-  "Outcome vs Output", "Experimentation", "Decision Making"
-];
-
-const TOPIC_GROUPS = [
-  { id: "foundations", title: "Foundations", description: "Scrum Guide, empiricism, values, accountabilities", topics: ["Scrum Guide 2020", "Empiricism", "Scrum Values", "Product Owner Accountability"] },
-  { id: "product-ownership", title: "Product Ownership", description: "Product Goal, backlog ordering, stakeholders", topics: ["Product Goal", "Product Backlog Management", "Stakeholder Management"] },
-  { id: "stances", title: "Stances", description: "Preferred and misunderstood Product Owner stances", topics: ["Product Owner Stances", "Misunderstood Stances"] },
-  { id: "ebm", title: "Evidence-Based Management", description: "KVAs, outcomes, experimentation, value evidence", topics: ["Evidence-Based Management", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate", "Outcome vs Output", "Experimentation", "Decision Making"] },
-  { id: "scaling", title: "Scaling", description: "Nexus, dependencies, integrated increment", topics: ["Nexus"] },
-  { id: "weak-areas", title: "Weak areas", description: "Items repeatedly missed in past attempts", topics: [] }
-];
+const TOPIC_GROUPS_BY_LANG = {
+  "pt-BR": [
+    {
+      id: "foundations",
+      title: "Fundamentos",
+      description: "Scrum Guide, empirismo, valores, accountabilities e Product Goal",
+      topics: ["Scrum Guide 2020", "Empirismo", "Scrum Values", "Accountabilities", "Product Goal", "Revisão S1-S2", "Fundamentos, Empirismo, Valores, Accountabilities e Product Goal"]
+    },
+    {
+      id: "product-ownership",
+      title: "Product Ownership",
+      description: "Product Backlog, refinement, stakeholders, estratégia e descoberta",
+      topics: ["Product Backlog", "Refinement", "Stakeholders", "Nexus básico", "Customer Representative", "Visionary", "Experimenter", "Influencer", "Collaborator", "Product Strategy", "User Story Mapping", "Product Backlog, Refinamento, Stakeholders e Nexus"]
+    },
+    {
+      id: "stances",
+      title: "Stances e anti-patterns",
+      description: "Posturas do Product Owner, Decision Maker e anti-patterns",
+      topics: ["Decision Maker", "Clerk / Story Writer", "Manager / Project Manager", "Subject Matter Expert / Gatekeeper", "Revisão de Stances", "As Posturas (Stances) do Product Owner", "Posturas Malcompreendidas (Anti-Patterns) e Decision Maker"]
+    },
+    {
+      id: "ebm",
+      title: "EBM e Value Thinking",
+      description: "KVAs, valor, outcome vs output, inovação e discovery",
+      topics: ["EBM Overview", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate", "outcome vs output", "Discovery contínuo", "Revisão EBM + Produto", "Evidence-Based Management (EBM) e Value Thinking", "outcome vs output, Discovery, Estratégia e User Story Mapping"]
+    },
+    {
+      id: "practice",
+      title: "Simulados e revisão",
+      description: "Simulados parciais, finais, revisão de erros e pré-prova",
+      topics: ["Simulado parcial 1", "Correção comentada", "Simulado parcial 2", "Crédito parcial", "Open Assessments", "Simulado final 1", "Revisão de erros", "Simulado final 2", "Revisão leve", "Pré-prova", "Cenários Complexos, Nexus, Contratos e Julgamento", "Simulado Final de Tensão e Julgamento Crítico"]
+    }
+  ],
+  en: [
+    {
+      id: "foundations",
+      title: "Foundations",
+      description: "Scrum Guide, empiricism, values, accountabilities, and Product Goal",
+      topics: ["Scrum Guide 2020", "Empiricism", "Scrum Values", "Accountabilities", "Product Goal", "S1-S2 Review", "Fundamentals, Empiricism, Scrum Values, Accountabilities, and Product Goal"]
+    },
+    {
+      id: "product-ownership",
+      title: "Product Ownership",
+      description: "Product Backlog, refinement, stakeholders, strategy, and discovery",
+      topics: ["Product Backlog", "Refinement", "Stakeholders", "Nexus Basics", "Customer Representative", "Visionary", "Experimenter", "Influencer", "Collaborator", "Product Strategy", "User Story Mapping", "Product Backlog, Refinement, Stakeholders, and Nexus"]
+    },
+    {
+      id: "stances",
+      title: "Stances and anti-patterns",
+      description: "Product Owner stances, Decision Maker, and anti-patterns",
+      topics: ["Decision Maker", "Clerk / Story Writer", "Manager / Project Manager", "Subject Matter Expert / Gatekeeper", "Stances Review", "Product Owner Stances", "Misunderstood Stances, Anti-Patterns, and Decision Maker"]
+    },
+    {
+      id: "ebm",
+      title: "EBM and Value Thinking",
+      description: "KVAs, value, outcome vs output, innovation, and discovery",
+      topics: ["EBM Overview", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate", "Outcome vs Output", "Continuous Discovery", "EBM + Product Review", "Evidence-Based Management and Value Thinking", "Outcome vs. Output, Discovery, Strategy, and User Story Mapping"]
+    },
+    {
+      id: "practice",
+      title: "Simulations and review",
+      description: "Partial simulations, final simulations, error review, and pre-exam review",
+      topics: ["Partial Simulation 1", "Commented Correction", "Partial Simulation 2", "Partial Credit", "Open Assessments", "Final Simulation 1", "Error Review", "Final Simulation 2", "Light Review", "Pre-Exam Review", "Complex Scenarios, Nexus, Contracts, and Judgment", "Final Simulation: Tension and Critical Judgment"]
+    }
+  ]
+};
 
 const APP_VERSION = {
-  number: "1.8.0",
+  number: "1.9.0",
   date: "2026-05-17",
-  time: "06:21 BRT"
+  time: "08:00 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -33,7 +84,7 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Versão carregando...",
     homeTitle: "Preparar simulado",
-    homeSubtitle: "Treine em inglês, com interface simples em português, simulando o vocabulário real da certificação.",
+    homeSubtitle: "Escolha o idioma do banco de questões e simule a experiência da certificação PSPO II.",
     prepareSimulation: "Preparar simulado",
     savedSimulationTab: "Simulado interrompido",
     savedExamSubtitle: "Tentativa salva neste dispositivo.",
@@ -44,7 +95,7 @@ const I18N = {
     selectedTopicGroups: "{count} grupos selecionados",
     configurationTab: "Configuração",
     historyTab: "Histórico",
-    languageNotice: "As questões, alternativas, comentários e temas são apresentados em inglês para aproximar sua experiência do ambiente real do exame PSPO II e reforçar o vocabulário técnico usado na certificação.",
+    languageNotice: "O idioma selecionado define interface, questões, alternativas, comentários e temas do simulado.",
     interfaceLanguage: "Idioma",
     visualTheme: "Tema",
     selectTopics: "Selecionar temas",
@@ -130,9 +181,10 @@ const I18N = {
     mode: "Modo",
     appVersion: "Versão",
     loadingError: "Erro ao carregar questões.",
-    cannotLoadQuestions: "Não foi possível carregar questions.json.",
+    cannotLoadQuestions: "Não foi possível carregar o banco de questões.",
     singleAnswer: "Resposta única",
     multipleAnswers: "Múltiplas respostas",
+    moreTopics: "temas",
     multiAnswerHelp: "Selecione todas as alternativas corretas antes de avançar. A correção é rigorosa.",
     quickSettings: "Configurações rápidas",
     resultQuickSettings: "Configurações rápidas do resultado",
@@ -158,7 +210,7 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Loading version...",
     homeTitle: "Prepare simulation",
-    homeSubtitle: "Practice in English with a simple interface, using certification-style vocabulary.",
+    homeSubtitle: "Choose the question bank language and simulate the PSPO II certification experience.",
     prepareSimulation: "Prepare simulation",
     savedSimulationTab: "Interrupted simulation",
     savedExamSubtitle: "Attempt saved locally on this device.",
@@ -169,7 +221,7 @@ const I18N = {
     selectedTopicGroups: "{count} groups selected",
     configurationTab: "Configuration",
     historyTab: "History",
-    languageNotice: "Questions, answer options, explanations, and topics are shown in English to better simulate the real PSPO II exam environment and reinforce the technical vocabulary used in the certification.",
+    languageNotice: "The selected language defines the interface, questions, answer options, explanations, and topics for the simulation.",
     interfaceLanguage: "Language",
     visualTheme: "Theme",
     selectTopics: "Select topics",
@@ -255,9 +307,10 @@ const I18N = {
     mode: "Mode",
     appVersion: "Version",
     loadingError: "Error loading questions.",
-    cannotLoadQuestions: "Could not load questions.json.",
+    cannotLoadQuestions: "Could not load the question bank.",
     singleAnswer: "Single answer",
     multipleAnswers: "Multiple answers",
+    moreTopics: "topics",
     multiAnswerHelp: "Select all correct options before continuing. Strict scoring is applied.",
     quickSettings: "Quick settings",
     resultQuickSettings: "Result quick settings",
@@ -298,7 +351,8 @@ const state = {
   dirty: false,
   lastResult: null,
   resultReviewFilters: [],
-  resultReviewActiveId: null
+  resultReviewActiveId: null,
+  currentExamLanguage: null
 };
 
 const $ = (id) => document.getElementById(id);
@@ -338,7 +392,7 @@ function applyLanguage() {
     const key = element.dataset.i18n;
     element.textContent = t(key);
   });
-  if ($("homeSubtitle")) $("homeSubtitle").hidden = settings.lang === "en";
+  if ($("homeSubtitle")) $("homeSubtitle").hidden = false;
   updateToggleStates();
   updateStaticTooltips();
   updateTopicSummary();
@@ -398,16 +452,40 @@ function updateStaticTooltips() {
   setTooltip(".app-footer", "versionInfoTooltip", false);
 }
 
+let questionBanks = {};
+
+function getActiveLanguage() {
+  return settings.lang === "en" ? "en" : "pt-BR";
+}
+
+function getTopicGroups() {
+  return TOPIC_GROUPS_BY_LANG[getActiveLanguage()] || TOPIC_GROUPS_BY_LANG["pt-BR"];
+}
+
 async function loadQuestions() {
+  if (window.QUESTION_BANKS && typeof window.QUESTION_BANKS === "object") {
+    questionBanks = window.QUESTION_BANKS;
+    return setActiveQuestionBank();
+  }
   if (Array.isArray(window.QUESTION_BANK) && window.QUESTION_BANK.length) {
-    state.questions = normalizeQuestions(window.QUESTION_BANK);
-    return state.questions;
+    questionBanks = { en: window.QUESTION_BANK, "pt-BR": window.QUESTION_BANK };
+    return setActiveQuestionBank();
   }
   const response = await fetch("questions.json", { cache: "no-store" });
   if (!response.ok) throw new Error(t("cannotLoadQuestions"));
   const data = await response.json();
-  state.questions = normalizeQuestions(data);
+  questionBanks = Array.isArray(data) ? { en: data, "pt-BR": data } : data;
+  return setActiveQuestionBank();
+}
+
+function setActiveQuestionBank() {
+  state.questions = getQuestionsForLanguage(getActiveLanguage());
   return state.questions;
+}
+
+function getQuestionsForLanguage(language) {
+  const bank = questionBanks[language] || questionBanks["pt-BR"] || questionBanks.en || [];
+  return normalizeQuestions(Array.isArray(bank) ? bank : []);
 }
 
 function normalizeQuestions(questions) {
@@ -415,6 +493,29 @@ function normalizeQuestions(questions) {
     ...question,
     options: sortOptions(question.options || [])
   }));
+}
+
+function syncSelectedQuestionsToActiveLanguage() {
+  if (!state.selectedQuestions.length) return;
+  const activeQuestions = getQuestionsForLanguage(getActiveLanguage());
+  const byId = new Map(activeQuestions.map((question) => [question.id, question]));
+  state.selectedQuestions = state.selectedQuestions.map((question) => {
+    const translated = byId.get(question.id);
+    return translated ? { ...translated, options: sortOptions(translated.options || []) } : question;
+  });
+  state.currentExamLanguage = getActiveLanguage();
+}
+
+function setLanguage(nextLanguage) {
+  const normalized = nextLanguage === "en" ? "en" : "pt-BR";
+  if (settings.lang === normalized) return;
+  settings.lang = normalized;
+  saveSettings();
+  setActiveQuestionBank();
+  syncSelectedQuestionsToActiveLanguage();
+  renderTopicSelector();
+  applyLanguage();
+  saveCurrentExam(false, { automatic: true });
 }
 
 function initializeApp() {
@@ -438,9 +539,7 @@ function initializeApp() {
 function attachEvents() {
   document.querySelectorAll(".lang-switch").forEach((button) => {
     button.addEventListener("click", () => {
-      settings.lang = settings.lang === "en" ? "pt-BR" : "en";
-      saveSettings();
-      applyLanguage();
+      setLanguage(settings.lang === "en" ? "pt-BR" : "en");
     });
   });
 
@@ -586,7 +685,7 @@ function renderAppVersion() {
 function renderTopicSelector() {
   const container = $("topicsContainer");
   if (!container) return;
-  container.innerHTML = TOPIC_GROUPS.map((group) => `
+  container.innerHTML = getTopicGroups().map((group) => `
     <label class="topic-group-card ${group.topics.length ? "" : "topic-group-empty"}">
       <input class="topic-group-check" type="checkbox" value="${escapeHtml(group.id)}" ${group.topics.length ? "checked" : ""} ${group.topics.length ? "" : "disabled"} />
       <span class="topic-group-content">
@@ -601,7 +700,7 @@ function renderTopicSelector() {
 
 function getSelectedTopics() {
   const selectedIds = Array.from(document.querySelectorAll(".topic-group-check:checked")).map((input) => input.value);
-  return [...new Set(TOPIC_GROUPS
+  return [...new Set(getTopicGroups()
     .filter((group) => selectedIds.includes(group.id))
     .flatMap((group) => group.topics))];
 }
@@ -659,6 +758,7 @@ function startSimulation() {
   state.finished = false;
   state.elapsedSeconds = 0;
   state.currentExamId = `exam-${Date.now()}`;
+  state.currentExamLanguage = getActiveLanguage();
   state.lastSavedAt = null;
   state.dirty = false;
   setScreen("exam");
@@ -732,7 +832,7 @@ function renderQuestionTags(question) {
   const topics = question.topics || [];
   const visibleTopics = topics.slice(0, 2).map((topic) => `<span class="tag">${escapeHtml(topic)}</span>`);
   const remaining = topics.length - visibleTopics.length;
-  const moreTag = remaining > 0 ? `<span class="tag tag-muted">+${remaining} topics</span>` : "";
+  const moreTag = remaining > 0 ? `<span class="tag tag-muted">+${remaining} ${escapeHtml(t("moreTopics"))}</span>` : "";
   return [typeTag, ...visibleTopics, moreTag].filter(Boolean).join("");
 }
 
@@ -1243,6 +1343,7 @@ function saveCurrentExam(force = false, options = {}) {
     questionCount: state.questionCount,
     elapsedSeconds: state.elapsedSeconds,
     currentExamId: state.currentExamId,
+    language: state.currentExamLanguage || getActiveLanguage(),
     savedAt: new Date().toISOString(),
     appVersion: APP_VERSION.number
   };
@@ -1267,6 +1368,13 @@ function getSavedExam() {
 function resumeSavedExam() {
   const saved = getSavedExam();
   if (!saved) return;
+  if (saved.language && saved.language !== getActiveLanguage()) {
+    settings.lang = saved.language === "en" ? "en" : "pt-BR";
+    saveSettings();
+    setActiveQuestionBank();
+    renderTopicSelector();
+    applyLanguage();
+  }
   state.selectedQuestions = saved.selectedQuestions;
   state.currentIndex = saved.currentIndex || 0;
   state.answers = saved.answers || {};
@@ -1275,6 +1383,7 @@ function resumeSavedExam() {
   state.questionCount = saved.questionCount || saved.selectedQuestions.length;
   state.elapsedSeconds = saved.elapsedSeconds || 0;
   state.currentExamId = saved.currentExamId || `exam-${Date.now()}`;
+  state.currentExamLanguage = saved.language || getActiveLanguage();
   state.lastSavedAt = saved.savedAt || null;
   state.finished = false;
   state.dirty = false;
@@ -1345,6 +1454,7 @@ function saveAttemptHistory(result) {
     durationSeconds: result.durationSeconds,
     topics: state.selectedTopics,
     questionCount: state.questionCount,
+    language: state.currentExamLanguage || getActiveLanguage(),
     appVersion: APP_VERSION.number
   };
   history.unshift(attempt);

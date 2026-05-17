@@ -1,17 +1,18 @@
 # PSPO II Practice Simulator
 
-Simulador independente para prática da certificação PSPO II.
+Simulador bilíngue independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.8.0** — 2026-05-17 — 06:21 BRT
+**1.9.0** — 2026-05-17 — 08:00 BRT
 
 ## Características
 
 - Interface em português brasileiro ou inglês.
-- Questões, alternativas, comentários e temas em inglês para simular melhor o ambiente real da certificação.
+- Banco bilíngue com 400 questões em português e 400 questões em inglês.
+- Questões, alternativas, comentários, temas e interface acompanham o idioma selecionado.
 - Alternância de idioma e tema por switch visual com controle deslizante.
-- Banco de questões em `questions.json`.
+- Banco de questões em `questions.json` e `questions-data.js` no formato `{ "pt-BR": [...], "en": [...] }`.
 - Seleção por grupos de temas, com refinamento em modal.
 - Simulados com 10, 20, 30, 40, 50 ou 60 questões.
 - Correção concentrada na revisão final/focada.
@@ -23,6 +24,24 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
+
+## Versão 1.9.0
+
+Alterações principais:
+
+- Integra banco bilíngue PSPO II com 400 questões em português e 400 em inglês.
+- O idioma selecionado define o banco ativo, a interface, os temas, a revisão e os resultados.
+- Garante que um simulado carregue apenas questões do idioma ativo.
+- Mantém pareamento PT/EN por `id` e gabarito para permitir alternância controlada de idioma durante uma tentativa.
+- Atualiza grupos de tópicos para cobrir os 48 tópicos presentes em cada banco.
+- Mantém revisão final/focada, light mode, dark mode, desktop e mobile sem redesenho estrutural.
+- Atualiza `APP_VERSION`, `CACHE_NAME`, `manifest.json`, `README.md`, `questions.json` e `questions-data.js`.
+
+URL de teste:
+
+```text
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.9.0
+```
 
 ## Versão 1.8.0
 
@@ -101,7 +120,7 @@ Alterações principais:
 Teste sugerido:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.7.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.9.0
 ```
 
 ## Versão 1.6.2
@@ -167,32 +186,53 @@ http://localhost:8000
 4. Commit sugerido:
 
 ```text
-Release v1.7.0 focused answer review
+Release v1.9.0 bilingual PSPO II bank
 ```
 
 5. Teste com:
 
 ```text
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.7.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.9.0
 ```
 
 ## Como adicionar questões
 
-Edite `questions.json` seguindo o formato:
+Edite `questions.json` seguindo o formato bilíngue:
 
 ```json
 {
-  "id": "Q001",
-  "topics": ["Scrum Guide 2020", "Empiricism"],
-  "difficulty": "medium",
-  "type": "single",
-  "question": "Question text in English",
-  "options": [
-    { "id": "A", "text": "Option A" },
-    { "id": "B", "text": "Option B" }
+  "pt-BR": [
+    {
+      "id": "Q001",
+      "language": "pt-BR",
+      "topics": ["Scrum Guide 2020"],
+      "difficulty": "medium",
+      "type": "single",
+      "question": "Texto da questão em português.",
+      "options": [
+        { "id": "A", "text": "Alternativa A" },
+        { "id": "B", "text": "Alternativa B" }
+      ],
+      "correctAnswers": ["A"],
+      "explanation": "Comentário em português."
+    }
   ],
-  "correctAnswers": ["A"],
-  "explanation": "Explanation in English."
+  "en": [
+    {
+      "id": "Q001",
+      "language": "en",
+      "topics": ["Scrum Guide 2020"],
+      "difficulty": "medium",
+      "type": "single",
+      "question": "Question text in English.",
+      "options": [
+        { "id": "A", "text": "Option A" },
+        { "id": "B", "text": "Option B" }
+      ],
+      "correctAnswers": ["A"],
+      "explanation": "Explanation in English."
+    }
+  ]
 }
 ```
 
