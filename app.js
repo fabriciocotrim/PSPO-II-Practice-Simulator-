@@ -15,9 +15,9 @@ const TOPIC_GROUPS = [
 ];
 
 const APP_VERSION = {
-  number: "1.7.0",
+  number: "1.7.1",
   date: "2026-05-16",
-  time: "22:55 BRT"
+  time: "20:59 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -1560,7 +1560,7 @@ function resultCopy() {
       completion: "Completion",
       topic: "Topic",
       questionMap: "Question map",
-      questionMapHelp: "Select a question to review it.",
+      questionMapHelp: "",
       previous: "Previous",
       next: "Next",
       close: "Close",
@@ -1583,13 +1583,13 @@ function resultCopy() {
     correct: "Corretas",
     incorrect: "Erradas",
     unanswered: "Sem resposta",
-    unsure: "Marcadas",
-    marked: "Marcadas",
+    unsure: "Dúvidas",
+    marked: "Dúvidas",
     duration: "Tempo",
     completion: "Conclusão",
     topic: "Tópico",
     questionMap: "Mapa das questões",
-    questionMapHelp: "Selecione uma questão para revisar.",
+    questionMapHelp: "",
     previous: "Anterior",
     next: "Próxima",
     close: "Fechar",
@@ -1653,7 +1653,6 @@ function renderResults(result) {
   const summary = `
     <section class="v170-page-head">
       <div>
-        <p class="v170-kicker">PSPO II Practice Simulator</p>
         <h2>${escapeHtml(copy.review)}</h2>
       </div>
     </section>
@@ -1676,11 +1675,6 @@ function renderResults(result) {
         ${filterData.filters.map((filter) => resultStatusCardHtml(filter)).join("")}
       </div>
 
-      <div class="v170-desktop-filters" aria-label="Filtros da revisão">
-        <button type="button" class="v170-filter-pill ${state.resultReviewFilters.length ? "" : "active"}" data-v170-filter="__all" aria-pressed="${state.resultReviewFilters.length ? "false" : "true"}">${escapeHtml(copy.all)}</button>
-        ${filterData.filters.map((filter) => resultFilterPillHtml(filter)).join("")}
-        <span class="v170-filter-count">${escapeHtml(copy.resultCount(items.length, result.total))}</span>
-      </div>
     </section>
 
     ${items.length ? focusedReviewLayoutHtml({ items, activeItem, activeIndex, copy, result }) : `<div class="v170-empty">${escapeHtml(copy.noQuestionsFilter)}</div>`}
@@ -1725,9 +1719,7 @@ function focusedReviewLayoutHtml({ items, activeItem, activeIndex, copy, result 
         <div class="v170-map-head">
           <div>
             <h3>${escapeHtml(copy.questionMap)}</h3>
-            <p>${escapeHtml(copy.questionMapHelp)}</p>
           </div>
-          <span>${escapeHtml(copy.resultCount(items.length, result.total))}</span>
         </div>
         <div class="v170-map-grid">
           ${items.map((item) => questionMapButtonHtml(item.question, item.index, item.question.id === question.id)).join("")}
@@ -1760,7 +1752,6 @@ function focusedReviewLayoutHtml({ items, activeItem, activeIndex, copy, result 
         <div class="v170-map-head">
           <div>
             <h3>${escapeHtml(copy.questionMap)}</h3>
-            <p>${escapeHtml(copy.questionMapHelp)}</p>
           </div>
           <button type="button" class="v170-sheet-close" data-v170-map="close">${escapeHtml(copy.close)}</button>
         </div>
@@ -1812,7 +1803,6 @@ function reviewQuestionHtml(question, index, countLabel, copy) {
         <span class="v170-status-badge ${escapeHtml(status)}">${escapeHtml(statusLabelFor(status))}</span>
         ${marked ? `<span class="v170-status-badge marked">${escapeHtml(copy.marked)}</span>` : ""}
       </div>
-      <span class="v170-question-position">${escapeHtml(countLabel)}</span>
     </div>
     <h3>${escapeHtml(question.question)}</h3>
     <p class="v170-topic">${escapeHtml(copy.topic)}: ${escapeHtml((question.topics || []).join(", ") || "Uncategorized")}</p>

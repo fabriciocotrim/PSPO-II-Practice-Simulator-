@@ -3763,3 +3763,229 @@ html[data-theme="dark"] .v170-explanation { border: 1px solid rgba(148,163,184,.
     padding-right: 8px;
   }
 }
+
+/* -------------------------------------------------------
+   v1.7.1 - Review screen consistency and compact filters
+   Scope: result/review screen only.
+------------------------------------------------------- */
+body[data-screen="result"] .app-header {
+  max-width: 980px !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  padding: 18px 16px 2px !important;
+}
+body[data-screen="result"] .header-side,
+body[data-screen="result"] .result-header-controls {
+  justify-items: end !important;
+  justify-content: end !important;
+}
+body[data-screen="result"] .app-shell {
+  max-width: 980px !important;
+  padding: 0 16px 18px !important;
+}
+.result-card-v160.card {
+  margin-top: 10px !important;
+  padding: 18px !important;
+  border-radius: 28px !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line-soft, var(--line)) !important;
+  box-shadow: 0 22px 60px rgba(68,64,60,.10) !important;
+}
+html[data-theme="dark"] .result-card-v160.card {
+  background: #242424 !important;
+  border-color: rgba(255,255,255,.08) !important;
+  box-shadow: none !important;
+}
+.v170-page-head {
+  margin-bottom: 12px !important;
+}
+.v170-kicker {
+  display: none !important;
+}
+.v170-summary-panel {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-bottom: 18px !important;
+  padding: 14px !important;
+  border-radius: 24px !important;
+}
+.v170-main-stats,
+.v170-filter-cards {
+  display: contents !important;
+}
+.v170-score-card,
+.v170-time-card,
+.v170-status-card {
+  min-height: 82px !important;
+  border-radius: 16px !important;
+  padding: 12px !important;
+}
+.v170-score-card strong,
+.v170-time-card strong {
+  font-size: 2rem !important;
+}
+.v170-status-card strong {
+  margin-top: 6px !important;
+  font-size: 1.45rem !important;
+}
+.v170-status-card-label {
+  font-size: .68rem !important;
+  line-height: 1.15 !important;
+}
+.v170-desktop-filters,
+.v170-filter-count,
+.v170-question-position {
+  display: none !important;
+}
+.v170-review-layout {
+  grid-template-columns: 270px minmax(0, 1fr) !important;
+  gap: 18px !important;
+}
+.v170-question-map {
+  top: 176px !important;
+  max-height: calc(100vh - 196px) !important;
+  padding: 14px !important;
+  overflow: hidden !important;
+}
+.v170-map-head {
+  margin-bottom: 10px !important;
+}
+.v170-map-head p,
+.v170-map-head > span {
+  display: none !important;
+}
+.v170-map-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  max-height: 360px !important;
+  overflow-x: visible !important;
+  padding: 1px 1px 2px !important;
+}
+.v170-map-button {
+  box-sizing: border-box !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 9px !important;
+  font-size: .76rem !important;
+}
+.v170-map-legend {
+  margin-top: 10px !important;
+  padding: 10px !important;
+  gap: 7px 10px !important;
+}
+html[data-theme="dark"] .v170-summary-panel,
+html[data-theme="dark"] .v170-question-map,
+html[data-theme="dark"] .v170-question-card,
+html[data-theme="dark"] .v170-sheet-panel {
+  background: #242424 !important;
+  border-color: rgba(255,255,255,.08) !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .v170-score-card,
+html[data-theme="dark"] .v170-time-card,
+html[data-theme="dark"] .v170-status-card.neutral {
+  background: #303030 !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+html[data-theme="dark"] .v170-status-card.good {
+  background: rgba(34,197,94,.10) !important;
+  border-color: rgba(34,197,94,.42) !important;
+  color: #bbf7d0 !important;
+}
+html[data-theme="dark"] .v170-status-card.bad {
+  background: rgba(239,68,68,.11) !important;
+  border-color: rgba(239,68,68,.45) !important;
+  color: #fecaca !important;
+}
+html[data-theme="dark"] .v170-status-card.marked {
+  background: rgba(245,158,11,.11) !important;
+  border-color: rgba(245,158,11,.45) !important;
+  color: #fde68a !important;
+}
+html[data-theme="dark"] .v170-option,
+html[data-theme="dark"] .v170-answer-summary > div,
+html[data-theme="dark"] .v170-explanation,
+html[data-theme="dark"] .v170-map-legend {
+  background: #191919 !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+html[data-theme="dark"] .v170-map-button.unanswered {
+  background: #303030 !important;
+  border-color: rgba(255,255,255,.14) !important;
+  color: #d4d4d4 !important;
+}
+html[data-theme="dark"] .v170-map-legend.mobile,
+html[data-theme="dark"] .v170-map-legend {
+  background: #191919 !important;
+}
+
+@media (max-width: 820px) {
+  body[data-screen="result"] .app-header {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    padding: 12px 16px 4px !important;
+  }
+  body[data-screen="result"] .header-side,
+  body[data-screen="result"] .result-header-controls {
+    justify-items: end !important;
+    justify-content: end !important;
+  }
+  body[data-screen="result"] .app-shell {
+    padding: 0 12px 96px !important;
+  }
+  .result-card-v160.card {
+    margin-top: 4px !important;
+    padding: 0 !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+  }
+  .v170-summary-panel {
+    position: sticky !important;
+    display: block !important;
+    margin: 0 0 16px !important;
+    border-width: 0 0 1px !important;
+    border-radius: 0 !important;
+    padding: 10px 12px 12px !important;
+    box-shadow: none !important;
+  }
+  .v170-main-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+  }
+  .v170-filter-cards {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .v170-score-card,
+  .v170-time-card {
+    min-height: 82px !important;
+    padding: 12px 14px !important;
+  }
+  .v170-status-card {
+    min-height: 64px !important;
+    padding: 9px !important;
+  }
+  .v170-score-card strong,
+  .v170-time-card strong {
+    font-size: 2rem !important;
+  }
+  .v170-status-card strong {
+    font-size: 1.25rem !important;
+  }
+  .v170-status-card-label {
+    font-size: .62rem !important;
+  }
+  .v170-question-card {
+    margin: 0 12px 0 !important;
+  }
+  .v170-map-grid.mobile {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    max-height: 380px !important;
+  }
+  html[data-theme="dark"] .v170-mobile-nav {
+    background: rgba(25,25,25,.96) !important;
+    border-color: rgba(255,255,255,.10) !important;
+  }
+}
