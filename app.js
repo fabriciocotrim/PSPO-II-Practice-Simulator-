@@ -15,9 +15,9 @@ const TOPIC_GROUPS = [
 ];
 
 const APP_VERSION = {
-  number: "1.7.1",
+  number: "1.7.2",
   date: "2026-05-16",
-  time: "20:59 BRT"
+  time: "21:18 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -756,15 +756,9 @@ function renderQuestion() {
     ${multiHint}
     <div class="question-text">${escapeHtml(question.question)}</div>
     <div class="options ${isMultiple ? "multi-options" : "single-options"}">${optionsHtml}</div>
-    <div class="mobile-finish-row">
-      <button type="button" class="secondary mobile-finish-button" title="${escapeHtml(t("finishSimulationTooltip"))}" aria-label="${escapeHtml(t("finishSimulationTooltip"))}">
-        <svg class="button-icon trophy-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M5 5H3v2a4 4 0 0 0 4 4"/><path d="M19 5h2v2a4 4 0 0 1-4 4"/></svg>
-      </button>
-    </div>
   `;
 
   $("questionCard").querySelectorAll("input").forEach((input) => input.addEventListener("change", saveAnswerFromDom));
-  $("questionCard").querySelector(".mobile-finish-button")?.addEventListener("click", finishExam);
   renderQuestionSelector();
 }
 

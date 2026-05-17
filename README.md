@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.7.1** — 2026-05-16 — 20:59 BRT
+**1.7.2** — 2026-05-16 — 21:18 BRT
 
 ## Características
 
@@ -24,6 +24,22 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
+
+## Versão 1.7.2
+
+Ajustes pontuais pós-validação da v1.7.1.
+
+- Move o botão de encerrar simulado para a barra de navegação mobile, no final à direita.
+- Remove o botão flutuante de encerramento dentro do card da questão no mobile.
+- Corrige o espaçamento do título da revisão para permanecer dentro do box.
+- Mantém o fluxo de revisão focada da v1.7.1 sem alterar o banco de questões.
+- Cache PWA atualizado para v1.7.2.
+
+URL de teste:
+
+```text
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.7.2
+```
 
 ## Versão 1.7.1
 

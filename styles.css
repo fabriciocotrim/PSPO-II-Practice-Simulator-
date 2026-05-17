@@ -3989,3 +3989,34 @@ html[data-theme="dark"] .v170-map-legend {
     border-color: rgba(255,255,255,.10) !important;
   }
 }
+
+/* -------------------------------------------------------
+   v1.7.2 - Mobile exam finish action and result title fix
+   Scope: exam mobile nav + result heading only.
+------------------------------------------------------- */
+@media (max-width: 719px) {
+  body[data-screen="exam"] .nav-buttons.icon-nav {
+    grid-template-columns: 44px 44px minmax(0, 1fr) 52px 44px !important;
+  }
+
+  body[data-screen="exam"] #finishNowButton.nav-icon-button {
+    display: inline-flex !important;
+    justify-self: end !important;
+  }
+
+  body[data-screen="exam"] .mobile-finish-row,
+  body[data-screen="exam"] .mobile-finish-button {
+    display: none !important;
+  }
+}
+
+body[data-screen="result"] .v170-page-head {
+  padding-inline: 6px !important;
+}
+
+@media (max-width: 820px) {
+  body[data-screen="result"] .v170-page-head {
+    padding: 14px 18px 0 !important;
+    margin-bottom: 10px !important;
+  }
+}
