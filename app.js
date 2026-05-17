@@ -1,74 +1,10 @@
-const TOPIC_GROUPS_BY_LANG = {
-  "pt-BR": [
-    {
-      id: "foundations",
-      title: "Fundamentos",
-      description: "Scrum Guide, empirismo, valores, accountabilities e Product Goal",
-      topics: ["Scrum Guide 2020", "Empirismo", "Scrum Values", "Accountabilities", "Product Goal", "Revisão S1-S2", "Fundamentos, Empirismo, Valores, Accountabilities e Product Goal"]
-    },
-    {
-      id: "product-ownership",
-      title: "Product Ownership",
-      description: "Product Backlog, refinement, stakeholders, estratégia e descoberta",
-      topics: ["Product Backlog", "Refinement", "Stakeholders", "Nexus básico", "Customer Representative", "Visionary", "Experimenter", "Influencer", "Collaborator", "Product Strategy", "User Story Mapping", "Product Backlog, Refinamento, Stakeholders e Nexus"]
-    },
-    {
-      id: "stances",
-      title: "Stances e anti-patterns",
-      description: "Posturas do Product Owner, Decision Maker e anti-patterns",
-      topics: ["Decision Maker", "Clerk / Story Writer", "Manager / Project Manager", "Subject Matter Expert / Gatekeeper", "Revisão de Stances", "As Posturas (Stances) do Product Owner", "Posturas Malcompreendidas (Anti-Patterns) e Decision Maker"]
-    },
-    {
-      id: "ebm",
-      title: "EBM e Value Thinking",
-      description: "KVAs, valor, outcome vs output, inovação e discovery",
-      topics: ["EBM Overview", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate", "outcome vs output", "Discovery contínuo", "Revisão EBM + Produto", "Evidence-Based Management (EBM) e Value Thinking", "outcome vs output, Discovery, Estratégia e User Story Mapping"]
-    },
-    {
-      id: "practice",
-      title: "Simulados e revisão",
-      description: "Simulados parciais, finais, revisão de erros e pré-prova",
-      topics: ["Simulado parcial 1", "Correção comentada", "Simulado parcial 2", "Crédito parcial", "Open Assessments", "Simulado final 1", "Revisão de erros", "Simulado final 2", "Revisão leve", "Pré-prova", "Cenários Complexos, Nexus, Contratos e Julgamento", "Simulado Final de Tensão e Julgamento Crítico"]
-    }
-  ],
-  en: [
-    {
-      id: "foundations",
-      title: "Foundations",
-      description: "Scrum Guide, empiricism, values, accountabilities, and Product Goal",
-      topics: ["Scrum Guide 2020", "Empiricism", "Scrum Values", "Accountabilities", "Product Goal", "S1-S2 Review", "Fundamentals, Empiricism, Scrum Values, Accountabilities, and Product Goal"]
-    },
-    {
-      id: "product-ownership",
-      title: "Product Ownership",
-      description: "Product Backlog, refinement, stakeholders, strategy, and discovery",
-      topics: ["Product Backlog", "Refinement", "Stakeholders", "Nexus Basics", "Customer Representative", "Visionary", "Experimenter", "Influencer", "Collaborator", "Product Strategy", "User Story Mapping", "Product Backlog, Refinement, Stakeholders, and Nexus"]
-    },
-    {
-      id: "stances",
-      title: "Stances and anti-patterns",
-      description: "Product Owner stances, Decision Maker, and anti-patterns",
-      topics: ["Decision Maker", "Clerk / Story Writer", "Manager / Project Manager", "Subject Matter Expert / Gatekeeper", "Stances Review", "Product Owner Stances", "Misunderstood Stances, Anti-Patterns, and Decision Maker"]
-    },
-    {
-      id: "ebm",
-      title: "EBM and Value Thinking",
-      description: "KVAs, value, outcome vs output, innovation, and discovery",
-      topics: ["EBM Overview", "Current Value", "Unrealized Value", "Time-to-Market", "Ability to Innovate", "Outcome vs Output", "Continuous Discovery", "EBM + Product Review", "Evidence-Based Management and Value Thinking", "Outcome vs. Output, Discovery, Strategy, and User Story Mapping"]
-    },
-    {
-      id: "practice",
-      title: "Simulations and review",
-      description: "Partial simulations, final simulations, error review, and pre-exam review",
-      topics: ["Partial Simulation 1", "Commented Correction", "Partial Simulation 2", "Partial Credit", "Open Assessments", "Final Simulation 1", "Error Review", "Final Simulation 2", "Light Review", "Pre-Exam Review", "Complex Scenarios, Nexus, Contracts, and Judgment", "Final Simulation: Tension and Critical Judgment"]
-    }
-  ]
-};
+const EXAM_ID = "pspo-ii";
+const EXAM_BASE_PATH = `exams/${EXAM_ID}`;
 
 const APP_VERSION = {
-  number: "1.9.1",
+  number: "2.0.0",
   date: "2026-05-17",
-  time: "08:00 BRT"
+  time: "10:30 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -451,30 +387,87 @@ function updateStaticTooltips() {
   setTooltip(".app-footer", "versionInfoTooltip", false);
 }
 
+let examConfig = {};
+let topicGroupsByLanguage = {};
 let questionBanks = {};
 
+async function fetchExamJson(path) {
+  const response = await fetch(path, { cache: "no-store" });
+  if (!response.ok) throw new Error(t("cannotLoadQuestions"));
+  return response.json();
+}
+
+function getConfiguredLanguages() {
+  return Array.isArray(examConfig.supportedLanguages) && examConfig.supportedLanguages.length
+    ? examConfig.supportedLanguages
+    : ["pt-BR"];
+}
+
+function toInterfaceLanguage(language) {
+  return language === "en" || language === "en-US" ? "en" : "pt-BR";
+}
+
+function toDataLanguage(language) {
+  const interfaceLanguage = toInterfaceLanguage(language);
+  if (interfaceLanguage === "en") return getConfiguredLanguages().includes("en-US") ? "en-US" : "en";
+  return "pt-BR";
+}
+
+function getDefaultInterfaceLanguage() {
+  return toInterfaceLanguage(examConfig.defaultLanguage || "pt-BR");
+}
+
+function hasSecondaryLanguage() {
+  return examConfig.hasSecondaryLanguage !== false && getConfiguredLanguages().length > 1;
+}
+
+function getPassingScore() {
+  return Number(examConfig.passingScore ?? 85);
+}
+
 function getActiveLanguage() {
-  return settings.lang === "en" ? "en" : "pt-BR";
+  return toInterfaceLanguage(settings.lang || getDefaultInterfaceLanguage());
 }
 
 function getTopicGroups() {
-  return TOPIC_GROUPS_BY_LANG[getActiveLanguage()] || TOPIC_GROUPS_BY_LANG["pt-BR"];
+  const dataLanguage = toDataLanguage(getActiveLanguage());
+  return topicGroupsByLanguage[dataLanguage]
+    || topicGroupsByLanguage[getActiveLanguage()]
+    || topicGroupsByLanguage["pt-BR"]
+    || [];
+}
+
+async function loadExamConfig() {
+  examConfig = await fetchExamJson(`${EXAM_BASE_PATH}/exam-config.json`);
+  return examConfig;
+}
+
+async function loadTopics() {
+  topicGroupsByLanguage = await fetchExamJson(`${EXAM_BASE_PATH}/topics.json`);
+  return topicGroupsByLanguage;
 }
 
 async function loadQuestions() {
-  if (window.QUESTION_BANKS && typeof window.QUESTION_BANKS === "object") {
-    questionBanks = window.QUESTION_BANKS;
-    return setActiveQuestionBank();
-  }
-  if (Array.isArray(window.QUESTION_BANK) && window.QUESTION_BANK.length) {
-    questionBanks = { en: window.QUESTION_BANK, "pt-BR": window.QUESTION_BANK };
-    return setActiveQuestionBank();
-  }
-  const response = await fetch("questions.json", { cache: "no-store" });
-  if (!response.ok) throw new Error(t("cannotLoadQuestions"));
-  const data = await response.json();
-  questionBanks = Array.isArray(data) ? { en: data, "pt-BR": data } : data;
+  questionBanks = {};
+  await Promise.all(getConfiguredLanguages().map(async (language) => {
+    questionBanks[language] = await fetchExamJson(`${EXAM_BASE_PATH}/questions.${language}.json`);
+  }));
   return setActiveQuestionBank();
+}
+
+async function loadExamPackage() {
+  await loadExamConfig();
+  normalizeCurrentLanguageFromConfig();
+  await loadTopics();
+  return loadQuestions();
+}
+
+function normalizeCurrentLanguageFromConfig() {
+  const activeDataLanguage = toDataLanguage(settings.lang);
+  if (!getConfiguredLanguages().includes(activeDataLanguage)) {
+    settings.lang = getDefaultInterfaceLanguage();
+    saveSettings();
+  }
 }
 
 function setActiveQuestionBank() {
@@ -483,7 +476,11 @@ function setActiveQuestionBank() {
 }
 
 function getQuestionsForLanguage(language) {
-  const bank = questionBanks[language] || questionBanks["pt-BR"] || questionBanks.en || [];
+  const dataLanguage = toDataLanguage(language);
+  const bank = questionBanks[dataLanguage]
+    || questionBanks[toInterfaceLanguage(language)]
+    || questionBanks["pt-BR"]
+    || [];
   return normalizeQuestions(Array.isArray(bank) ? bank : []);
 }
 
@@ -506,7 +503,8 @@ function syncSelectedQuestionsToActiveLanguage() {
 }
 
 function setLanguage(nextLanguage) {
-  const normalized = nextLanguage === "en" ? "en" : "pt-BR";
+  if (!hasSecondaryLanguage()) return;
+  const normalized = toInterfaceLanguage(nextLanguage);
   if (settings.lang === normalized) return;
   settings.lang = normalized;
   saveSettings();
@@ -517,7 +515,58 @@ function setLanguage(nextLanguage) {
   saveCurrentExam(false, { automatic: true });
 }
 
+
+function applyExamConfigToDom() {
+  const appTitle = examConfig.appTitle || examConfig.appName;
+  if (appTitle) {
+    document.title = appTitle;
+    document.querySelector(".title-block h1")?.replaceChildren(document.createTextNode(appTitle));
+  }
+  if (examConfig.description) {
+    document.querySelector('meta[name="description"]')?.setAttribute("content", examConfig.description);
+  }
+  configureQuestionCountControl();
+  configureLanguageControls();
+  configureTopicSelection();
+  configureTimerVisibility();
+}
+
+function configureQuestionCountControl() {
+  const input = $("questionCount");
+  if (!input) return;
+  const counts = Array.isArray(examConfig.availableQuestionCounts) && examConfig.availableQuestionCounts.length
+    ? examConfig.availableQuestionCounts.map(Number).filter((item) => Number.isFinite(item)).sort((a, b) => a - b)
+    : [40];
+  const defaultCount = counts.includes(Number(examConfig.defaultQuestionCount)) ? Number(examConfig.defaultQuestionCount) : counts[0];
+  input.min = String(counts[0]);
+  input.max = String(counts[counts.length - 1]);
+  input.step = String(counts.length > 1 ? counts[1] - counts[0] : 1);
+  input.value = String(defaultCount);
+  input.disabled = examConfig.allowQuestionCountSelection === false;
+  state.questionCount = defaultCount;
+  const scale = document.querySelector(".slider-scale");
+  if (scale) scale.innerHTML = counts.map((count) => `<span>${escapeHtml(count)}</span>`).join("");
+}
+
+function configureLanguageControls() {
+  document.querySelectorAll(".lang-switch").forEach((button) => {
+    button.hidden = !hasSecondaryLanguage();
+  });
+}
+
+function configureTopicSelection() {
+  const topicField = $("openTopicsButton")?.closest(".field-block");
+  if (topicField) topicField.hidden = examConfig.allowTopicSelection === false;
+}
+
+function configureTimerVisibility() {
+  document.querySelectorAll("#timerPill").forEach((element) => {
+    element.hidden = examConfig.showTimer === false;
+  });
+}
+
 function initializeApp() {
+  applyExamConfigToDom();
   applyTheme();
   renderTopicSelector();
   attachEvents();
@@ -634,11 +683,11 @@ function attachEvents() {
 function updateQuestionCountSlider() {
   const input = $("questionCount");
   if (!input) return;
-  const value = Number(input.value || 40);
+  const value = Number(input.value || examConfig.defaultQuestionCount || 40);
   if ($("questionCountValue")) $("questionCountValue").textContent = String(value);
-  const min = Number(input.min || 10);
-  const max = Number(input.max || 60);
-  const pct = ((value - min) / (max - min)) * 100;
+  const min = Number(input.min || value);
+  const max = Number(input.max || value);
+  const pct = max === min ? 100 : ((value - min) / (max - min)) * 100;
   input.style.setProperty("--slider-progress", `${pct}%`);
 }
 
@@ -982,7 +1031,7 @@ function calculateScore() {
   const total = state.selectedQuestions.length;
   const incorrect = Math.max(0, total - correct - unanswered);
   const percentage = total ? Math.round((correct / total) * 100) : 0;
-  return { correct, incorrect, unanswered, total, percentage, passed: percentage >= 85, durationSeconds: state.elapsedSeconds };
+  return { correct, incorrect, unanswered, total, percentage, passed: percentage >= getPassingScore(), durationSeconds: state.elapsedSeconds };
 }
 
 function isCorrect(question, selected) {
@@ -1175,7 +1224,7 @@ function getTopicPerformance(showAll = false) {
 }
 
 function topicRowHtml(topic) {
-  const tone = topic.score < 60 ? "bad" : topic.score >= 85 ? "good" : "neutral";
+  const tone = topic.score < 60 ? "bad" : topic.score >= getPassingScore() ? "good" : "neutral";
   return `
     <article class="topic-row-v160 ${tone}">
       <div>
@@ -1368,7 +1417,7 @@ function resumeSavedExam() {
   const saved = getSavedExam();
   if (!saved) return;
   if (saved.language && saved.language !== getActiveLanguage()) {
-    settings.lang = saved.language === "en" ? "en" : "pt-BR";
+    settings.lang = toInterfaceLanguage(saved.language);
     saveSettings();
     setActiveQuestionBank();
     renderTopicSelector();
@@ -1550,7 +1599,7 @@ function escapeHtml(value) {
   }[char]));
 }
 
-loadQuestions()
+loadExamPackage()
   .then(initializeApp)
   .catch((error) => {
     applyTheme();

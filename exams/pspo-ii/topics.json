@@ -1,0 +1,172 @@
+{
+  "pt-BR": [
+    {
+      "id": "foundations",
+      "title": "Fundamentos",
+      "description": "Scrum Guide, empirismo, valores, accountabilities e Product Goal",
+      "topics": [
+        "Scrum Guide 2020",
+        "Empirismo",
+        "Scrum Values",
+        "Accountabilities",
+        "Product Goal",
+        "Revisão S1-S2",
+        "Fundamentos, Empirismo, Valores, Accountabilities e Product Goal"
+      ]
+    },
+    {
+      "id": "product-ownership",
+      "title": "Product Ownership",
+      "description": "Product Backlog, refinement, stakeholders, estratégia e descoberta",
+      "topics": [
+        "Product Backlog",
+        "Refinement",
+        "Stakeholders",
+        "Nexus básico",
+        "Customer Representative",
+        "Visionary",
+        "Experimenter",
+        "Influencer",
+        "Collaborator",
+        "Product Strategy",
+        "User Story Mapping",
+        "Product Backlog, Refinamento, Stakeholders e Nexus"
+      ]
+    },
+    {
+      "id": "stances",
+      "title": "Stances e anti-patterns",
+      "description": "Posturas do Product Owner, Decision Maker e anti-patterns",
+      "topics": [
+        "Decision Maker",
+        "Clerk / Story Writer",
+        "Manager / Project Manager",
+        "Subject Matter Expert / Gatekeeper",
+        "Revisão de Stances",
+        "As Posturas (Stances) do Product Owner",
+        "Posturas Malcompreendidas (Anti-Patterns) e Decision Maker"
+      ]
+    },
+    {
+      "id": "ebm",
+      "title": "EBM e Value Thinking",
+      "description": "KVAs, valor, outcome vs output, inovação e discovery",
+      "topics": [
+        "EBM Overview",
+        "Current Value",
+        "Unrealized Value",
+        "Time-to-Market",
+        "Ability to Innovate",
+        "outcome vs output",
+        "Discovery contínuo",
+        "Revisão EBM + Produto",
+        "Evidence-Based Management (EBM) e Value Thinking",
+        "outcome vs output, Discovery, Estratégia e User Story Mapping"
+      ]
+    },
+    {
+      "id": "practice",
+      "title": "Simulados e revisão",
+      "description": "Simulados parciais, finais, revisão de erros e pré-prova",
+      "topics": [
+        "Simulado parcial 1",
+        "Correção comentada",
+        "Simulado parcial 2",
+        "Crédito parcial",
+        "Open Assessments",
+        "Simulado final 1",
+        "Revisão de erros",
+        "Simulado final 2",
+        "Revisão leve",
+        "Pré-prova",
+        "Cenários Complexos, Nexus, Contratos e Julgamento",
+        "Simulado Final de Tensão e Julgamento Crítico"
+      ]
+    }
+  ],
+  "en-US": [
+    {
+      "id": "foundations",
+      "title": "Foundations",
+      "description": "Scrum Guide, empiricism, values, accountabilities, and Product Goal",
+      "topics": [
+        "Scrum Guide 2020",
+        "Empiricism",
+        "Scrum Values",
+        "Accountabilities",
+        "Product Goal",
+        "S1-S2 Review",
+        "Fundamentals, Empiricism, Scrum Values, Accountabilities, and Product Goal"
+      ]
+    },
+    {
+      "id": "product-ownership",
+      "title": "Product Ownership",
+      "description": "Product Backlog, refinement, stakeholders, strategy, and discovery",
+      "topics": [
+        "Product Backlog",
+        "Refinement",
+        "Stakeholders",
+        "Nexus Basics",
+        "Customer Representative",
+        "Visionary",
+        "Experimenter",
+        "Influencer",
+        "Collaborator",
+        "Product Strategy",
+        "User Story Mapping",
+        "Product Backlog, Refinement, Stakeholders, and Nexus"
+      ]
+    },
+    {
+      "id": "stances",
+      "title": "Stances and anti-patterns",
+      "description": "Product Owner stances, Decision Maker, and anti-patterns",
+      "topics": [
+        "Decision Maker",
+        "Clerk / Story Writer",
+        "Manager / Project Manager",
+        "Subject Matter Expert / Gatekeeper",
+        "Stances Review",
+        "Product Owner Stances",
+        "Misunderstood Stances, Anti-Patterns, and Decision Maker"
+      ]
+    },
+    {
+      "id": "ebm",
+      "title": "EBM and Value Thinking",
+      "description": "KVAs, value, outcome vs output, innovation, and discovery",
+      "topics": [
+        "EBM Overview",
+        "Current Value",
+        "Unrealized Value",
+        "Time-to-Market",
+        "Ability to Innovate",
+        "Outcome vs Output",
+        "Continuous Discovery",
+        "EBM + Product Review",
+        "Evidence-Based Management and Value Thinking",
+        "Outcome vs. Output, Discovery, Strategy, and User Story Mapping"
+      ]
+    },
+    {
+      "id": "practice",
+      "title": "Simulations and review",
+      "description": "Partial simulations, final simulations, error review, and pre-exam review",
+      "topics": [
+        "Partial Simulation 1",
+        "Commented Correction",
+        "Partial Simulation 2",
+        "Partial Credit",
+        "Open Assessments",
+        "Final Simulation 1",
+        "Error Review",
+        "Final Simulation 2",
+        "Light Review",
+        "Pre-Exam Review",
+        "Complex Scenarios, Nexus, Contracts, and Judgment",
+        "Final Simulation: Tension and Critical Judgment"
+      ]
+    }
+  ]
+}

@@ -1,12 +1,14 @@
-const CACHE_NAME = "pspo-ii-practice-v1.9.1";
+const CACHE_NAME = "pspo-ii-practice-v2.0.0";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
-  "./questions.json",
-  "./questions-data.js",
   "./manifest.json",
+  "./exams/pspo-ii/exam-config.json",
+  "./exams/pspo-ii/topics.json",
+  "./exams/pspo-ii/questions.pt-BR.json",
+  "./exams/pspo-ii/questions.en-US.json",
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
