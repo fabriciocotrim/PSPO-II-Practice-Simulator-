@@ -4,9 +4,9 @@ const EXAM_ID = RESOLVED_EXAM_PROFILE.activeExamId;
 const EXAM_BASE_PATH = RESOLVED_EXAM_PROFILE.examBasePath;
 
 const APP_VERSION = {
-  number: "2.1.0",
+  number: "2.2.0",
   date: "2026-05-17",
-  time: "12:00 BRT"
+  time: "18:30 BRT"
 };
 
 function buildStorageKeys(examId) {
@@ -45,6 +45,20 @@ const I18N = {
     savedSimulationTab: "Simulado interrompido",
     savedExamSubtitle: "Tentativa salva neste dispositivo.",
     historySubtitle: "Tentativas concluídas neste dispositivo.",
+    historyAttempts: "Tentativas",
+    averageScore: "Média",
+    bestScore: "Melhor",
+    latestScore: "Última",
+    historyReview: "Revisar",
+    deleteHistoryItem: "Excluir",
+    historyReviewUnavailable: "Revisão detalhada indisponível para esta tentativa antiga.",
+    confirmDeleteHistory: "Excluir tentativa",
+    confirmDeleteHistoryText: "Esta tentativa será removida do histórico. A análise será recalculada. Deseja continuar?",
+    confirmDeleteHistoryButton: "Excluir tentativa",
+    historyPreviousPage: "Anterior",
+    historyNextPage: "Próxima",
+    historyPageIndicator: "Página {current} de {total}",
+    historyPagination: "Paginação do histórico",
     formatTitle: "Formato",
     topicModalSubtitle: "Escolha grupos amplos.",
     applyTopics: "Aplicar tópicos",
@@ -171,6 +185,20 @@ const I18N = {
     savedSimulationTab: "Interrupted simulation",
     savedExamSubtitle: "Attempt saved locally on this device.",
     historySubtitle: "Completed attempts on this device.",
+    historyAttempts: "Attempts",
+    averageScore: "Average",
+    bestScore: "Best",
+    latestScore: "Latest",
+    historyReview: "Review",
+    deleteHistoryItem: "Delete",
+    historyReviewUnavailable: "Detailed review is unavailable for this older attempt.",
+    confirmDeleteHistory: "Delete attempt",
+    confirmDeleteHistoryText: "This attempt will be removed from history. Analytics will be recalculated. Continue?",
+    confirmDeleteHistoryButton: "Delete attempt",
+    historyPreviousPage: "Previous",
+    historyNextPage: "Next",
+    historyPageIndicator: "Page {current} of {total}",
+    historyPagination: "History pagination",
     formatTitle: "Format",
     topicModalSubtitle: "Choose broad groups.",
     applyTopics: "Apply topics",
@@ -309,7 +337,11 @@ const state = {
   lastResult: null,
   resultReviewFilters: [],
   resultReviewActiveId: null,
-  currentExamLanguage: null
+  currentExamLanguage: null,
+  historyPage: 1,
+  pendingHistoryDeleteId: null,
+  pendingHistoryDeleteIndex: null,
+  viewingHistoryAttempt: false
 };
 
 const $ = (id) => document.getElementById(id);
@@ -620,6 +652,16 @@ function attachEvents() {
     startSimulation();
   });
 
+  $("historyContainer")?.addEventListener("click", handleHistoryClick);
+  $("cancelDeleteHistoryButton")?.addEventListener("click", () => {
+    clearPendingHistoryDelete();
+    $("deleteHistoryDialog")?.close();
+  });
+  $("confirmDeleteHistoryButton")?.addEventListener("click", () => {
+    $("deleteHistoryDialog")?.close();
+    deletePendingHistoryAttempt();
+  });
+
   $("selectAllTopics").addEventListener("change", (event) => {
     document.querySelectorAll(".topic-group-check:not(:disabled)").forEach((input) => input.checked = event.target.checked);
     updateFilterWarning();
@@ -816,6 +858,7 @@ function startSimulation() {
   state.answers = {};
   state.unsure = {};
   state.finished = false;
+  state.viewingHistoryAttempt = false;
   state.elapsedSeconds = 0;
   state.currentExamId = `exam-${Date.now()}`;
   state.currentExamLanguage = getActiveLanguage();
@@ -1278,7 +1321,8 @@ function showFilteredReview() {
 }
 
 function startNewAttemptFromResult() {
-  clearCurrentExam();
+  if (!state.viewingHistoryAttempt) clearCurrentExam();
+  state.viewingHistoryAttempt = false;
   setScreen("home");
   switchHomeTab("config");
   renderResumeCard();
@@ -1286,7 +1330,8 @@ function startNewAttemptFromResult() {
 }
 
 function goHomeFromResult() {
-  clearCurrentExam();
+  if (!state.viewingHistoryAttempt) clearCurrentExam();
+  state.viewingHistoryAttempt = false;
   setScreen("home");
   switchHomeTab("config");
   renderResumeCard();
@@ -1513,49 +1558,249 @@ function renderResumeCard() {
 function saveAttemptHistory(result) {
   const history = getHistory();
   const attempt = {
+    attemptId: state.currentExamId || `attempt-${Date.now()}`,
     dateTime: new Date().toISOString(),
     score: result.percentage,
     correct: result.correct,
     incorrect: result.incorrect,
     unanswered: result.unanswered,
     durationSeconds: result.durationSeconds,
-    topics: state.selectedTopics,
+    topics: [...state.selectedTopics],
     questionCount: state.questionCount,
     language: state.currentExamLanguage || getActiveLanguage(),
     examId: EXAM_ID,
-    appVersion: APP_VERSION.number
+    appVersion: APP_VERSION.number,
+    result: { ...result },
+    reviewSnapshot: {
+      selectedQuestions: state.selectedQuestions.map((question) => ({ ...question, options: sortOptions(question.options || []) })),
+      answers: clonePlainObject(state.answers),
+      unsure: clonePlainObject(state.unsure),
+      selectedTopics: [...state.selectedTopics],
+      elapsedSeconds: state.elapsedSeconds,
+      currentExamId: state.currentExamId,
+      language: state.currentExamLanguage || getActiveLanguage()
+    }
   };
   history.unshift(attempt);
-  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history.slice(0, 50)));
-  localStorage.setItem(STORAGE_KEYS.lastAttempt, JSON.stringify(attempt));
+  const limitedHistory = history.slice(0, 50);
+  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(limitedHistory));
+  localStorage.setItem(STORAGE_KEYS.lastAttempt, JSON.stringify(limitedHistory[0]));
 }
 
 function loadAttemptHistory() {
-  const history = getHistory();
+  const history = getHistory().map(normalizeHistoryItem).filter(Boolean);
   const container = $("historyContainer");
   if (!container) return;
   if (!history.length) {
+    state.historyPage = 1;
     container.className = "history-empty";
     container.textContent = t("noHistory");
     return;
   }
-  container.className = "history-cards";
-  container.innerHTML = history.slice(0, 8).map((item) => `
-    <article class="history-card-v150">
-      <div class="history-score">${item.score}%</div>
-      <div class="history-main">
-        <div class="history-meta"><strong>${item.questionCount}</strong> ${t("questions")}</div>
-        <div class="history-date">${formatDate(item.dateTime)}</div>
-        <div class="history-topics">${escapeHtml((item.topics || []).slice(0, 5).join(", "))}${(item.topics || []).length > 5 ? "…" : ""}</div>
-      </div>
-      <div class="history-version">${escapeHtml(item.appVersion || "-")}</div>
-    </article>
-  `).join("");
+  const totalPages = Math.max(1, Math.ceil(history.length / 5));
+  state.historyPage = Math.min(Math.max(Number(state.historyPage) || 1, 1), totalPages);
+  const start = (state.historyPage - 1) * 5;
+  const pageItems = history.slice(start, start + 5);
+  container.className = "history-dashboard-v220";
+  container.innerHTML = `${renderHistorySummary(history)}${renderHistoryList(pageItems)}${renderHistoryPagination(totalPages)}`;
 }
 
 function getHistory() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.history)) || []; }
-  catch { return []; }
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.history));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function normalizeHistoryItem(item, index = 0) {
+  if (!item || typeof item !== "object") return null;
+  const result = item.result && typeof item.result === "object" ? item.result : {};
+  const reviewSnapshot = item.reviewSnapshot && typeof item.reviewSnapshot === "object" ? item.reviewSnapshot : null;
+  const questionCount = Number(item.questionCount ?? result.total ?? reviewSnapshot?.selectedQuestions?.length ?? 0);
+  const score = Number(item.score ?? item.percentage ?? result.percentage ?? 0);
+  return {
+    ...item,
+    attemptId: item.attemptId || item.id || `legacy-${index}-${item.dateTime || "unknown"}`,
+    historyIndex: index,
+    score: Number.isFinite(score) ? Math.round(score) : 0,
+    correct: Number(item.correct ?? result.correct ?? 0),
+    incorrect: Number(item.incorrect ?? result.incorrect ?? 0),
+    unanswered: Number(item.unanswered ?? result.unanswered ?? 0),
+    durationSeconds: Number(item.durationSeconds ?? result.durationSeconds ?? reviewSnapshot?.elapsedSeconds ?? 0),
+    questionCount: Number.isFinite(questionCount) ? questionCount : 0,
+    language: item.language || reviewSnapshot?.language || "pt-BR",
+    topics: Array.isArray(item.topics) ? item.topics : [],
+    result,
+    reviewSnapshot
+  };
+}
+
+function renderHistorySummary(history) {
+  const scores = history.map((item) => item.score).filter((score) => Number.isFinite(score));
+  const count = scores.length;
+  const average = count ? Math.round(scores.reduce((sum, score) => sum + score, 0) / count) : 0;
+  const best = count ? Math.max(...scores) : 0;
+  const latest = count ? scores[0] : 0;
+  return `
+    <section class="history-summary-grid-v220" aria-label="${escapeHtml(t("historyAttempts"))}">
+      ${historySummaryCardHtml(t("historyAttempts"), String(count))}
+      ${historySummaryCardHtml(t("averageScore"), `${average}%`)}
+      ${historySummaryCardHtml(t("bestScore"), `${best}%`)}
+      ${historySummaryCardHtml(t("latestScore"), `${latest}%`)}
+    </section>
+  `;
+}
+
+function historySummaryCardHtml(label, value) {
+  return `<div class="history-summary-card-v220"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
+}
+
+function renderHistoryList(history) {
+  return `<section class="history-list-v220" aria-label="${escapeHtml(t("recentHistory"))}">${history.map((item) => historyItemHtml(item)).join("")}</section>`;
+}
+
+function historyItemHtml(item) {
+  const canReview = hasHistoryReviewData(item);
+  const topics = (item.topics || []).slice(0, 5).join(", ");
+  return `
+    <article class="history-item-v220">
+      <div class="history-score-v220">${escapeHtml(item.score)}%</div>
+      <div class="history-main-v220">
+        <div class="history-meta-v220"><strong>${escapeHtml(item.questionCount)}</strong> ${escapeHtml(t("questions"))}</div>
+        <div class="history-date-v220">${escapeHtml(formatDate(item.dateTime))}</div>
+        <div class="history-topics-v220">${escapeHtml(topics)}${(item.topics || []).length > 5 ? "…" : ""}</div>
+        ${canReview ? "" : `<div class="history-fallback-v220">${escapeHtml(t("historyReviewUnavailable"))}</div>`}
+      </div>
+      <div class="history-version-v220">${escapeHtml(item.appVersion || "-")}</div>
+      <div class="history-actions-v220">
+        <button type="button" class="secondary history-review-button-v220" data-history-action="review" data-history-id="${escapeHtml(item.attemptId)}" data-history-index="${escapeHtml(item.historyIndex)}" ${canReview ? "" : "disabled"}>${escapeHtml(t("historyReview"))}</button>
+        <button type="button" class="secondary icon-only-danger history-delete-button-v220" data-history-action="delete" data-history-id="${escapeHtml(item.attemptId)}" data-history-index="${escapeHtml(item.historyIndex)}" title="${escapeHtml(t("deleteHistoryItem"))}" aria-label="${escapeHtml(t("deleteHistoryItem"))}">
+          ${svgIcon("trash")}
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function renderHistoryPagination(totalPages) {
+  if (totalPages <= 1) return "";
+  return `
+    <nav class="history-pagination-v220" aria-label="${escapeHtml(t("historyPagination"))}">
+      <button type="button" class="secondary" data-history-action="page-prev" ${state.historyPage <= 1 ? "disabled" : ""}>${escapeHtml(t("historyPreviousPage"))}</button>
+      <span>${escapeHtml(t("historyPageIndicator", { current: state.historyPage, total: totalPages }))}</span>
+      <button type="button" class="secondary" data-history-action="page-next" ${state.historyPage >= totalPages ? "disabled" : ""}>${escapeHtml(t("historyNextPage"))}</button>
+    </nav>
+  `;
+}
+
+function handleHistoryClick(event) {
+  const button = event.target.closest("[data-history-action]");
+  if (!button) return;
+  const action = button.dataset.historyAction;
+  const id = button.dataset.historyId;
+  const index = Number(button.dataset.historyIndex);
+  if (action === "review") reviewHistoryAttempt(id, index);
+  if (action === "delete") openDeleteHistoryDialog(id, index);
+  if (action === "page-prev") {
+    state.historyPage = Math.max(1, (Number(state.historyPage) || 1) - 1);
+    loadAttemptHistory();
+  }
+  if (action === "page-next") {
+    state.historyPage = (Number(state.historyPage) || 1) + 1;
+    loadAttemptHistory();
+  }
+}
+
+function hasHistoryReviewData(item) {
+  return Array.isArray(item?.reviewSnapshot?.selectedQuestions) && item.reviewSnapshot.selectedQuestions.length > 0;
+}
+
+function reviewHistoryAttempt(id, index) {
+  const item = findHistoryItem(id, index);
+  if (!item || !hasHistoryReviewData(item)) {
+    alert(t("historyReviewUnavailable"));
+    return;
+  }
+  const snapshot = item.reviewSnapshot;
+  if (item.language && toInterfaceLanguage(item.language) !== getActiveLanguage()) {
+    settings.lang = toInterfaceLanguage(item.language);
+    saveSettings();
+    setActiveQuestionBank();
+    renderTopicSelector();
+    applyLanguage();
+  }
+  state.selectedQuestions = snapshot.selectedQuestions.map((question) => ({ ...question, options: sortOptions(question.options || []) }));
+  state.currentIndex = 0;
+  state.answers = snapshot.answers || {};
+  state.unsure = snapshot.unsure || {};
+  state.selectedTopics = snapshot.selectedTopics || item.topics || [];
+  state.questionCount = item.questionCount || state.selectedQuestions.length;
+  state.elapsedSeconds = item.durationSeconds || snapshot.elapsedSeconds || 0;
+  state.currentExamId = snapshot.currentExamId || item.attemptId;
+  state.currentExamLanguage = item.language || snapshot.language || getActiveLanguage();
+  state.lastSavedAt = null;
+  state.finished = true;
+  state.viewingHistoryAttempt = true;
+  state.dirty = false;
+  state.resultReviewFilters = [];
+  state.resultReviewActiveId = null;
+  state.lastResult = buildResultFromHistoryItem(item);
+  setScreen("result");
+  renderResults(state.lastResult);
+}
+
+function buildResultFromHistoryItem(item) {
+  return {
+    correct: Number(item.correct) || 0,
+    incorrect: Number(item.incorrect) || 0,
+    unanswered: Number(item.unanswered) || 0,
+    total: Number(item.questionCount) || Number(item.result?.total) || 0,
+    percentage: Number(item.score) || 0,
+    passed: Number(item.score) >= getPassingScore(),
+    durationSeconds: Number(item.durationSeconds) || 0
+  };
+}
+
+function findHistoryItem(id, index) {
+  const history = getHistory().map(normalizeHistoryItem).filter(Boolean);
+  return history.find((item) => item.attemptId === id) || history[index] || null;
+}
+
+function openDeleteHistoryDialog(id, index) {
+  state.pendingHistoryDeleteId = id || null;
+  state.pendingHistoryDeleteIndex = Number.isFinite(index) ? index : null;
+  const dialog = $("deleteHistoryDialog");
+  if (dialog && typeof dialog.showModal === "function") {
+    dialog.showModal();
+    return;
+  }
+  if (confirm(t("confirmDeleteHistoryText"))) deletePendingHistoryAttempt();
+}
+
+function clearPendingHistoryDelete() {
+  state.pendingHistoryDeleteId = null;
+  state.pendingHistoryDeleteIndex = null;
+}
+
+function deletePendingHistoryAttempt() {
+  const id = state.pendingHistoryDeleteId;
+  const index = state.pendingHistoryDeleteIndex;
+  const history = getHistory();
+  const nextHistory = history.filter((item, i) => {
+    if (id && item && (item.attemptId || item.id)) return (item.attemptId || item.id) !== id;
+    return i !== index;
+  });
+  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(nextHistory));
+  if (nextHistory.length) localStorage.setItem(STORAGE_KEYS.lastAttempt, JSON.stringify(nextHistory[0]));
+  else localStorage.removeItem(STORAGE_KEYS.lastAttempt);
+  clearPendingHistoryDelete();
+  loadAttemptHistory();
+}
+
+function clonePlainObject(value) {
+  return JSON.parse(JSON.stringify(value || {}));
 }
 
 function setScreen(name) {
