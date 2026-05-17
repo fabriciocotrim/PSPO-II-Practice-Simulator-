@@ -15,9 +15,9 @@ const TOPIC_GROUPS = [
 ];
 
 const APP_VERSION = {
-  number: "1.7.2",
-  date: "2026-05-16",
-  time: "21:18 BRT"
+  number: "1.8.0",
+  date: "2026-05-17",
+  time: "06:21 BRT"
 };
 
 const STORAGE_KEYS = {
@@ -50,9 +50,6 @@ const I18N = {
     selectTopics: "Selecionar temas",
     selectAll: "Selecionar todos",
     questionCount: "Quantidade de questões",
-    feedbackMode: "Modo de feedback",
-    immediateFeedback: "Feedback imediato",
-    finalReviewOnly: "Revisão apenas ao final",
     startSimulation: "Iniciar simulado",
     savedExam: "Simulado interrompido",
     resumeSimulation: "Retomar simulado",
@@ -103,8 +100,6 @@ const I18N = {
     cancel: "Cancelar",
     confirmFinishButton: "Confirmar encerramento",
     confirmExitButton: "Confirmar saída",
-    back: "Voltar",
-    proceed: "Prosseguir",
     correct: "Correta",
     incorrect: "Incorreta",
     notAnswered: "Não respondida",
@@ -146,7 +141,6 @@ const I18N = {
     savedTabTooltip: "Simulado interrompido",
     historyTabTooltip: "Histórico",
     questionCountTooltip: "Quantidade de questões",
-    feedbackModeTooltip: "Modo de feedback",
     topicButtonTooltip: "Selecionar tópicos",
     closeTooltip: "Fechar",
     topicsGroupTooltip: "Temas",
@@ -181,9 +175,6 @@ const I18N = {
     selectTopics: "Select topics",
     selectAll: "Select all",
     questionCount: "Number of questions",
-    feedbackMode: "Feedback mode",
-    immediateFeedback: "Immediate feedback",
-    finalReviewOnly: "Final review only",
     startSimulation: "Start simulation",
     savedExam: "Interrupted simulation",
     resumeSimulation: "Resume simulation",
@@ -234,8 +225,6 @@ const I18N = {
     cancel: "Cancel",
     confirmFinishButton: "Confirm finish",
     confirmExitButton: "Confirm exit",
-    back: "Back",
-    proceed: "Proceed",
     correct: "Correct",
     incorrect: "Incorrect",
     notAnswered: "Unanswered",
@@ -277,7 +266,6 @@ const I18N = {
     savedTabTooltip: "Interrupted simulation",
     historyTabTooltip: "History",
     questionCountTooltip: "Number of questions",
-    feedbackModeTooltip: "Feedback mode",
     topicButtonTooltip: "Select topics",
     closeTooltip: "Close",
     topicsGroupTooltip: "Topics",
@@ -300,7 +288,6 @@ const state = {
   currentIndex: 0,
   answers: {},
   unsure: {},
-  feedbackMode: "final",
   selectedTopics: [],
   questionCount: 40,
   finished: false,
@@ -309,7 +296,6 @@ const state = {
   currentExamId: null,
   lastSavedAt: null,
   dirty: false,
-  pendingAction: null,
   lastResult: null,
   resultReviewFilters: [],
   resultReviewActiveId: null
@@ -403,7 +389,6 @@ function updateStaticTooltips() {
   setTooltip("#savedTab", "savedTabTooltip");
   setTooltip("#historyTab", "historyTabTooltip");
   setTooltip("#questionCount", "questionCountTooltip", false);
-  setTooltip(".segmented-actions", "feedbackModeTooltip", false);
   setTooltip("#openTopicsButton", "topicButtonTooltip");
   setTooltip("#resultHomeButton", "resultHomeTooltip");
   setTooltip("#closeTopicsButton", "closeTooltip");
@@ -438,7 +423,6 @@ function initializeApp() {
   attachEvents();
   applyLanguage();
   updateQuestionCountSlider();
-  setFeedbackMode($("feedbackMode")?.value || "final");
   updateTopicSummary();
   updateQuestionBankCount();
   updateFilterWarning();
@@ -493,9 +477,6 @@ function attachEvents() {
     updateFilterWarning();
   });
 
-  document.querySelectorAll(".segment-button[data-feedback]").forEach((button) => {
-    button.addEventListener("click", () => setFeedbackMode(button.dataset.feedback));
-  });
 
   $("openTopicsButton")?.addEventListener("click", () => {
     const dialog = $("topicsDialog");
@@ -541,11 +522,6 @@ function attachEvents() {
     exitWithoutSaving();
   });
 
-  $("feedbackBackButton").addEventListener("click", () => $("feedbackDialog").close());
-  $("feedbackProceedButton").addEventListener("click", () => {
-    $("feedbackDialog").close();
-    proceedAfterFeedback();
-  });
 
   $("newAttemptButton")?.addEventListener("click", startNewAttemptFromResult);
   $("resultHomeButton")?.addEventListener("click", goHomeFromResult);
@@ -555,17 +531,6 @@ function attachEvents() {
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") saveCurrentExam(false, { automatic: true });
   });
-}
-
-function setFeedbackMode(mode) {
-  const safeMode = mode === "immediate" ? "immediate" : "final";
-  if ($("feedbackMode")) $("feedbackMode").value = safeMode;
-  document.querySelectorAll(".segment-button[data-feedback]").forEach((button) => {
-    const active = button.dataset.feedback === safeMode;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-  updateFilterWarning();
 }
 
 function updateQuestionCountSlider() {
@@ -679,7 +644,6 @@ function filterQuestions(selectedTopics) {
 function startSimulation() {
   state.selectedTopics = getSelectedTopics();
   state.questionCount = Number($("questionCount").value);
-  state.feedbackMode = $("feedbackMode").value;
   const pool = filterQuestions(state.selectedTopics);
   if (pool.length < state.questionCount) {
     updateFilterWarning();
@@ -697,7 +661,6 @@ function startSimulation() {
   state.currentExamId = `exam-${Date.now()}`;
   state.lastSavedAt = null;
   state.dirty = false;
-  state.pendingAction = null;
   setScreen("exam");
   startTimer();
   saveCurrentExam(true);
@@ -725,7 +688,6 @@ function renderQuestion() {
   $("examTitle").textContent = `${t("question")} ${state.currentIndex + 1} ${t("of")} ${state.selectedQuestions.length}`;
   $("progressPill").textContent = `${state.currentIndex + 1}/${state.selectedQuestions.length} · ${question.type === "multiple" ? "multi" : "single"}`;
   $("timerPill").textContent = formatDuration(state.elapsedSeconds);
-  $("examModeLabel").textContent = state.feedbackMode === "immediate" ? t("immediateFeedback") : t("finalReviewOnly");
   $("prevButton").disabled = state.currentIndex === 0;
   $("prevButton").textContent = "←";
   $("nextButton").textContent = "→";
@@ -818,50 +780,6 @@ function saveAnswerFromDom() {
 function handleNextQuestion() {
   saveAnswerFromDom();
   if (state.currentIndex >= state.selectedQuestions.length - 1) return;
-  if (state.feedbackMode === "immediate") {
-    state.pendingAction = "next";
-    openFeedbackDialog();
-    return;
-  }
-  moveQuestion(1);
-}
-
-function openFeedbackDialog() {
-  const question = state.selectedQuestions[state.currentIndex];
-  const selected = state.answers[question.id] || [];
-  const answered = selected.length > 0;
-  const correct = answered && isCorrect(question, selected);
-  const title = !answered ? t("notAnswered") : (correct ? t("correct") : t("incorrect"));
-  const statusClass = !answered ? "unanswered-feedback" : (correct ? "correct" : "incorrect");
-
-  const optionsHtml = sortOptions(question.options || []).map((option) => {
-    const klass = optionHighlightClass(question, option.id, selected);
-    return `<div class="option-row ${klass}"><span><strong>${escapeHtml(option.id)})</strong> ${escapeHtml(option.text)}</span></div>`;
-  }).join("");
-
-  $("feedbackDialogTitle").textContent = title;
-  $("feedbackDialogContent").innerHTML = `
-    <div class="feedback-box ${statusClass}">
-      <div class="feedback-result"><strong>${escapeHtml(title)}</strong></div>
-      <div class="review-label">${t("correctAnswer")}</div>
-      <div>${escapeHtml(question.correctAnswers.join(", "))}</div>
-      <div class="options feedback-options">${optionsHtml}</div>
-      <div class="review-label">${t("explanation")}</div>
-      <div>${escapeHtml(question.explanation)}</div>
-    </div>
-  `;
-  const dialog = $("feedbackDialog");
-  if (typeof dialog.showModal === "function") dialog.showModal();
-  else alert(`${title}\n\n${question.explanation}`);
-}
-
-function proceedAfterFeedback() {
-  if (state.pendingAction === "finish") {
-    state.pendingAction = null;
-    finishExam();
-    return;
-  }
-  state.pendingAction = null;
   moveQuestion(1);
 }
 
@@ -947,7 +865,6 @@ function exitWithoutSaving() {
   state.currentIndex = 0;
   state.answers = {};
   state.unsure = {};
-  state.pendingAction = null;
   state.dirty = false;
   setScreen("home");
   switchHomeTab("config");
@@ -1322,7 +1239,6 @@ function saveCurrentExam(force = false, options = {}) {
     currentIndex: state.currentIndex,
     answers: state.answers,
     unsure: state.unsure,
-    feedbackMode: state.feedbackMode,
     selectedTopics: state.selectedTopics,
     questionCount: state.questionCount,
     elapsedSeconds: state.elapsedSeconds,
@@ -1355,7 +1271,6 @@ function resumeSavedExam() {
   state.currentIndex = saved.currentIndex || 0;
   state.answers = saved.answers || {};
   state.unsure = saved.unsure || {};
-  state.feedbackMode = saved.feedbackMode || "final";
   state.selectedTopics = saved.selectedTopics || [];
   state.questionCount = saved.questionCount || saved.selectedQuestions.length;
   state.elapsedSeconds = saved.elapsedSeconds || 0;
@@ -1430,7 +1345,6 @@ function saveAttemptHistory(result) {
     durationSeconds: result.durationSeconds,
     topics: state.selectedTopics,
     questionCount: state.questionCount,
-    feedbackMode: state.feedbackMode,
     appVersion: APP_VERSION.number
   };
   history.unshift(attempt);
@@ -1452,7 +1366,7 @@ function loadAttemptHistory() {
     <article class="history-card-v150">
       <div class="history-score">${item.score}%</div>
       <div class="history-main">
-        <div class="history-meta"><strong>${item.questionCount}</strong> ${t("questions")} · ${item.feedbackMode === "immediate" ? t("immediateFeedback") : t("finalReviewOnly")}</div>
+        <div class="history-meta"><strong>${item.questionCount}</strong> ${t("questions")}</div>
         <div class="history-date">${formatDate(item.dateTime)}</div>
         <div class="history-topics">${escapeHtml((item.topics || []).slice(0, 5).join(", "))}${(item.topics || []).length > 5 ? "…" : ""}</div>
       </div>

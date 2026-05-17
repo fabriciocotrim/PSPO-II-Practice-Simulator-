@@ -238,7 +238,6 @@ button:disabled, .secondary:disabled, .primary:disabled { background: #64748b !i
 .compact-exam-topline h2 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.8rem); }
 .save-line { margin: .25rem 0 0; font-size: .78rem; font-weight: 800; }
 .exam-meta-panel { display: grid; justify-items: end; gap: .22rem; }
-.mode-label { margin-top: .1rem; }
 .top-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .5rem; margin: .7rem 0 .55rem; }
 .top-actions button { min-height: 38px; padding: .55rem .65rem; }
 .exam-controls { display: grid; grid-template-columns: 1fr; gap: .5rem; margin: .6rem 0; background: var(--surface-soft); padding: .65rem; border-radius: 16px; border: 1px solid var(--line); }
@@ -252,12 +251,6 @@ button:disabled, .secondary:disabled, .primary:disabled { background: #64748b !i
 .option-row input { margin-top: .18rem; flex: 0 0 auto; }
 .option-row.correct { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
 .option-row.incorrect { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
-.feedback-box { margin-top: .4rem; border-radius: 16px; padding: .85rem; border: 1px solid var(--line); }
-.feedback-box.correct { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
-.feedback-box.incorrect { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); }
-.feedback-box.unanswered-feedback { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn-border); }
-.feedback-result { margin-bottom: .55rem; font-size: 1.05rem; }
-.feedback-options { margin: .65rem 0; }
 .nav-buttons { display: grid; grid-template-columns: 1fr; gap: .55rem; margin-top: .75rem; }
 .nav-buttons button { min-height: 44px; }
 .unsure-active, #unsureButton.unsure-active { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn-border); }
@@ -279,7 +272,6 @@ button:disabled, .secondary:disabled, .primary:disabled { background: #64748b !i
 .modal::backdrop { background: rgba(15,23,42,.55); }
 .modal h2 { margin-top: 0; }
 .modal-actions { display: grid; gap: .6rem; margin-top: .85rem; }
-.feedback-modal { max-width: 720px; }
 
 html[data-theme="dark"] .secondary,
 html[data-theme="dark"] button.secondary,
@@ -1757,7 +1749,7 @@ html[data-theme="dark"] #unsureButton.unsure-active {
   border-color: var(--accent-line) !important;
 }
 
-/* Feedback and review states keep correctness visible but aligned to palette. */
+/* Review states keep correctness visible but aligned to palette. */
 .option-row.correct {
   background: var(--ok-bg) !important;
   color: var(--ok-text) !important;
@@ -1767,21 +1759,6 @@ html[data-theme="dark"] #unsureButton.unsure-active {
   background: var(--danger-bg) !important;
   color: var(--danger-text) !important;
   border-color: var(--danger-border) !important;
-}
-.feedback-box.correct {
-  background: var(--ok-bg) !important;
-  color: var(--ok-text) !important;
-  border-color: var(--ok-border) !important;
-}
-.feedback-box.incorrect {
-  background: var(--danger-bg) !important;
-  color: var(--danger-text) !important;
-  border-color: var(--danger-border) !important;
-}
-.feedback-box.unanswered-feedback {
-  background: var(--warn-bg) !important;
-  color: var(--warn-text) !important;
-  border-color: var(--warn-border) !important;
 }
 
 /* Remove bank size from production footer; footer remains for build metadata only. */
@@ -1998,10 +1975,6 @@ body[data-screen="exam"] #nextButton.nav-icon-button {
     flex-wrap: wrap !important;
     gap: 6px !important;
     max-width: 210px !important;
-  }
-
-  body[data-screen="exam"] .mode-label {
-    display: none !important;
   }
 
   body[data-screen="exam"] .pills {
@@ -2499,14 +2472,7 @@ html[data-theme="dark"] .resume-box-v150 {
   font-weight: 750;
 }
 
-.segmented-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
-}
 
-.segment-button,
 .topic-summary-button {
   min-height: 44px;
   border: 1px solid var(--line);
@@ -2516,14 +2482,12 @@ html[data-theme="dark"] .resume-box-v150 {
   font-weight: 800;
 }
 
-.segment-button.active,
 .start-button-v150 {
   background: #1c1917;
   border-color: #1c1917;
   color: #fff;
 }
 
-html[data-theme="dark"] .segment-button.active,
 html[data-theme="dark"] .start-button-v150 {
   background: #3f3f46;
   border-color: #52525b;

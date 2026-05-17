@@ -4,7 +4,7 @@ Simulador independente para prática da certificação PSPO II.
 
 ## Versão
 
-**1.7.2** — 2026-05-16 — 21:18 BRT
+**1.8.0** — 2026-05-17 — 06:21 BRT
 
 ## Características
 
@@ -14,8 +14,7 @@ Simulador independente para prática da certificação PSPO II.
 - Banco de questões em `questions.json`.
 - Seleção por grupos de temas, com refinamento em modal.
 - Simulados com 10, 20, 30, 40, 50 ou 60 questões.
-- Feedback imediato agora exibido em modal ao clicar em próxima questão.
-- Modo revisão apenas ao final.
+- Correção concentrada na revisão final/focada.
 - Cronômetro progressivo.
 - Botão Salvar.
 - Botão Sair com confirmação de perda de alterações não salvas.
@@ -24,6 +23,25 @@ Simulador independente para prática da certificação PSPO II.
 - PWA básica com cache offline.
 - Switches visuais no padrão botão deslizante para idioma e tema.
 
+
+## Versão 1.8.0
+
+Alterações principais:
+
+- Remove a funcionalidade de feedback imediato.
+- Remove a seção “Modo de feedback” da tela inicial em desktop e mobile.
+- Remove o indicador/toggle de feedback imediato da tela do simulado.
+- Remove o modal de feedback imediato e sua lógica associada.
+- Mantém a correção concentrada na revisão final/focada.
+- Preserva o layout aprovado da v1.7.2 em light mode e dark mode.
+- Mantém `questions.json` e `questions-data.js` sem alterações.
+- Cache PWA atualizado para v1.8.0.
+
+URL de teste:
+
+```text
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=1.8.0
+```
 
 ## Versão 1.7.2
 
