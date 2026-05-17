@@ -1,8 +1,11 @@
-const CACHE_NAME = "pspo-ii-practice-v2.0.1";
+const CACHE_NAME = "pspo-ii-practice-v2.1.0";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
+  "./app/app-profile.js",
+  "./data/exam-repository.js",
+  "./data/question-repository.js",
   "./app.js",
   "./manifest.json",
   "./exams/pspo-ii/exam-config.json",

@@ -1,18 +1,39 @@
-const EXAM_ID = "pspo-ii";
-const EXAM_BASE_PATH = `exams/${EXAM_ID}`;
+const APP_PROFILE = Object.freeze(window.APP_PROFILE || { activeExamId: "default", examBasePath: "exams/default" });
+const RESOLVED_EXAM_PROFILE = Object.freeze(window.ExamRepository.resolveProfile(APP_PROFILE));
+const EXAM_ID = RESOLVED_EXAM_PROFILE.activeExamId;
+const EXAM_BASE_PATH = RESOLVED_EXAM_PROFILE.examBasePath;
 
 const APP_VERSION = {
-  number: "2.0.1",
+  number: "2.1.0",
   date: "2026-05-17",
-  time: "10:44 BRT"
+  time: "12:00 BRT"
 };
 
-const STORAGE_KEYS = {
-  settings: "pspoSettings",
-  history: "pspoAttemptHistory",
-  lastAttempt: "pspoLastAttempt",
-  currentExam: "pspoCurrentExam"
-};
+function buildStorageKeys(examId) {
+  return {
+    settings: `${examId}:settings`,
+    history: `${examId}:attemptHistory`,
+    lastAttempt: `${examId}:lastAttempt`,
+    currentExam: `${examId}:currentExam`
+  };
+}
+
+const STORAGE_KEYS = Object.freeze(buildStorageKeys(EXAM_ID));
+const LEGACY_STORAGE_KEYS = Object.freeze(APP_PROFILE.legacyStorageKeys || {});
+
+function migrateLegacyStorage() {
+  try {
+    if (!window.localStorage) return;
+    Object.entries(LEGACY_STORAGE_KEYS).forEach(([name, legacyKey]) => {
+      const targetKey = STORAGE_KEYS[name];
+      if (!legacyKey || !targetKey || localStorage.getItem(targetKey) !== null) return;
+      const legacyValue = localStorage.getItem(legacyKey);
+      if (legacyValue !== null) localStorage.setItem(targetKey, legacyValue);
+    });
+  } catch {}
+}
+
+migrateLegacyStorage();
 
 const I18N = {
   "pt-BR": {
@@ -391,12 +412,6 @@ let examConfig = {};
 let topicGroupsByLanguage = {};
 let questionBanks = {};
 
-async function fetchExamJson(path) {
-  const response = await fetch(path, { cache: "no-store" });
-  if (!response.ok) throw new Error(t("cannotLoadQuestions"));
-  return response.json();
-}
-
 function getConfiguredLanguages() {
   return Array.isArray(examConfig.supportedLanguages) && examConfig.supportedLanguages.length
     ? examConfig.supportedLanguages
@@ -438,20 +453,17 @@ function getTopicGroups() {
 }
 
 async function loadExamConfig() {
-  examConfig = await fetchExamJson(`${EXAM_BASE_PATH}/exam-config.json`);
+  examConfig = await window.ExamRepository.loadConfig(APP_PROFILE, t("cannotLoadQuestions"));
   return examConfig;
 }
 
 async function loadTopics() {
-  topicGroupsByLanguage = await fetchExamJson(`${EXAM_BASE_PATH}/topics.json`);
+  topicGroupsByLanguage = await window.ExamRepository.loadTopics(APP_PROFILE, t("cannotLoadQuestions"));
   return topicGroupsByLanguage;
 }
 
 async function loadQuestions() {
-  questionBanks = {};
-  await Promise.all(getConfiguredLanguages().map(async (language) => {
-    questionBanks[language] = await fetchExamJson(`${EXAM_BASE_PATH}/questions.${language}.json`);
-  }));
+  questionBanks = await window.QuestionRepository.loadBanks(APP_PROFILE, getConfiguredLanguages(), t("cannotLoadQuestions"));
   return setActiveQuestionBank();
 }
 
@@ -1391,6 +1403,7 @@ function saveCurrentExam(force = false, options = {}) {
     questionCount: state.questionCount,
     elapsedSeconds: state.elapsedSeconds,
     currentExamId: state.currentExamId,
+    examId: EXAM_ID,
     language: state.currentExamLanguage || getActiveLanguage(),
     savedAt: new Date().toISOString(),
     appVersion: APP_VERSION.number
@@ -1509,6 +1522,7 @@ function saveAttemptHistory(result) {
     topics: state.selectedTopics,
     questionCount: state.questionCount,
     language: state.currentExamLanguage || getActiveLanguage(),
+    examId: EXAM_ID,
     appVersion: APP_VERSION.number
   };
   history.unshift(attempt);
