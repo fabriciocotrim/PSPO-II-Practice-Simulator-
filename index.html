@@ -99,8 +99,7 @@
         <section id="resumeScreen" class="resume-box-v150" aria-labelledby="resumeTitle" hidden>
           <div class="panel-title-row">
             <div>
-              <h3 id="resumeTitle" data-i18n="savedExam">Simulado interrompido</h3>
-              <p class="muted-line" data-i18n="savedExamSubtitle">Tentativa salva neste dispositivo.</p>
+              <h3 id="resumeTitle" data-i18n="savedExam">Detalhes do simulado</h3>
             </div>
           </div>
           <div id="resumeContainer"></div>
@@ -109,12 +108,6 @@
 
       <div id="historyPanel" class="tab-panel" role="tabpanel" aria-labelledby="historyTab" hidden>
         <section class="history-panel-v150">
-          <div class="panel-title-row">
-            <div>
-              <h3 data-i18n="recentHistory">Histórico recente</h3>
-              <p class="muted-line" data-i18n="historySubtitle">Tentativas concluídas neste dispositivo.</p>
-            </div>
-          </div>
           <div id="historyContainer" class="history-empty">Nenhuma tentativa registrada ainda.</div>
         </section>
       </div>
@@ -174,6 +167,27 @@
     </section>
 
     <section id="resultScreen" class="card screen result-card-v160" aria-labelledby="resultTitle">
+      <div class="result-topbar-v220">
+        <h2 id="resultVisibleTitle">Revisão das respostas</h2>
+        <div class="settings-switches result-card-controls-v220" aria-label="Configurações rápidas do resultado">
+          <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
+            <span class="switch-icon switch-left" aria-hidden="true">BR</span>
+            <span class="switch-icon switch-right" aria-hidden="true">US</span>
+            <span class="switch-thumb" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="switch-control theme-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar tema claro e escuro">
+            <span class="switch-icon switch-left" aria-hidden="true">☼</span>
+            <span class="switch-icon switch-right" aria-hidden="true">☾</span>
+            <span class="switch-thumb" aria-hidden="true"></span>
+          </button>
+          <button id="resultHistoryBackButton" type="button" class="icon-button result-history-back-button" title="Voltar ao histórico" aria-label="Voltar ao histórico" hidden>
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+          </button>
+          <button id="resultHomeButtonCard" type="button" class="icon-button result-home-button" title="Voltar para início" aria-label="Voltar para início">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+          </button>
+        </div>
+      </div>
       <h2 id="resultTitle" class="sr-only" data-i18n="finalResult">Resultado final</h2>
       <div id="resultSummary" class="result-summary-v160"></div>
       <div id="reviewContainer" class="review-list result-review-v160" hidden></div>
@@ -220,13 +234,22 @@
     </div>
   </dialog>
 
+  <dialog id="newExamDialog" class="modal" aria-labelledby="newExamDialogTitle">
+    <h2 id="newExamDialogTitle" data-i18n="newExamConflictTitle">Simulado em andamento</h2>
+    <p id="newExamDialogText" data-i18n="newExamConflictText">Já existe um simulado salvo neste dispositivo. Escolha uma ação antes de iniciar outro.</p>
+    <div class="modal-actions modal-actions-v220">
+      <button id="continueSavedButton" type="button" class="primary" data-i18n="continueSavedExam">Continuar atual</button>
+      <button id="discardAndStartButton" type="button" class="danger-action" data-i18n="discardAndStartExam">Descartar e iniciar novo</button>
+      <button id="cancelNewExamButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
+    </div>
+  </dialog>
 
   <dialog id="deleteHistoryDialog" class="modal" aria-labelledby="deleteHistoryDialogTitle">
     <h2 id="deleteHistoryDialogTitle" data-i18n="confirmDeleteHistory">Excluir tentativa</h2>
-    <p data-i18n="confirmDeleteHistoryText">Esta tentativa será removida do histórico. A análise será recalculada. Deseja continuar?</p>
-    <div class="modal-actions">
+    <p id="deleteHistoryDialogText" data-i18n="confirmDeleteHistoryText">Esta tentativa será removida do histórico. A análise será recalculada. Deseja continuar?</p>
+    <div class="modal-actions modal-actions-v220">
       <button id="cancelDeleteHistoryButton" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
-      <button id="confirmDeleteHistoryButton" type="button" class="primary danger-action" data-i18n="confirmDeleteHistoryButton">Excluir tentativa</button>
+      <button id="confirmDeleteHistoryButton" type="button" class="danger-action" data-i18n="confirmDeleteHistoryButton">Excluir tentativa</button>
     </div>
   </dialog>
 

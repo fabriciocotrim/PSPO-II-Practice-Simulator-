@@ -6,7 +6,7 @@ const EXAM_BASE_PATH = RESOLVED_EXAM_PROFILE.examBasePath;
 const APP_VERSION = {
   number: "2.2.0",
   date: "2026-05-17",
-  time: "18:30 BRT"
+  time: "19:00 BRT"
 };
 
 function buildStorageKeys(examId) {
@@ -41,24 +41,30 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Versão carregando...",
     homeTitle: "Preparar simulado",
+    historyHomeTitle: "Histórico de simulados",
+    savedHomeTitle: "Retomar simulado interrompido",
     prepareSimulation: "Preparar simulado",
     savedSimulationTab: "Simulado interrompido",
     savedExamSubtitle: "Tentativa salva neste dispositivo.",
     historySubtitle: "Tentativas concluídas neste dispositivo.",
-    historyAttempts: "Tentativas",
+    historyAnalytics: "Análise do histórico",
+    completedAttempts: "Concluídos",
     averageScore: "Média",
     bestScore: "Melhor",
     latestScore: "Última",
+    simpleTrend: "Tendência",
+    recentEvolution: "Evolução recente",
+    topicSnapshot: "Tópicos críticos",
     historyReview: "Revisar",
     deleteHistoryItem: "Excluir",
     historyReviewUnavailable: "Revisão detalhada indisponível para esta tentativa antiga.",
     confirmDeleteHistory: "Excluir tentativa",
     confirmDeleteHistoryText: "Esta tentativa será removida do histórico. A análise será recalculada. Deseja continuar?",
     confirmDeleteHistoryButton: "Excluir tentativa",
-    historyPreviousPage: "Anterior",
-    historyNextPage: "Próxima",
-    historyPageIndicator: "Página {current} de {total}",
-    historyPagination: "Paginação do histórico",
+    newExamConflictTitle: "Simulado em andamento",
+    newExamConflictText: "Já existe um simulado salvo neste dispositivo. Escolha uma ação antes de iniciar outro.",
+    continueSavedExam: "Continuar atual",
+    discardAndStartExam: "Descartar e iniciar novo",
     formatTitle: "Formato",
     topicModalSubtitle: "Escolha grupos amplos.",
     applyTopics: "Aplicar tópicos",
@@ -72,7 +78,7 @@ const I18N = {
     selectAll: "Selecionar todos",
     questionCount: "Quantidade de questões",
     startSimulation: "Iniciar simulado",
-    savedExam: "Simulado interrompido",
+    savedExam: "Detalhes do simulado",
     resumeSimulation: "Retomar simulado",
     discardSavedExam: "Descartar salvo",
     savedAt: "Salvo em",
@@ -86,7 +92,10 @@ const I18N = {
     unansweredPlural: "Não respondidas",
     unsure: "Em dúvida",
     unsurePlural: "Em dúvida",
-    recentHistory: "Histórico recente",
+    recentHistory: "Histórico de simulados",
+    previousPage: "Anterior",
+    nextPage: "Próxima",
+    historyPageLabel: "Página {current} de {total}",
     noHistory: "Nenhuma tentativa registrada ainda.",
     simulation: "Simulado",
     question: "Questão",
@@ -171,6 +180,7 @@ const I18N = {
     examNavigationTooltip: "Navegação do simulado",
     versionInfoTooltip: "Informações da versão",
     resultHomeTooltip: "Voltar para início",
+    resultBackToHistoryTooltip: "Voltar ao histórico",
     switchToEnglishTooltip: "Alternar para inglês",
     switchToPortugueseTooltip: "Alternar para português brasileiro",
     switchToDarkTooltip: "Alternar para modo escuro",
@@ -181,24 +191,30 @@ const I18N = {
     independentSimulator: "",
     versionLoading: "Loading version...",
     homeTitle: "Prepare simulation",
+    historyHomeTitle: "Simulation history",
+    savedHomeTitle: "Resume interrupted simulation",
     prepareSimulation: "Prepare simulation",
     savedSimulationTab: "Interrupted simulation",
     savedExamSubtitle: "Attempt saved locally on this device.",
     historySubtitle: "Completed attempts on this device.",
-    historyAttempts: "Attempts",
+    historyAnalytics: "History analytics",
+    completedAttempts: "Completed",
     averageScore: "Average",
     bestScore: "Best",
     latestScore: "Latest",
+    simpleTrend: "Trend",
+    recentEvolution: "Recent evolution",
+    topicSnapshot: "Critical topics",
     historyReview: "Review",
     deleteHistoryItem: "Delete",
     historyReviewUnavailable: "Detailed review is unavailable for this older attempt.",
     confirmDeleteHistory: "Delete attempt",
     confirmDeleteHistoryText: "This attempt will be removed from history. Analytics will be recalculated. Continue?",
     confirmDeleteHistoryButton: "Delete attempt",
-    historyPreviousPage: "Previous",
-    historyNextPage: "Next",
-    historyPageIndicator: "Page {current} of {total}",
-    historyPagination: "History pagination",
+    newExamConflictTitle: "Simulation in progress",
+    newExamConflictText: "There is already a saved simulation on this device. Choose an action before starting another one.",
+    continueSavedExam: "Continue current",
+    discardAndStartExam: "Discard and start new",
     formatTitle: "Format",
     topicModalSubtitle: "Choose broad groups.",
     applyTopics: "Apply topics",
@@ -212,7 +228,7 @@ const I18N = {
     selectAll: "Select all",
     questionCount: "Number of questions",
     startSimulation: "Start simulation",
-    savedExam: "Interrupted simulation",
+    savedExam: "Simulation details",
     resumeSimulation: "Resume simulation",
     discardSavedExam: "Discard saved",
     savedAt: "Saved at",
@@ -226,7 +242,10 @@ const I18N = {
     unansweredPlural: "Unanswered",
     unsure: "Unsure",
     unsurePlural: "Unsure",
-    recentHistory: "Recent history",
+    recentHistory: "Simulation history",
+    previousPage: "Previous",
+    nextPage: "Next",
+    historyPageLabel: "Page {current} of {total}",
     noHistory: "No attempts recorded yet.",
     simulation: "Simulation",
     question: "Question",
@@ -311,6 +330,7 @@ const I18N = {
     examNavigationTooltip: "Exam navigation",
     versionInfoTooltip: "Version information",
     resultHomeTooltip: "Back to home",
+    resultBackToHistoryTooltip: "Back to history",
     switchToEnglishTooltip: "Switch to English",
     switchToPortugueseTooltip: "Switch to Brazilian Portuguese",
     switchToDarkTooltip: "Switch to dark mode",
@@ -338,10 +358,10 @@ const state = {
   resultReviewFilters: [],
   resultReviewActiveId: null,
   currentExamLanguage: null,
-  historyPage: 1,
+  viewingHistoryAttempt: false,
   pendingHistoryDeleteId: null,
   pendingHistoryDeleteIndex: null,
-  viewingHistoryAttempt: false
+  historyPage: 1
 };
 
 const $ = (id) => document.getElementById(id);
@@ -392,6 +412,8 @@ function applyLanguage() {
   loadAttemptHistory();
   updateSaveLine();
   updateActionButtonLabels();
+  updateHomeTitleForActiveTab();
+  updateResultContextActions();
   if ($("examScreen")?.classList.contains("active")) renderQuestion();
   if ($("resultScreen")?.classList.contains("active") && state.lastResult) renderResults(state.lastResult);
 }
@@ -433,6 +455,8 @@ function updateStaticTooltips() {
   setTooltip("#questionCount", "questionCountTooltip", false);
   setTooltip("#openTopicsButton", "topicButtonTooltip");
   setTooltip("#resultHomeButton", "resultHomeTooltip");
+  setTooltip("#resultHomeButtonCard", "resultHomeTooltip");
+  setTooltip("#resultHistoryBackButton", "resultBackToHistoryTooltip");
   setTooltip("#closeTopicsButton", "closeTooltip");
   setTooltip("#topicsContainer", "topicsGroupTooltip", false);
   setTooltip(".exam-quick-actions", "examQuickActionsTooltip", false);
@@ -653,6 +677,17 @@ function attachEvents() {
   });
 
   $("historyContainer")?.addEventListener("click", handleHistoryClick);
+  $("continueSavedButton")?.addEventListener("click", () => {
+    $("newExamDialog")?.close();
+    resumeSavedExam();
+  });
+  $("discardAndStartButton")?.addEventListener("click", () => {
+    $("newExamDialog")?.close();
+    clearCurrentExam();
+    renderResumeCard();
+    startSimulation({ skipCurrentCheck: true });
+  });
+  $("cancelNewExamButton")?.addEventListener("click", () => $("newExamDialog")?.close());
   $("cancelDeleteHistoryButton")?.addEventListener("click", () => {
     clearPendingHistoryDelete();
     $("deleteHistoryDialog")?.close();
@@ -726,6 +761,8 @@ function attachEvents() {
 
   $("newAttemptButton")?.addEventListener("click", startNewAttemptFromResult);
   $("resultHomeButton")?.addEventListener("click", goHomeFromResult);
+  $("resultHomeButtonCard")?.addEventListener("click", goHomeFromResult);
+  $("resultHistoryBackButton")?.addEventListener("click", goBackToHistoryFromResult);
   $("resultScreen")?.addEventListener("click", handleResultClick);
 
   window.addEventListener("beforeunload", () => saveCurrentExam(false, { automatic: true }));
@@ -766,8 +803,17 @@ function switchHomeTab(tab) {
     panel.hidden = !active;
     panel.classList.toggle("active", active);
   });
+  updateHomeTitleForActiveTab(safeTab);
   if (safeTab === "history") loadAttemptHistory();
   if (safeTab === "saved") renderResumeCard();
+}
+
+function updateHomeTitleForActiveTab(tab) {
+  const title = $("homeTitle");
+  if (!title) return;
+  const activeTab = tab || document.querySelector(".icon-tab.active")?.dataset.tab || "config";
+  const key = activeTab === "history" ? "historyHomeTitle" : activeTab === "saved" ? "savedHomeTitle" : "homeTitle";
+  title.textContent = t(key);
 }
 
 function updateQuestionBankCount() {
@@ -842,7 +888,11 @@ function filterQuestions(selectedTopics) {
   return state.questions.filter((question) => question.topics?.some((topic) => selectedTopics.includes(topic)));
 }
 
-function startSimulation() {
+function startSimulation(options = {}) {
+  if (!options.skipCurrentCheck && getSavedExam()) {
+    openNewExamDialog();
+    return;
+  }
   state.selectedTopics = getSelectedTopics();
   state.questionCount = Number($("questionCount").value);
   const pool = filterQuestions(state.selectedTopics);
@@ -868,6 +918,22 @@ function startSimulation() {
   startTimer();
   saveCurrentExam(true);
   renderQuestion();
+}
+
+function openNewExamDialog() {
+  const dialog = $("newExamDialog");
+  if (dialog && typeof dialog.showModal === "function") {
+    dialog.showModal();
+    return;
+  }
+  const message = t("newExamConflictText");
+  if (confirm(`${message}
+
+${t("discardAndStartExam")}?`)) {
+    clearCurrentExam();
+    renderResumeCard();
+    startSimulation({ skipCurrentCheck: true });
+  }
 }
 
 function sortOptions(options) {
@@ -1043,6 +1109,7 @@ function finishExam() {
 
 function finishExamConfirmed() {
   state.finished = true;
+  state.viewingHistoryAttempt = false;
   stopTimer();
   const result = calculateScore();
   saveAttemptHistory(result);
@@ -1338,6 +1405,21 @@ function goHomeFromResult() {
   loadAttemptHistory();
 }
 
+function goBackToHistoryFromResult() {
+  state.viewingHistoryAttempt = false;
+  setScreen("home");
+  switchHomeTab("history");
+  renderResumeCard();
+  loadAttemptHistory();
+}
+
+function updateResultContextActions() {
+  const backButton = $("resultHistoryBackButton");
+  if (backButton) backButton.hidden = !state.viewingHistoryAttempt;
+  const title = $("resultVisibleTitle");
+  if (title) title.textContent = resultCopy().review;
+}
+
 function renderReview(options = {}) {
   const hidden = options.hidden !== false;
   const container = $("reviewContainer");
@@ -1401,7 +1483,8 @@ function svgIcon(name, className = "button-icon") {
     flag: '<path d="M5 22V4"/><path d="M5 4h12l-2 5 2 5H5"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
-    chevron: '<path d="m9 18 6-6-6-6"/>'
+    chevron: '<path d="m9 18 6-6-6-6"/>',
+    trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/>'
   };
   return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || ""}</svg>`;
 }
@@ -1492,6 +1575,7 @@ function resumeSavedExam() {
   state.currentExamLanguage = saved.language || getActiveLanguage();
   state.lastSavedAt = saved.savedAt || null;
   state.finished = false;
+  state.viewingHistoryAttempt = false;
   state.dirty = false;
   setScreen("exam");
   startTimer();
@@ -1571,6 +1655,7 @@ function saveAttemptHistory(result) {
     examId: EXAM_ID,
     appVersion: APP_VERSION.number,
     result: { ...result },
+    topicStats: calculateTopicStatsFromQuestions(state.selectedQuestions, state.answers),
     reviewSnapshot: {
       selectedQuestions: state.selectedQuestions.map((question) => ({ ...question, options: sortOptions(question.options || []) })),
       answers: clonePlainObject(state.answers),
@@ -1582,13 +1667,15 @@ function saveAttemptHistory(result) {
     }
   };
   history.unshift(attempt);
-  const limitedHistory = history.slice(0, 50);
-  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(limitedHistory));
-  localStorage.setItem(STORAGE_KEYS.lastAttempt, JSON.stringify(limitedHistory[0]));
+  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history.slice(0, 50)));
+  localStorage.setItem(STORAGE_KEYS.lastAttempt, JSON.stringify(attempt));
 }
 
+const HISTORY_PAGE_SIZE = 5;
+
 function loadAttemptHistory() {
-  const history = getHistory().map(normalizeHistoryItem).filter(Boolean);
+  const rawHistory = getHistory();
+  const history = rawHistory.map(normalizeHistoryItem).filter(Boolean);
   const container = $("historyContainer");
   if (!container) return;
   if (!history.length) {
@@ -1597,12 +1684,10 @@ function loadAttemptHistory() {
     container.textContent = t("noHistory");
     return;
   }
-  const totalPages = Math.max(1, Math.ceil(history.length / 5));
-  state.historyPage = Math.min(Math.max(Number(state.historyPage) || 1, 1), totalPages);
-  const start = (state.historyPage - 1) * 5;
-  const pageItems = history.slice(start, start + 5);
+  const totalPages = Math.max(1, Math.ceil(history.length / HISTORY_PAGE_SIZE));
+  state.historyPage = Math.min(Math.max(1, state.historyPage || 1), totalPages);
   container.className = "history-dashboard-v220";
-  container.innerHTML = `${renderHistorySummary(history)}${renderHistoryList(pageItems)}${renderHistoryPagination(totalPages)}`;
+  container.innerHTML = `${renderHistoryAnalytics(history)}${renderHistoryList(history)}`;
 }
 
 function getHistory() {
@@ -1637,61 +1722,85 @@ function normalizeHistoryItem(item, index = 0) {
   };
 }
 
-function renderHistorySummary(history) {
+function renderHistoryAnalytics(history) {
   const scores = history.map((item) => item.score).filter((score) => Number.isFinite(score));
   const count = scores.length;
   const average = count ? Math.round(scores.reduce((sum, score) => sum + score, 0) / count) : 0;
   const best = count ? Math.max(...scores) : 0;
   const latest = count ? scores[0] : 0;
   return `
-    <section class="history-summary-grid-v220" aria-label="${escapeHtml(t("historyAttempts"))}">
-      ${historySummaryCardHtml(t("historyAttempts"), String(count))}
-      ${historySummaryCardHtml(t("averageScore"), `${average}%`)}
-      ${historySummaryCardHtml(t("bestScore"), `${best}%`)}
-      ${historySummaryCardHtml(t("latestScore"), `${latest}%`)}
+    <section class="history-analytics-v220" aria-label="${escapeHtml(t("historyAnalytics"))}">
+      <div class="history-metric-grid-v220">
+        ${historyMetricHtml(t("completedAttempts"), count)}
+        ${historyMetricHtml(t("averageScore"), `${average}%`)}
+        ${historyMetricHtml(t("bestScore"), `${best}%`)}
+        ${historyMetricHtml(t("latestScore"), `${latest}%`)}
+      </div>
     </section>
   `;
 }
-
-function historySummaryCardHtml(label, value) {
-  return `<div class="history-summary-card-v220"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
+function historyMetricHtml(label, value, tone = "neutral") {
+  return `<div class="history-metric-v220 ${escapeHtml(tone)}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
 }
 
-function renderHistoryList(history) {
-  return `<section class="history-list-v220" aria-label="${escapeHtml(t("recentHistory"))}">${history.map((item) => historyItemHtml(item)).join("")}</section>`;
+function historyBarHtml(item) {
+  const height = Math.max(8, Math.min(100, Number(item.score) || 0));
+  return `<div class="history-bar-wrap-v220" title="${escapeHtml(formatDate(item.dateTime))} · ${escapeHtml(item.score)}%"><span style="height:${height}%"></span><small>${escapeHtml(item.score)}%</small></div>`;
 }
 
-function historyItemHtml(item) {
-  const canReview = hasHistoryReviewData(item);
-  const topics = (item.topics || []).slice(0, 5).join(", ");
+function historyTopicHtml(topic) {
+  const accuracy = topic.total ? Math.round((topic.correct / topic.total) * 100) : 0;
   return `
-    <article class="history-item-v220">
-      <div class="history-score-v220">${escapeHtml(item.score)}%</div>
-      <div class="history-main-v220">
-        <div class="history-meta-v220"><strong>${escapeHtml(item.questionCount)}</strong> ${escapeHtml(t("questions"))}</div>
-        <div class="history-date-v220">${escapeHtml(formatDate(item.dateTime))}</div>
-        <div class="history-topics-v220">${escapeHtml(topics)}${(item.topics || []).length > 5 ? "…" : ""}</div>
-        ${canReview ? "" : `<div class="history-fallback-v220">${escapeHtml(t("historyReviewUnavailable"))}</div>`}
-      </div>
-      <div class="history-version-v220">${escapeHtml(item.appVersion || "-")}</div>
-      <div class="history-actions-v220">
-        <button type="button" class="secondary history-review-button-v220" data-history-action="review" data-history-id="${escapeHtml(item.attemptId)}" data-history-index="${escapeHtml(item.historyIndex)}" ${canReview ? "" : "disabled"}>${escapeHtml(t("historyReview"))}</button>
-        <button type="button" class="secondary icon-only-danger history-delete-button-v220" data-history-action="delete" data-history-id="${escapeHtml(item.attemptId)}" data-history-index="${escapeHtml(item.historyIndex)}" title="${escapeHtml(t("deleteHistoryItem"))}" aria-label="${escapeHtml(t("deleteHistoryItem"))}">
-          ${svgIcon("trash")}
-        </button>
-      </div>
-    </article>
+    <div class="history-topic-row-v220">
+      <span>${escapeHtml(topic.topic)}</span>
+      <strong>${accuracy}%</strong>
+      <small>${escapeHtml(topic.correct)}/${escapeHtml(topic.total)}</small>
+    </div>
   `;
 }
 
-function renderHistoryPagination(totalPages) {
-  if (totalPages <= 1) return "";
+function renderHistoryList(history) {
+  const totalPages = Math.max(1, Math.ceil(history.length / HISTORY_PAGE_SIZE));
+  const currentPage = Math.min(Math.max(1, state.historyPage || 1), totalPages);
+  const start = (currentPage - 1) * HISTORY_PAGE_SIZE;
+  const pageItems = history.slice(start, start + HISTORY_PAGE_SIZE);
+  const pagination = totalPages > 1 ? `
+    <nav class="history-pagination-v220" aria-label="${escapeHtml(t("recentHistory"))}">
+      <button type="button" class="secondary" data-history-action="page-prev" ${currentPage <= 1 ? "disabled" : ""}>${escapeHtml(t("previousPage"))}</button>
+      <span>${escapeHtml(t("historyPageLabel", { current: currentPage, total: totalPages }))}</span>
+      <button type="button" class="secondary" data-history-action="page-next" ${currentPage >= totalPages ? "disabled" : ""}>${escapeHtml(t("nextPage"))}</button>
+    </nav>` : "";
   return `
-    <nav class="history-pagination-v220" aria-label="${escapeHtml(t("historyPagination"))}">
-      <button type="button" class="secondary" data-history-action="page-prev" ${state.historyPage <= 1 ? "disabled" : ""}>${escapeHtml(t("historyPreviousPage"))}</button>
-      <span>${escapeHtml(t("historyPageIndicator", { current: state.historyPage, total: totalPages }))}</span>
-      <button type="button" class="secondary" data-history-action="page-next" ${state.historyPage >= totalPages ? "disabled" : ""}>${escapeHtml(t("historyNextPage"))}</button>
-    </nav>
+    <section class="history-list-v220" aria-label="${escapeHtml(t("recentHistory"))}">
+      ${pageItems.map((item) => historyItemHtml(item)).join("")}
+    </section>
+    ${pagination}
+  `;
+}
+function historyItemHtml(item) {
+  const canReview = hasHistoryReviewData(item);
+  const language = toInterfaceLanguage(item.language) === "en" ? "EN" : "PT";
+  const topics = (item.topics || []).slice(0, 5).join(", ");
+  return `
+    <article class="history-item-v220">
+      <div class="history-score-v220 ${item.score >= getPassingScore() ? "pass" : "fail"}">${escapeHtml(item.score)}%</div>
+      <div class="history-main-v220">
+        <div class="history-title-v220"><strong>${escapeHtml(formatDate(item.dateTime))}</strong><span>${escapeHtml(language)}</span></div>
+        <div class="history-meta-v220">
+          <span>${escapeHtml(item.questionCount)} ${escapeHtml(t("questions"))}</span>
+          <span>${escapeHtml(formatDuration(item.durationSeconds))}</span>
+          <span>${escapeHtml(item.appVersion || "-")}</span>
+        </div>
+        <div class="history-topics-v220">${escapeHtml(topics)}${(item.topics || []).length > 5 ? "…" : ""}</div>
+        ${canReview ? "" : `<div class="history-fallback-v220">${escapeHtml(t("historyReviewUnavailable"))}</div>`}
+      </div>
+      <div class="history-actions-v220">
+        <button type="button" class="secondary history-review-button" data-history-action="review" data-history-id="${escapeHtml(item.attemptId)}" data-history-index="${escapeHtml(item.historyIndex)}" title="${escapeHtml(canReview ? t("historyReview") : t("historyReviewUnavailable"))}" ${canReview ? "" : 'disabled aria-disabled="true"'}>${escapeHtml(t("historyReview"))}</button>
+        <button type="button" class="secondary icon-only-danger history-delete-button" data-history-action="delete" data-history-id="${escapeHtml(item.attemptId)}" data-history-index="${escapeHtml(item.historyIndex)}" title="${escapeHtml(t("deleteHistoryItem"))}" aria-label="${escapeHtml(t("deleteHistoryItem"))}">
+          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </div>
+    </article>
   `;
 }
 
@@ -1699,18 +1808,15 @@ function handleHistoryClick(event) {
   const button = event.target.closest("[data-history-action]");
   if (!button) return;
   const action = button.dataset.historyAction;
+  if (action === "page-prev" || action === "page-next") {
+    state.historyPage = Math.max(1, (state.historyPage || 1) + (action === "page-next" ? 1 : -1));
+    loadAttemptHistory();
+    return;
+  }
   const id = button.dataset.historyId;
   const index = Number(button.dataset.historyIndex);
   if (action === "review") reviewHistoryAttempt(id, index);
   if (action === "delete") openDeleteHistoryDialog(id, index);
-  if (action === "page-prev") {
-    state.historyPage = Math.max(1, (Number(state.historyPage) || 1) - 1);
-    loadAttemptHistory();
-  }
-  if (action === "page-next") {
-    state.historyPage = (Number(state.historyPage) || 1) + 1;
-    loadAttemptHistory();
-  }
 }
 
 function hasHistoryReviewData(item) {
@@ -1789,7 +1895,7 @@ function deletePendingHistoryAttempt() {
   const index = state.pendingHistoryDeleteIndex;
   const history = getHistory();
   const nextHistory = history.filter((item, i) => {
-    if (id && item && (item.attemptId || item.id)) return (item.attemptId || item.id) !== id;
+    if (id && item && item.attemptId) return item.attemptId !== id;
     return i !== index;
   });
   localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(nextHistory));
@@ -1801,6 +1907,50 @@ function deletePendingHistoryAttempt() {
 
 function clonePlainObject(value) {
   return JSON.parse(JSON.stringify(value || {}));
+}
+
+function calculateTopicStatsFromQuestions(questions, answers) {
+  const map = new Map();
+  (questions || []).forEach((question) => {
+    const selected = (answers || {})[question.id] || [];
+    const correct = isCorrect(question, selected) ? 1 : 0;
+    (question.topics || ["Uncategorized"]).forEach((topic) => {
+      const current = map.get(topic) || { topic, total: 0, correct: 0 };
+      current.total += 1;
+      current.correct += correct;
+      map.set(topic, current);
+    });
+  });
+  return Array.from(map.values()).sort((a, b) => {
+    const accA = a.total ? a.correct / a.total : 0;
+    const accB = b.total ? b.correct / b.total : 0;
+    return accA - accB || b.total - a.total || String(a.topic).localeCompare(String(b.topic));
+  });
+}
+
+function getAttemptTopicStats(item) {
+  if (Array.isArray(item.topicStats) && item.topicStats.length) return item.topicStats;
+  if (hasHistoryReviewData(item)) return calculateTopicStatsFromQuestions(item.reviewSnapshot.selectedQuestions, item.reviewSnapshot.answers || {});
+  return [];
+}
+
+function aggregateHistoryTopicStats(history) {
+  const map = new Map();
+  history.forEach((item) => {
+    getAttemptTopicStats(item).forEach((topic) => {
+      const current = map.get(topic.topic) || { topic: topic.topic, total: 0, correct: 0 };
+      current.total += Number(topic.total) || 0;
+      current.correct += Number(topic.correct) || 0;
+      map.set(topic.topic, current);
+    });
+  });
+  return Array.from(map.values())
+    .filter((topic) => topic.total > 0)
+    .sort((a, b) => {
+      const accA = a.correct / a.total;
+      const accB = b.correct / b.total;
+      return accA - accB || b.total - a.total || String(a.topic).localeCompare(String(b.topic));
+    });
 }
 
 function setScreen(name) {
@@ -1982,12 +2132,6 @@ function renderResults(result) {
   const activeIndex = activeItem ? currentReviewPosition(items, activeItem.question.id) : 0;
 
   const summary = `
-    <section class="v170-page-head">
-      <div>
-        <h2>${escapeHtml(copy.review)}</h2>
-      </div>
-    </section>
-
     <section class="v170-summary-panel" aria-label="${escapeHtml(copy.finalResult)}">
       <div class="v170-main-stats">
         <div class="v170-score-card ${result.passed ? "pass" : "fail"}">
@@ -2018,6 +2162,7 @@ function renderResults(result) {
     reviewContainer.hidden = true;
     reviewContainer.innerHTML = "";
   }
+  updateResultContextActions();
 }
 
 function resultStatusCardHtml(filter) {
