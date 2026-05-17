@@ -1,37 +1,72 @@
 # PSPO II Practice Simulator
 
-Simulador bilíngue independente para prática da certificação PSPO II.
+v2.2.0 — Histórico analítico e revisão de tentativas
 
-## Versão atual
-
-v2.1.0 — Engine white-label
+PWA estático em HTML, CSS e JavaScript puro para preparação PSPO II, hospedado no GitHub Pages.
 
 URL de teste:
 
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.1.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.2.0
 
-## Produto
+## Estado do produto
 
-- PWA estático em HTML, CSS e JavaScript puro.
-- Hospedagem prevista no GitHub Pages.
-- Sem backend, login, framework ou multi-exame visível ao usuário.
+- App específico para preparação PSPO II.
+- Interface bilíngue pt-BR/en-US.
 - Banco bilíngue com 400 questões em português e 400 em inglês.
 - Simulado carrega apenas questões do idioma ativo.
 - Revisão final/focada preservada.
 - Feedback imediato removido.
-- Light mode e dark mode preservados.
-- Desktop e mobile preservados.
+- Light mode e dark mode funcionando.
+- Desktop e mobile ajustados.
+- Não há backend.
+- Não há login.
+- Não há framework.
+- Não há multi-exame para usuário final.
 
-## Estrutura white-label
+## v2.2.0
 
-A v2.1.0 cria uma camada mínima para reutilizar o mesmo motor técnico em apps separados por público.
+Esta versão melhora a tela de histórico e permite revisar tentativas concluídas quando houver snapshot completo salvo.
 
-```txt
+### Alterações
+
+- Adicionados indicadores do histórico:
+  - tentativas;
+  - média;
+  - melhor resultado;
+  - última tentativa.
+- Histórico passou a exibir 5 tentativas por página.
+- Adicionada paginação simples: anterior / página atual / próxima.
+- Indicadores são calculados sobre todo o histórico salvo, não apenas sobre a página visível.
+- Novas tentativas passam a salvar snapshot suficiente para revisão posterior:
+  - questões sorteadas;
+  - respostas do usuário;
+  - marcações de dúvida;
+  - tópicos;
+  - idioma;
+  - data/hora;
+  - score;
+  - versão do app.
+- Botão `Revisar` no histórico abre a tela de resultado/revisão existente em modo somente leitura.
+- Tentativas antigas sem snapshot completo continuam visíveis no histórico, mas não permitem revisão detalhada.
+- Adicionada exclusão individual de tentativas com confirmação.
+- A análise do histórico é recalculada após exclusão.
+- Histórico limitado a até 50 tentativas por `examId`.
+- Mantida a Engine white-label da v2.1.0.
+- Mantido PSPO II como único app concreto desta versão.
+- Mantido suporte bilíngue PT/EN.
+- Mantida revisão final/focada.
+- Mantidos bancos de questões sem alteração de conteúdo.
+
+## Arquitetura relevante
+
+```text
 /app/
   app-profile.js
+
 /data/
   exam-repository.js
   question-repository.js
+
 /exams/
   /pspo-ii/
     exam-config.json
@@ -40,82 +75,41 @@ A v2.1.0 cria uma camada mínima para reutilizar o mesmo motor técnico em apps 
     questions.en-US.json
 ```
 
-## Perfil ativo do app
+## Regras técnicas preservadas
 
-O exame ativo é definido em `/app/app-profile.js`:
-
-```js
-window.APP_PROFILE = Object.freeze({
-  activeExamId: "pspo-ii",
-  examBasePath: "exams/pspo-ii"
-});
-```
-
-Nesta versão, o único app concreto continua sendo o PSPO II Practice Simulator.
-
-## Carregamento de dados
-
-O app carrega dados por repositórios:
-
-- configuração do exame via `ExamRepository.loadConfig()`;
-- grupos/tópicos via `ExamRepository.loadTopics()`;
-- questões por idioma via `QuestionRepository.loadBanks()`.
-
-Os caminhos são derivados de `activeExamId` e `examBasePath`, evitando dependência direta do motor ao pacote PSPO II.
-
-## Storage
-
-As novas chaves de storage são derivadas de `examId`:
-
-```txt
-pspo-ii:settings
-pspo-ii:attemptHistory
-pspo-ii:lastAttempt
-pspo-ii:currentExam
-```
-
-A migração preserva dados legados da v2.0.1 quando encontrados:
-
-```txt
-pspoSettings
-pspoAttemptHistory
-pspoLastAttempt
-pspoCurrentExam
-```
-
-## Regras mantidas
-
-- PSPO II permanece como único exame da aplicação.
-- Não há tela de seleção de exame.
-- Não há marketplace de exames.
-- Não há backend.
-- Não há alteração visual em relação à v2.0.1.
-- IDs das questões devem permanecer pareados entre idiomas.
-- Gabaritos PT/EN devem permanecer equivalentes.
-- O simulado não deve misturar idiomas.
-- Nem todas as questões precisam ter 5 alternativas.
-- Bancos de questões não devem ser alterados sem pedido explícito.
+- PWA estático.
+- HTML/CSS/JS puro.
+- Storage isolado por `examId`.
+- Sem backend.
+- Sem login.
+- Sem framework.
+- Sem SQLite.
+- Sem alteração de conteúdo dos bancos de questões.
 
 ## Release name
 
-v2.1.0 — Engine white-label
+```text
+v2.2.0 — Histórico analítico e revisão de tentativas
+```
 
 ## Release notes
 
-- Criada base técnica para engine white-label.
-- Centralizada a definição do exame ativo.
-- Reduzidos hardcodes específicos de PSPO II no motor do app.
-- Criada camada de acesso a configuração, tópicos e questões.
-- Storage preparado para isolamento por `examId`.
-- Implementada migração de chaves legadas da v2.0.1 para chaves namespaced.
-- Preservado PSPO II como único app concreto desta versão.
-- Mantida a experiência visual da v2.0.1.
+```text
+- Melhorada a visão de histórico com indicadores analíticos simples.
+- Histórico passa a exibir 5 tentativas por página.
+- Adicionada paginação simples no histórico.
+- Indicadores do histórico são calculados sobre todo o histórico salvo.
+- Adicionada revisão de tentativas salvas no histórico quando houver snapshot completo.
+- Botão Revisar reaproveita a tela de resultado/revisão existente em modo somente leitura.
+- Tentativas antigas sem snapshot completo permanecem visíveis, com revisão detalhada indisponível.
+- Adicionada exclusão de tentativas do histórico com confirmação.
+- Atualizada a análise do histórico após exclusão de itens.
+- Histórico limitado a 50 tentativas concluídas por examId.
+- Mantida a Engine white-label da v2.1.0.
+- Mantido PSPO II como único app concreto desta versão.
 - Mantido suporte bilíngue PT/EN.
 - Mantida revisão final/focada.
 - Mantidos bancos de questões sem alteração de conteúdo.
-- Atualizados `APP_VERSION`, `CACHE_NAME`, `manifest.json` e `README.md`.
-- URL de teste: https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.1.0
-
-## Aviso
-
-Este app é independente. Não é produto oficial, afiliado, validado nem endossado pela Scrum.org.
+- Atualizados APP_VERSION, CACHE_NAME, manifest.json e README.md.
+- URL de teste: https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.2.0
+```
