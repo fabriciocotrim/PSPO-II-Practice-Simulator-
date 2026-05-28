@@ -4,9 +4,9 @@ const EXAM_ID = RESOLVED_EXAM_PROFILE.activeExamId;
 const EXAM_BASE_PATH = RESOLVED_EXAM_PROFILE.examBasePath;
 
 const APP_VERSION = {
-  number: "2.2.0",
-  date: "2026-05-17",
-  time: "19:00 BRT"
+  number: "2.3.0",
+  date: "2026-05-28",
+  time: "17:30 BRT"
 };
 
 function buildStorageKeys(examId) {
@@ -71,7 +71,7 @@ const I18N = {
     selectedTopicGroups: "{count} grupos selecionados",
     configurationTab: "Início",
     historyTab: "Histórico",
-    languageNotice: "O idioma selecionado define interface, questões, alternativas, comentários e temas do simulado.",
+    languageNotice: "Interface em português. Questões, alternativas e referências de estudo em inglês.",
     interfaceLanguage: "Idioma",
     visualTheme: "Tema",
     selectTopics: "Selecionar temas",
@@ -144,7 +144,7 @@ const I18N = {
     duration: "Duração",
     yourAnswer: "Sua resposta",
     correctAnswer: "Resposta correta",
-    explanation: "Comentário",
+    explanation: "Referência de estudo",
     noQuestionsFilter: "Não há questões nesse filtro",
     selectAtLeastOneTopic: "Selecione pelo menos um tema.",
     notEnoughQuestions: "Há apenas {available} questões disponíveis para os filtros selecionados. Reduza a quantidade ou selecione mais temas.",
@@ -221,7 +221,7 @@ const I18N = {
     selectedTopicGroups: "{count} groups selected",
     configurationTab: "Home",
     historyTab: "History",
-    languageNotice: "The selected language defines the interface, questions, answer options, explanations, and topics for the simulation.",
+    languageNotice: "Portuguese interface. Questions, answer options, and study references in English.",
     interfaceLanguage: "Language",
     visualTheme: "Theme",
     selectTopics: "Select topics",
@@ -294,7 +294,7 @@ const I18N = {
     duration: "Duration",
     yourAnswer: "Your answer",
     correctAnswer: "Correct answer",
-    explanation: "Explanation",
+    explanation: "Study reference",
     noQuestionsFilter: "No questions in this filter",
     selectAtLeastOneTopic: "Select at least one topic.",
     notEnoughQuestions: "There are only {available} questions available for the selected filters. Reduce the amount or select more topics.",
@@ -1498,12 +1498,46 @@ function optionHighlightClass(question, optionId, selected) {
   return "";
 }
 
+function getTimeLimitSeconds() {
+  const minutes = Number(examConfig.timeLimitMinutes);
+  return Number.isFinite(minutes) && minutes > 0 ? Math.round(minutes * 60) : null;
+}
+
+function getDisplayedTimerSeconds() {
+  const limit = getTimeLimitSeconds();
+  if (!limit) return state.elapsedSeconds;
+  return Math.max(0, limit - state.elapsedSeconds);
+}
+
+function finishExamDueToTimeLimit() {
+  if (state.finished || !state.selectedQuestions.length) return;
+  saveAnswerFromDom();
+  const limit = getTimeLimitSeconds();
+  if (limit) state.elapsedSeconds = limit;
+  state.finished = true;
+  state.viewingHistoryAttempt = false;
+  stopTimer();
+  const result = calculateScore();
+  saveAttemptHistory(result);
+  clearCurrentExam();
+  state.resultReviewFilters = [];
+  state.resultReviewActiveId = null;
+  setScreen("result");
+  renderResults(result);
+}
+
 function startTimer() {
   stopTimer();
   updateTimerDisplay();
   state.timerId = window.setInterval(() => {
     if (!state.finished && $("examScreen").classList.contains("active")) {
       state.elapsedSeconds += 1;
+      const limit = getTimeLimitSeconds();
+      if (limit && state.elapsedSeconds >= limit) {
+        updateTimerDisplay();
+        finishExamDueToTimeLimit();
+        return;
+      }
       updateTimerDisplay();
     }
   }, 1000);
@@ -1517,7 +1551,7 @@ function stopTimer() {
 }
 
 function updateTimerDisplay() {
-  if ($("timerPill")) $("timerPill").textContent = formatDuration(state.elapsedSeconds);
+  if ($("timerPill")) $("timerPill").textContent = formatDuration(getDisplayedTimerSeconds());
 }
 
 function saveCurrentExam(force = false, options = {}) {
@@ -2047,7 +2081,7 @@ function resultCopy() {
       close: "Close",
       yourAnswer: "Your answer",
       correctAnswer: "Correct answer",
-      explanation: "Explanation",
+      explanation: "Study reference",
       noQuestionsFilter: "No questions match the selected filters.",
       selected: "Selected",
       resultCount: (shown, total) => `${shown} of ${total}`,

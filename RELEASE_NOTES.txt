@@ -1,0 +1,5 @@
+Versão 2.3.0 transforma a base aceita da v2.2.0 em um Practice Simulator PSPO I. A interface permanece em português brasileiro, enquanto questões, alternativas e referências de estudo ficam em inglês.
+
+Inclui examId pspo-i, banco com 367 questões, modo prova com até 80 questões e 60 minutos, 12 temas finais, histórico local por dispositivo, revisão de tentativas, desempenho por tópico, manifest atualizado, service worker/cache atualizado, README atualizado e disclaimer de independência em relação à Scrum.org.
+
+Limitações conhecidas: sem backend/login/sincronização; histórico apenas local; o arquivo técnico questions.pt-BR.json contém questões em inglês por limitação herdada da engine v2.2.0; Business Strategy tem apenas 1 questão; APK/AAB ainda não foi gerado nesta versão.

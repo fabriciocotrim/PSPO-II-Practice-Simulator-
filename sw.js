@@ -1,4 +1,4 @@
-const CACHE_NAME = "pspo-ii-practice-v2.2.0-uxfix1";
+const CACHE_NAME = "pspo-i-practice-v2.3.0";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,10 +8,9 @@ const APP_SHELL = [
   "./data/question-repository.js",
   "./app.js",
   "./manifest.json",
-  "./exams/pspo-ii/exam-config.json",
-  "./exams/pspo-ii/topics.json",
-  "./exams/pspo-ii/questions.pt-BR.json",
-  "./exams/pspo-ii/questions.en-US.json",
+  "./exams/pspo-i/exam-config.json",
+  "./exams/pspo-i/topics.json",
+  "./exams/pspo-i/questions.pt-BR.json",
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png"

@@ -1,8 +1,8 @@
 {
-  "name": "PSPO II Practice Simulator",
-  "short_name": "PSPO II",
-  "description": "Simulador de exame para preparação PSPO II.",
-  "start_url": "./?v=2.2.0",
+  "name": "PSPO I Practice Simulator — Estúdio da Agilidade",
+  "short_name": "PSPO I Simulator",
+  "description": "Simulador independente para preparação ao PSPO I.",
+  "start_url": "./?v=2.3.0",
   "scope": "./",
   "display": "standalone",
   "background_color": "#191919",

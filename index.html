@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f6f6f4" />
-  <meta name="description" content="Simulador de exame." />
-  <title>Practice Simulator</title>
+  <meta name="description" content="Simulador independente para preparação ao PSPO I." />
+  <title>PSPO I Practice Simulator</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
@@ -13,7 +13,7 @@
 <body>
   <header class="app-header">
     <div class="title-block">
-      <h1>Practice Simulator</h1>
+      <h1>PSPO I Practice Simulator</h1>
     </div>
     <div class="header-side result-header-controls" aria-label="Configurações rápidas do resultado">
       <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
@@ -74,10 +74,10 @@
               <div class="slider-card">
                 <div class="slider-head">
                   <label for="questionCount" data-i18n="questionCount">Quantidade</label>
-                  <output id="questionCountValue" for="questionCount">40</output>
+                  <output id="questionCountValue" for="questionCount">80</output>
                 </div>
-                <input id="questionCount" name="questionCount" type="range" min="10" max="60" step="10" value="40" aria-label="Quantidade de questões" />
-                <div class="slider-scale" aria-hidden="true"><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span></div>
+                <input id="questionCount" name="questionCount" type="range" min="10" max="80" step="10" value="80" aria-label="Quantidade de questões" />
+                <div class="slider-scale" aria-hidden="true"><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span></div>
               </div>
 
               <div class="field-block">
@@ -254,7 +254,7 @@
   </dialog>
 
   <footer class="app-footer" aria-label="Informações da versão">
-    <span id="appVersionFooter">Versão carregando...</span>
+    <span id="appVersionFooter">Versão carregando...</span><span class="footer-disclaimer">Publicação independente. Não afiliada à Scrum.org.</span>
   </footer>
 
   <script src="app/app-profile.js"></script>

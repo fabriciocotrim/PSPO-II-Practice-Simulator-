@@ -4365,3 +4365,11 @@ body[data-screen="result"] .app-header .result-header-controls { display: none !
   }
   .result-card-controls-v220 { justify-content: flex-end; }
 }
+
+
+.footer-disclaimer {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0.72;
+}

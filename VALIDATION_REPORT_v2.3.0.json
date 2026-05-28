@@ -1,0 +1,14 @@
+{
+  "version": "2.3.0",
+  "source": "pspo-ii-practice-simulator-v2.2.0.zip",
+  "examId": "pspo-i",
+  "questions": 367,
+  "topics": 12,
+  "defaultQuestionCount": 80,
+  "timeLimitMinutes": 60,
+  "portugueseResidueCheckQuestionIds": [],
+  "notes": [
+    "questions.pt-BR.json contains English questions because the v2.2.0 engine binds UI language to the question-bank filename.",
+    "questions.en-US.json is duplicated for future refactor/fallback but is not loaded by the current config."
+  ]
+}
