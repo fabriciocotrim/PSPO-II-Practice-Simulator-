@@ -4,9 +4,9 @@ const EXAM_ID = RESOLVED_EXAM_PROFILE.activeExamId;
 const EXAM_BASE_PATH = RESOLVED_EXAM_PROFILE.examBasePath;
 
 const APP_VERSION = {
-  number: "2.3.1",
+  number: "2.3.2",
   date: "2026-05-28",
-  time: "18:45 BRT"
+  time: "20:20 BRT"
 };
 
 function buildStorageKeys(examId) {
@@ -144,7 +144,7 @@ const I18N = {
     duration: "Duração",
     yourAnswer: "Sua resposta",
     correctAnswer: "Resposta correta",
-    explanation: "Referência de estudo",
+    explanation: "Referência técnica",
     noQuestionsFilter: "Não há questões nesse filtro",
     selectAtLeastOneTopic: "Selecione pelo menos um tema.",
     notEnoughQuestions: "Há apenas {available} questões disponíveis para os filtros selecionados. Reduza a quantidade ou selecione mais temas.",
@@ -294,7 +294,7 @@ const I18N = {
     duration: "Duration",
     yourAnswer: "Your answer",
     correctAnswer: "Correct answer",
-    explanation: "Study reference",
+    explanation: "Technical reference",
     noQuestionsFilter: "No questions in this filter",
     selectAtLeastOneTopic: "Select at least one topic.",
     notEnoughQuestions: "There are only {available} questions available for the selected filters. Reduce the amount or select more topics.",
@@ -2183,7 +2183,7 @@ function resultCopy() {
       close: "Close",
       yourAnswer: "Your answer",
       correctAnswer: "Correct answer",
-      explanation: "Study reference",
+      explanation: "Technical reference",
       noQuestionsFilter: "No questions match the selected filters.",
       selected: "Selected",
       resultCount: (shown, total) => `${shown} of ${total}`,
@@ -2212,7 +2212,7 @@ function resultCopy() {
     close: "Fechar",
     yourAnswer: "Sua resposta",
     correctAnswer: "Resposta correta",
-    explanation: "Explicação",
+    explanation: "Referência técnica",
     noQuestionsFilter: "Nenhuma questão corresponde aos filtros selecionados.",
     selected: "Selecionado",
     resultCount: (shown, total) => `${shown} de ${total}`,
@@ -2512,4 +2512,439 @@ function renderReview(options = {}) {
   if (!container) return;
   container.hidden = true;
   container.innerHTML = "";
+}
+
+
+/* -------------------------------------------------------
+   v2.3.2 - Visual polish, tabs, brand and processing state
+------------------------------------------------------- */
+
+state.resultActiveTab = state.resultActiveTab || "result";
+
+function bootSplashDelay() {
+  try {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 120 : 760;
+  } catch {
+    return 760;
+  }
+}
+
+function resultProcessingDelay() {
+  try {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 120 : 820;
+  } catch {
+    return 820;
+  }
+}
+
+function hideBootSplash() {
+  const splash = $("bootSplash");
+  if (!splash) return;
+  splash.classList.add("is-hidden");
+  window.setTimeout(() => { splash.hidden = true; }, 220);
+}
+
+window.addEventListener("load", () => window.setTimeout(hideBootSplash, bootSplashDelay()));
+
+function showResultProcessingThenRender(result) {
+  const overlay = $("resultProcessingOverlay");
+  const summary = $("resultSummary");
+  if (summary) summary.innerHTML = "";
+  if (!overlay) {
+    renderResults(result);
+    return;
+  }
+  overlay.hidden = false;
+  window.setTimeout(() => {
+    overlay.hidden = true;
+    renderResults(result);
+  }, resultProcessingDelay());
+}
+
+function finishExamConfirmed() {
+  state.finished = true;
+  state.viewingHistoryAttempt = false;
+  stopTimer();
+  const result = calculateScore();
+  saveAttemptHistory(result);
+  clearCurrentExam();
+  state.resultReviewFilters = [];
+  state.resultReviewActiveId = null;
+  state.resultActiveTab = "result";
+  setScreen("result");
+  showResultProcessingThenRender(result);
+}
+
+function finishExamDueToTimeLimit() {
+  if (state.finished || !state.selectedQuestions.length) return;
+  saveAnswerFromDom();
+  const limit = getTimeLimitSeconds();
+  if (limit) state.elapsedSeconds = limit;
+  state.finished = true;
+  state.viewingHistoryAttempt = false;
+  stopTimer();
+  const result = calculateScore();
+  saveAttemptHistory(result);
+  clearCurrentExam();
+  state.resultReviewFilters = [];
+  state.resultReviewActiveId = null;
+  state.resultActiveTab = "result";
+  setScreen("result");
+  showResultProcessingThenRender(result);
+}
+
+function updateActionButtonLabels() {
+  const question = state.selectedQuestions[state.currentIndex];
+  const isLastQuestion = Boolean(question && state.currentIndex === state.selectedQuestions.length - 1);
+  const unsureActive = question && Boolean(state.unsure[question.id]);
+  const nextLabel = isLastQuestion ? "Última questão" : t("nextQuestionTooltip");
+  const controls = [
+    ["saveButton", t("saveProgress")],
+    ["exitButton", t("exitExamTooltip")],
+    ["prevButton", t("previousQuestionTooltip")],
+    ["nextButton", nextLabel],
+    ["finishNowButton", t("finishSimulationTooltip")],
+    ["unsureButton", unsureActive ? t("removeUnsureTooltip") : t("markUnsureTooltip")]
+  ];
+  controls.forEach(([id, label]) => {
+    const el = $(id);
+    if (!el) return;
+    el.title = label;
+    el.setAttribute("aria-label", label);
+  });
+  const timer = $("timerPill");
+  if (timer) {
+    timer.title = t("examTimerTooltip");
+    timer.setAttribute("aria-label", t("examTimerTooltip"));
+  }
+  const selector = $("questionSelector");
+  if (selector) {
+    selector.title = t("goToQuestion");
+    selector.setAttribute("aria-label", t("goToQuestion"));
+  }
+}
+
+function resultCopy() {
+  if (settings.lang === "en") {
+    return {
+      all: "All",
+      review: "Answer review",
+      finalResult: "Final result",
+      notPassed: "Not passed",
+      passed: "Passed",
+      correct: "Correct",
+      incorrect: "Errors",
+      unanswered: "Unanswered",
+      unsure: "Marked",
+      marked: "Marked",
+      duration: "Time",
+      completion: "Completion",
+      topic: "Topic",
+      questionMap: "Question map",
+      questionMapHelp: "",
+      previous: "Previous",
+      next: "Next",
+      close: "Close",
+      yourAnswer: "Your answer",
+      correctAnswer: "Correct answer",
+      explanation: "Technical reference",
+      noQuestionsFilter: "No questions match the selected filters.",
+      selected: "Selected",
+      resultTab: "Result",
+      diagnosticTab: "Diagnosis",
+      reviewTab: "Review",
+      errorOrigin: "Error origin",
+      noErrors: "No errors in this attempt.",
+      insufficient: "insufficient sample",
+      studioSignature: "Diagnosis generated by Practice Simulator · Estúdio da Agilidade",
+      resultCount: (shown, total) => `${shown} of ${total}`,
+      questionCounter: (current, total) => `${current}/${total}`,
+      mapCounter: (current, total) => `Q${current}/${total}`,
+      errorsOf: (missed, total) => `${missed} error${missed === 1 ? "" : "s"} of ${total}`
+    };
+  }
+  return {
+    all: "Todas",
+    review: "Revisão",
+    finalResult: "Resultado",
+    notPassed: "Não aprovado",
+    passed: "Aprovado",
+    correct: "Corretas",
+    incorrect: "Erradas",
+    unanswered: "Sem resposta",
+    unsure: "Dúvidas",
+    marked: "Dúvidas",
+    duration: "Tempo",
+    completion: "Conclusão",
+    topic: "Tópico",
+    questionMap: "Mapa das questões",
+    questionMapHelp: "",
+    previous: "Anterior",
+    next: "Próxima",
+    close: "Fechar",
+    yourAnswer: "Sua resposta",
+    correctAnswer: "Resposta correta",
+    explanation: "Referência técnica",
+    noQuestionsFilter: "Nenhuma questão corresponde aos filtros selecionados.",
+    selected: "Selecionado",
+    resultTab: "Resultado",
+    diagnosticTab: "Diagnóstico",
+    reviewTab: "Revisão",
+    errorOrigin: "Origem dos erros",
+    noErrors: "Nenhum erro registrado nesta tentativa.",
+    insufficient: "amostra insuficiente",
+    studioSignature: "Diagnóstico gerado pelo Practice Simulator · Estúdio da Agilidade",
+    resultCount: (shown, total) => `${shown} de ${total}`,
+    questionCounter: (current, total) => `${current}/${total}`,
+    mapCounter: (current, total) => `Q${current}/${total}`,
+    errorsOf: (missed, total) => `${missed} ${missed === 1 ? "erro" : "erros"} de ${total}`
+  };
+}
+
+function renderResults(result) {
+  state.lastResult = result;
+  if (!Array.isArray(state.resultReviewFilters)) state.resultReviewFilters = [];
+  const allowedTabs = ["result", "diagnostic", "review"];
+  if (!allowedTabs.includes(state.resultActiveTab)) state.resultActiveTab = "result";
+  const copy = resultCopy();
+  const active = state.resultActiveTab;
+  let content = "";
+
+  if (active === "result") {
+    content = resultOverviewHtml(result, copy);
+  } else if (active === "diagnostic") {
+    content = resultDiagnosticHtml(result, copy);
+  } else {
+    const filterData = getResultFilterData(result);
+    const items = getFilteredReviewItems();
+    const activeItem = ensureActiveReviewQuestion(items);
+    const activeIndex = activeItem ? currentReviewPosition(items, activeItem.question.id) : 0;
+    content = `
+      <section class="v232-review-tools" aria-label="Filtros de revisão">
+        <div class="v170-filter-cards v232-filter-cards">
+          ${filterData.filters.map((filter) => resultStatusCardHtml(filter)).join("")}
+        </div>
+      </section>
+      ${items.length ? focusedReviewLayoutHtml({ items, activeItem, activeIndex, copy, result }) : `<div class="v170-empty">${escapeHtml(copy.noQuestionsFilter)}</div>`}
+    `;
+  }
+
+  const resultSummary = $("resultSummary");
+  if (resultSummary) {
+    resultSummary.innerHTML = `
+      <section class="v232-result-shell" aria-label="Resultado do simulado">
+        <div class="v232-brand-strip">
+          <img class="brand-cycle-logo small" src="icons/brand-cycle.svg" alt="" aria-hidden="true" />
+          <span>Estúdio da Agilidade</span>
+        </div>
+        <div class="v232-result-tabs" role="tablist" aria-label="Resultado, diagnóstico e revisão">
+          ${resultTabButton("result", copy.resultTab, active)}
+          ${resultTabButton("diagnostic", copy.diagnosticTab, active)}
+          ${resultTabButton("review", copy.reviewTab, active)}
+        </div>
+        <div class="v232-tab-content">${content}</div>
+        <p class="v232-studio-signature">${escapeHtml(copy.studioSignature)}</p>
+      </section>
+    `;
+  }
+  const reviewContainer = $("reviewContainer");
+  if (reviewContainer) {
+    reviewContainer.hidden = true;
+    reviewContainer.innerHTML = "";
+  }
+  updateResultContextActions();
+}
+
+function resultTabButton(id, label, active) {
+  return `<button type="button" class="v232-result-tab ${active === id ? "active" : ""}" role="tab" aria-selected="${active === id ? "true" : "false"}" data-v232-tab="${escapeHtml(id)}">${escapeHtml(label)}</button>`;
+}
+
+function resultOverviewHtml(result, copy) {
+  const totalErrors = Math.max(0, Number(result.total || 0) - Number(result.correct || 0));
+  const errorPct = result.total ? (totalErrors / result.total) * 100 : 0;
+  return `
+    <section class="v232-overview" aria-label="${escapeHtml(copy.finalResult)}">
+      <div class="v232-score-panel ${result.passed ? "pass" : "fail"}">
+        <span>${escapeHtml(copy.finalResult)}</span>
+        <strong>${escapeHtml(String(result.percentage))}%</strong>
+        <small>${escapeHtml(result.passed ? copy.passed : copy.notPassed)}</small>
+      </div>
+      <div class="v232-metric-grid">
+        ${resultMetricHtml(copy.duration, formatDuration(result.durationSeconds), "neutral")}
+        ${resultMetricHtml(copy.correct, result.correct, "good")}
+        ${resultMetricHtml(copy.incorrect, result.incorrect, "bad")}
+        ${resultMetricHtml(copy.unanswered, result.unanswered, "neutral")}
+        ${resultMetricHtml(copy.marked, getUnsureCount(), "marked")}
+        ${resultMetricHtml("Erros na prova", `${formatPercent(errorPct)}%`, "bad")}
+      </div>
+    </section>
+  `;
+}
+
+function resultMetricHtml(label, value, tone = "neutral") {
+  return `
+    <article class="v232-metric ${escapeHtml(tone)}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(String(value))}</strong>
+    </article>
+  `;
+}
+
+function resultDiagnosticHtml(result, copy) {
+  const totalErrors = Math.max(0, Number(result.total || 0) - Number(result.correct || 0));
+  const errorPct = result.total ? (totalErrors / result.total) * 100 : 0;
+  const rows = calculateCurrentResultErrorBreakdown(result);
+  const topTopic = rows[0];
+  return `
+    <section class="v232-diagnostic" aria-label="${escapeHtml(copy.errorOrigin)}">
+      <div class="v232-diagnostic-head">
+        <div>
+          <h3>${escapeHtml(copy.errorOrigin)}</h3>
+          <p>Você errou ${escapeHtml(formatPercent(errorPct))}% da prova · ${escapeHtml(totalErrors)} de ${escapeHtml(result.total)} questões.</p>
+          ${topTopic ? `<p>Maior lacuna: <strong>${escapeHtml(getTopicLabel(topTopic.topic))}</strong>.</p>` : ""}
+        </div>
+      </div>
+      <div class="v232-error-list">
+        ${rows.length ? rows.map((topic) => resultErrorTopicHtml(topic, copy)).join("") : `<div class="history-empty-state-v231">${escapeHtml(copy.noErrors)}</div>`}
+      </div>
+    </section>
+  `;
+}
+
+function calculateCurrentResultErrorBreakdown(result) {
+  const totalQuestions = Number(result.total || state.selectedQuestions.length || 0);
+  const totalErrors = Math.max(0, Number(result.total || 0) - Number(result.correct || 0));
+  const map = new Map();
+  state.selectedQuestions.forEach((question) => {
+    const status = getResultQuestionStatus(question);
+    const topics = Array.isArray(question.topics) && question.topics.length ? question.topics : ["Uncategorized"];
+    topics.forEach((topic) => {
+      if (!map.has(topic)) map.set(topic, { topic, total: 0, correct: 0, missed: 0 });
+      const item = map.get(topic);
+      item.total += 1;
+      if (status === "correct") item.correct += 1;
+      else item.missed += 1;
+    });
+  });
+  return Array.from(map.values())
+    .map((topic) => ({
+      ...topic,
+      impactPct: totalQuestions ? (topic.missed / totalQuestions) * 100 : 0,
+      sharePct: totalErrors ? (topic.missed / totalErrors) * 100 : 0,
+      insufficient: topic.total < 5
+    }))
+    .filter((topic) => topic.missed > 0)
+    .sort((a, b) => b.missed - a.missed || b.impactPct - a.impactPct || String(a.topic).localeCompare(String(b.topic)));
+}
+
+function resultErrorTopicHtml(topic, copy) {
+  return `
+    <article class="history-error-topic-v231 v232-error-topic ${topic.insufficient ? "insufficient" : ""}">
+      <div class="history-error-topic-main-v231">
+        <strong>${escapeHtml(getTopicLabel(topic.topic))}</strong>
+        <span>${escapeHtml(topic.missed)} ${topic.missed === 1 ? "erro" : "erros"} · ${escapeHtml(topic.correct)}/${escapeHtml(topic.total)} acertos${topic.insufficient ? ` · ${escapeHtml(copy.insufficient)}` : ""}</span>
+      </div>
+      <div class="history-error-topic-numbers-v231">
+        <span>${escapeHtml(formatPercent(topic.impactPct))} p.p. da prova</span>
+        <strong>${escapeHtml(formatPercent(topic.sharePct))}% dos erros</strong>
+      </div>
+    </article>
+  `;
+}
+
+function handleResultClick(event) {
+  const tabButton = event.target.closest("[data-v232-tab]");
+  if (tabButton) {
+    state.resultActiveTab = tabButton.dataset.v232Tab;
+    if (state.resultActiveTab === "review") {
+      const items = getFilteredReviewItems();
+      ensureActiveReviewQuestion(items);
+    }
+    renderResults(state.lastResult || calculateScore());
+    return;
+  }
+
+  const filterButton = event.target.closest("[data-v170-filter]");
+  if (filterButton) {
+    const filter = filterButton.dataset.v170Filter;
+    if (filter === "__all") {
+      state.resultReviewFilters = [];
+    } else {
+      const current = Array.isArray(state.resultReviewFilters) ? state.resultReviewFilters : [];
+      state.resultReviewFilters = current.includes(filter)
+        ? current.filter((item) => item !== filter)
+        : [...current, filter];
+    }
+    const items = getFilteredReviewItems();
+    ensureActiveReviewQuestion(items);
+    renderResults(state.lastResult || calculateScore());
+    return;
+  }
+
+  const questionButton = event.target.closest("[data-v170-question]");
+  if (questionButton) {
+    state.resultReviewActiveId = questionButton.dataset.v170Question;
+    closeMobileReviewMap();
+    renderResults(state.lastResult || calculateScore());
+    return;
+  }
+
+  const navButton = event.target.closest("[data-v170-nav]");
+  if (navButton) {
+    moveFocusedReview(navButton.dataset.v170Nav);
+    return;
+  }
+
+  const mapButton = event.target.closest("[data-v170-map]");
+  if (mapButton) {
+    if (mapButton.dataset.v170Map === "open") openMobileReviewMap();
+    if (mapButton.dataset.v170Map === "close") closeMobileReviewMap();
+    return;
+  }
+}
+
+function updateResultContextActions() {
+  const backButton = $("resultHistoryBackButton");
+  if (backButton) backButton.hidden = !state.viewingHistoryAttempt;
+  const title = $("resultVisibleTitle");
+  if (title) {
+    const copy = resultCopy();
+    const titleMap = { result: copy.finalResult, diagnostic: copy.diagnosticTab, review: "Revisão das respostas" };
+    title.textContent = titleMap[state.resultActiveTab] || copy.finalResult;
+  }
+}
+
+function reviewHistoryAttempt(id, index) {
+  const item = findHistoryItem(id, index);
+  if (!item || !hasHistoryReviewData(item)) {
+    alert(t("historyReviewUnavailable"));
+    return;
+  }
+  const snapshot = item.reviewSnapshot;
+  if (item.language && toInterfaceLanguage(item.language) !== getActiveLanguage()) {
+    settings.lang = toInterfaceLanguage(item.language);
+    saveSettings();
+    setActiveQuestionBank();
+    renderTopicSelector();
+    applyLanguage();
+  }
+  state.selectedQuestions = snapshot.selectedQuestions.map((question) => ({ ...question, options: sortOptions(question.options || []) }));
+  state.currentIndex = 0;
+  state.answers = snapshot.answers || {};
+  state.unsure = snapshot.unsure || {};
+  state.selectedTopics = snapshot.selectedTopics || item.topics || [];
+  state.questionCount = item.questionCount || state.selectedQuestions.length;
+  state.elapsedSeconds = item.durationSeconds || snapshot.elapsedSeconds || 0;
+  state.currentExamId = snapshot.currentExamId || item.attemptId;
+  state.currentExamLanguage = item.language || snapshot.language || getActiveLanguage();
+  state.lastSavedAt = null;
+  state.finished = true;
+  state.viewingHistoryAttempt = true;
+  state.dirty = false;
+  state.resultReviewFilters = [];
+  state.resultReviewActiveId = null;
+  state.resultActiveTab = "review";
+  state.lastResult = buildResultFromHistoryItem(item);
+  setScreen("result");
+  renderResults(state.lastResult);
 }

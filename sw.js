@@ -1,4 +1,4 @@
-const CACHE_NAME = "pspo-i-practice-v2.3.1";
+const CACHE_NAME = "pspo-i-practice-v2.3.2";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -13,6 +13,7 @@ const APP_SHELL = [
   "./exams/pspo-i/questions.pt-BR.json",
   "./exams/pspo-i/questions.en-US.json",
   "./icons/icon.svg",
+  "./icons/brand-cycle.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];

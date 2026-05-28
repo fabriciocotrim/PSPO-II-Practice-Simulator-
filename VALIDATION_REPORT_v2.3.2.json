@@ -1,0 +1,13 @@
+{
+  "version": "2.3.2",
+  "checks": [
+    "APP_VERSION updated",
+    "manifest start_url updated",
+    "sw cache updated",
+    "brand-cycle.svg added",
+    "tabs/result diagnostic overrides added"
+  ],
+  "notes": [
+    "Visual render must be validated on GitHub Pages"
+  ]
+}

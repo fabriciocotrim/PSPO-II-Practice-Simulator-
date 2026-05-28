@@ -1,12 +1,12 @@
-# Android readiness — v2.3.1
+# Android readiness — v2.3.2
 
 ## Estado
 
-A v2.3.1 está pronta para teste como PWA no GitHub Pages e preparada para uma próxima etapa de empacotamento Android.
+A v2.3.2 está pronta para teste como PWA no GitHub Pages e preparada para uma próxima etapa de empacotamento Android.
 
 ## Caminho recomendado
 
-1. Testar v2.3.1 no GitHub Pages.
+1. Testar v2.3.2 no GitHub Pages.
 2. Corrigir bugs visuais/funcionais do PWA.
 3. Definir domínio/repositório comercial sem `PSPO-II` na URL.
 4. Gerar APK local de teste via TWA/Bubblewrap.

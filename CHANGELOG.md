@@ -23,7 +23,7 @@
 - Base aceita usada como origem técnica desta versão.
 
 
-## v2.3.1 — Identidade visual e diagnóstico de erros
+## v2.3.2 — Identidade visual e diagnóstico de erros
 
 - Aplica paleta editorial inspirada nos materiais premium do Estúdio da Agilidade.
 - Oculta o toggle de idioma, mantendo interface em português e questões em inglês.

@@ -11,9 +11,29 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div id="bootSplash" class="splash-overlay" role="status" aria-live="polite">
+    <div class="splash-card">
+      <img class="brand-cycle-logo spinning" src="icons/brand-cycle.svg" alt="" aria-hidden="true" />
+      <strong>PSPO I Practice Simulator</strong>
+      <span>Estúdio da Agilidade</span>
+    </div>
+  </div>
+  <div id="resultProcessingOverlay" class="processing-overlay" role="status" aria-live="polite" hidden>
+    <div class="processing-card">
+      <img class="brand-cycle-logo spinning" src="icons/brand-cycle.svg" alt="" aria-hidden="true" />
+      <strong>Calculando resultado</strong>
+      <span>Gerando diagnóstico por tema...</span>
+    </div>
+  </div>
   <header class="app-header">
-    <div class="title-block">
-      <h1>PSPO I Practice Simulator</h1>
+    <div class="title-block brand-title-block">
+      <div class="brand-mini-lockup">
+        <img class="brand-cycle-logo mini" src="icons/brand-cycle.svg" alt="" aria-hidden="true" />
+        <div>
+          <h1>PSPO I Practice Simulator</h1>
+          <p>por Estúdio da Agilidade</p>
+        </div>
+      </div>
     </div>
     <div class="header-side result-header-controls" aria-label="Configurações rápidas do resultado">
       <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
@@ -36,7 +56,12 @@
     <section id="homeScreen" class="card screen active home-v150" aria-labelledby="homeTitle">
       <div class="home-head home-head-v150">
         <div>
+          <div class="product-signature">
+            <img class="brand-cycle-logo small" src="icons/brand-cycle.svg" alt="" aria-hidden="true" />
+            <span>Estúdio da Agilidade</span>
+          </div>
           <h2 id="homeTitle" data-i18n="homeTitle">Preparar simulado</h2>
+          <p class="home-subtitle-v232">Treino ativo para PSPO I com questões em inglês, histórico e diagnóstico por tema.</p>
         </div>
         <div class="settings-switches home-switches" aria-label="Configurações rápidas">
           <button type="button" class="switch-control lang-switch compact-switch" role="switch" aria-checked="false" aria-label="Alternar idioma da interface">
@@ -254,7 +279,7 @@
   </dialog>
 
   <footer class="app-footer" aria-label="Informações da versão">
-    <span id="appVersionFooter">Versão carregando...</span><span class="footer-disclaimer">Publicação independente. Não afiliada à Scrum.org.</span>
+    <span id="appVersionFooter">Versão carregando...</span><span class="footer-disclaimer">© 2026 Estúdio da Agilidade · Publicação independente. Não afiliada à Scrum.org.</span>
   </footer>
 
   <script src="app/app-profile.js"></script>

@@ -1,8 +1,8 @@
-// v2.3.1 — PSPO I Practice Simulator
+// v2.3.2 — PSPO I Practice Simulator
 // Repositório de configuração do exame. Mantém a engine white-label, resolvendo
 // caminhos por examId e examBasePath para evitar acoplamento ao PSPO II.
 (function registerExamRepository(global) {
-  const DATA_LAYER_VERSION = "2.3.1";
+  const DATA_LAYER_VERSION = "2.3.2";
 
   function normalizeBasePath(path) {
     return String(path || "").replace(/^\/+|\/+$/g, "");

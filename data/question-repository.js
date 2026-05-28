@@ -1,8 +1,8 @@
-// v2.3.1 — PSPO I Practice Simulator
+// v2.3.2 — PSPO I Practice Simulator
 // Carrega bancos de questões por idioma técnico da engine. Nesta versão,
 // questions.pt-BR.json mantém conteúdo em inglês para preservar a interface PT-BR.
 (function registerQuestionRepository(global) {
-  const DATA_LAYER_VERSION = "2.3.1";
+  const DATA_LAYER_VERSION = "2.3.2";
 
   function assertQuestionBank(bank, language) {
     if (!Array.isArray(bank)) {
