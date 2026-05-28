@@ -10,5 +10,11 @@
   "notes": [
     "questions.pt-BR.json contains English questions because the v2.2.0 engine binds UI language to the question-bank filename.",
     "questions.en-US.json is duplicated for future refactor/fallback but is not loaded by the current config."
+  ],
+  "revision": "r1-data-icons",
+  "fixed": [
+    "icons updated from PSPO II to PSPO I",
+    "data repository files stamped as v2.3.0",
+    "service worker now precaches questions.en-US.json"
   ]
 }
