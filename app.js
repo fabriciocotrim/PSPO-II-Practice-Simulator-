@@ -4,9 +4,9 @@ const EXAM_ID = RESOLVED_EXAM_PROFILE.activeExamId;
 const EXAM_BASE_PATH = RESOLVED_EXAM_PROFILE.examBasePath;
 
 const APP_VERSION = {
-  number: "2.3.0",
+  number: "2.3.1",
   date: "2026-05-28",
-  time: "17:30 BRT"
+  time: "18:45 BRT"
 };
 
 function buildStorageKeys(examId) {
@@ -391,7 +391,7 @@ function saveSettings() {
 
 function applyTheme() {
   document.documentElement.dataset.theme = settings.theme === "dark" ? "dark" : "light";
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", settings.theme === "dark" ? "#191919" : "#f6f6f4");
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", settings.theme === "dark" ? "#031525" : "#f0f3f6");
   updateToggleStates();
 }
 
@@ -1762,17 +1762,116 @@ function renderHistoryAnalytics(history) {
   const average = count ? Math.round(scores.reduce((sum, score) => sum + score, 0) / count) : 0;
   const best = count ? Math.max(...scores) : 0;
   const latest = count ? scores[0] : 0;
+  const latestAttempt = history[0];
   return `
-    <section class="history-analytics-v220" aria-label="${escapeHtml(t("historyAnalytics"))}">
-      <div class="history-metric-grid-v220">
+    <section class="history-analytics-v220 history-analytics-v231" aria-label="${escapeHtml(t("historyAnalytics"))}">
+      <div class="history-metric-grid-v220 history-metric-grid-v231">
         ${historyMetricHtml(t("completedAttempts"), count)}
         ${historyMetricHtml(t("averageScore"), `${average}%`)}
-        ${historyMetricHtml(t("bestScore"), `${best}%`)}
-        ${historyMetricHtml(t("latestScore"), `${latest}%`)}
+        ${historyMetricHtml(t("bestScore"), `${best}%`, best >= getPassingScore() ? "good" : "neutral")}
+        ${historyMetricHtml(t("latestScore"), `${latest}%`, latest >= getPassingScore() ? "good" : "bad")}
+      </div>
+      ${latestAttempt ? renderLatestAttemptDiagnostic(latestAttempt) : ""}
+      ${renderRecentAttemptTrend(history)}
+    </section>
+  `;
+}
+
+function renderLatestAttemptDiagnostic(item) {
+  const total = Number(item.questionCount || item.result?.total || 0);
+  const correct = Number(item.correct || item.result?.correct || 0);
+  const totalErrors = Math.max(0, total - correct);
+  const errorPct = total ? (totalErrors / total) * 100 : 0;
+  const breakdown = calculateAttemptErrorBreakdown(item);
+  const topTopic = breakdown[0];
+  const rows = breakdown.length
+    ? breakdown.slice(0, 6).map(historyErrorTopicHtml).join("")
+    : `<div class="history-empty-state-v231">Nenhum erro registrado na última tentativa.</div>`;
+  const status = item.score >= getPassingScore() ? "Atingiu a meta PSPO I" : "Abaixo da meta PSPO I";
+  return `
+    <section class="history-last-v231" aria-label="Diagnóstico da última tentativa">
+      <div class="history-last-head-v231">
+        <div>
+          <h3>Última tentativa</h3>
+          <p>${escapeHtml(formatDate(item.dateTime))} · ${escapeHtml(formatDuration(item.durationSeconds))}</p>
+        </div>
+        <span class="history-last-status-v231 ${item.score >= getPassingScore() ? "pass" : "fail"}">${escapeHtml(status)}</span>
+      </div>
+      <div class="history-last-summary-v231">
+        <strong>Você errou ${escapeHtml(formatPercent(errorPct))}%</strong>
+        <span>${escapeHtml(totalErrors)} de ${escapeHtml(total)} questões. ${topTopic ? `Maior origem dos erros: ${escapeHtml(getTopicLabel(topTopic.topic))}.` : ""}</span>
+      </div>
+      <div class="history-error-breakdown-v231">
+        <div class="history-section-title-v220">Origem dos erros da última tentativa</div>
+        ${rows}
       </div>
     </section>
   `;
 }
+
+function calculateAttemptErrorBreakdown(item) {
+  const totalQuestions = Number(item.questionCount || item.result?.total || 0);
+  const totalCorrect = Number(item.correct || item.result?.correct || 0);
+  const totalErrors = Math.max(0, totalQuestions - totalCorrect);
+  return getAttemptTopicStats(item)
+    .map((topic) => {
+      const total = Number(topic.total) || 0;
+      const correct = Number(topic.correct) || 0;
+      const missed = Math.max(0, total - correct);
+      return {
+        topic: topic.topic,
+        total,
+        correct,
+        missed,
+        impactPct: totalQuestions ? (missed / totalQuestions) * 100 : 0,
+        sharePct: totalErrors ? (missed / totalErrors) * 100 : 0,
+        accuracy: total ? (correct / total) * 100 : 0,
+        insufficient: total < 5
+      };
+    })
+    .filter((topic) => topic.missed > 0)
+    .sort((a, b) => b.missed - a.missed || b.impactPct - a.impactPct || String(a.topic).localeCompare(String(b.topic)));
+}
+
+function historyErrorTopicHtml(topic) {
+  return `
+    <article class="history-error-topic-v231 ${topic.insufficient ? "insufficient" : ""}">
+      <div class="history-error-topic-main-v231">
+        <strong>${escapeHtml(getTopicLabel(topic.topic))}</strong>
+        <span>${escapeHtml(topic.missed)} ${topic.missed === 1 ? "erro" : "erros"} · ${escapeHtml(topic.correct)}/${escapeHtml(topic.total)} acertos${topic.insufficient ? " · amostra insuficiente" : ""}</span>
+      </div>
+      <div class="history-error-topic-numbers-v231">
+        <span>${escapeHtml(formatPercent(topic.impactPct))} p.p. da prova</span>
+        <strong>${escapeHtml(formatPercent(topic.sharePct))}% dos erros</strong>
+      </div>
+    </article>
+  `;
+}
+
+function renderRecentAttemptTrend(history) {
+  const recent = history.slice(0, 5).reverse();
+  if (recent.length < 2) return "";
+  return `
+    <section class="history-trend-v231" aria-label="Evolução recente">
+      <div class="history-section-title-v220">Evolução recente</div>
+      <div class="history-bars-v220 history-bars-v231">
+        ${recent.map(historyBarHtml).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function getTopicLabel(topicTitle) {
+  const groups = getTopicGroups();
+  const group = groups.find((item) => item.title === topicTitle || (item.topics || []).includes(topicTitle));
+  return group ? `Tópico ${group.id} · ${group.title}` : topicTitle;
+}
+
+function formatPercent(value) {
+  const rounded = Math.round((Number(value) || 0) * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(".", ",");
+}
+
 function historyMetricHtml(label, value, tone = "neutral") {
   return `<div class="history-metric-v220 ${escapeHtml(tone)}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
 }
@@ -1813,19 +1912,22 @@ function renderHistoryList(history) {
 }
 function historyItemHtml(item) {
   const canReview = hasHistoryReviewData(item);
-  const language = toInterfaceLanguage(item.language) === "en" ? "EN" : "PT";
-  const topics = (item.topics || []).slice(0, 5).join(", ");
+  const topics = (item.topics || []).slice(0, 4).map(getTopicLabel).join(", ");
+  const breakdown = calculateAttemptErrorBreakdown(item);
+  const mainGap = breakdown[0];
+  const totalErrors = Math.max(0, Number(item.questionCount || 0) - Number(item.correct || 0));
   return `
-    <article class="history-item-v220">
+    <article class="history-item-v220 history-item-v231">
       <div class="history-score-v220 ${item.score >= getPassingScore() ? "pass" : "fail"}">${escapeHtml(item.score)}%</div>
       <div class="history-main-v220">
-        <div class="history-title-v220"><strong>${escapeHtml(formatDate(item.dateTime))}</strong><span>${escapeHtml(language)}</span></div>
+        <div class="history-title-v220"><strong>${escapeHtml(formatDate(item.dateTime))}</strong><span>${escapeHtml(totalErrors)} ${totalErrors === 1 ? "erro" : "erros"}</span></div>
         <div class="history-meta-v220">
           <span>${escapeHtml(item.questionCount)} ${escapeHtml(t("questions"))}</span>
           <span>${escapeHtml(formatDuration(item.durationSeconds))}</span>
           <span>${escapeHtml(item.appVersion || "-")}</span>
         </div>
-        <div class="history-topics-v220">${escapeHtml(topics)}${(item.topics || []).length > 5 ? "…" : ""}</div>
+        ${mainGap ? `<div class="history-gap-v231">Maior lacuna: <strong>${escapeHtml(getTopicLabel(mainGap.topic))}</strong> · ${escapeHtml(formatPercent(mainGap.impactPct))} p.p.</div>` : ""}
+        <div class="history-topics-v220">${escapeHtml(topics)}${(item.topics || []).length > 4 ? "…" : ""}</div>
         ${canReview ? "" : `<div class="history-fallback-v220">${escapeHtml(t("historyReviewUnavailable"))}</div>`}
       </div>
       <div class="history-actions-v220">

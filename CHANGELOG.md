@@ -21,3 +21,13 @@
 ## v2.2.0 — Histórico analítico e revisão de tentativas
 
 - Base aceita usada como origem técnica desta versão.
+
+
+## v2.3.1 — Identidade visual e diagnóstico de erros
+
+- Aplica paleta editorial inspirada nos materiais premium do Estúdio da Agilidade.
+- Oculta o toggle de idioma, mantendo interface em português e questões em inglês.
+- Reestrutura o histórico para exibir a última tentativa, erros totais e origem dos erros por tópico.
+- Adiciona cálculo de impacto dos erros em pontos percentuais da prova e participação no total de erros.
+- Mantém compatibilidade desktop, com prioridade visual mobile/tablet.
+- Atualiza APP_VERSION, manifest.json, sw.js e documentação de release.

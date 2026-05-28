@@ -4,11 +4,11 @@ Simulador independente para preparação ao exame PSPO I, com interface em portu
 
 ## Versão atual
 
-v2.3.0 — Pivot PSPO I + Android readiness
+v2.3.1 — Pivot PSPO I + Android readiness
 
 URL de teste:
 
-https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.3.0
+https://fabriciocotrim.github.io/PSPO-II-Practice-Simulator-/?v=2.3.1
 
 > Observação: a URL ainda contém `PSPO-II` por causa do nome atual do repositório. Para publicação comercial e Android, recomenda-se renomear o repositório ou usar domínio próprio.
 
@@ -63,7 +63,7 @@ pspo-i:lastAttempt
 pspo-i:currentExam
 ```
 
-A v2.3.0 não migra histórico antigo do PSPO II, para evitar mistura de dados entre exames.
+A v2.3.1 não migra histórico antigo do PSPO II, para evitar mistura de dados entre exames.
 
 ## Temas
 
@@ -96,7 +96,7 @@ O simulador não contém questões oficiais da prova, não reproduz banco oficia
 
 ## Release name
 
-v2.3.0 — Pivot PSPO I + Android readiness
+v2.3.1 — Pivot PSPO I + Android readiness
 
 ## Release notes
 
@@ -114,3 +114,12 @@ v2.3.0 — Pivot PSPO I + Android readiness
 - Atualizados `APP_VERSION`, `CACHE_NAME`, `manifest.json` e `README.md`.
 - Incluído disclaimer de independência em relação à Scrum.org.
 - Preparado handoff para próxima etapa Android.
+
+
+## v2.3.1 — Identidade visual e diagnóstico de erros
+
+- Paleta visual alinhada ao padrão editorial do Estúdio da Agilidade.
+- Remoção do ruído visual do toggle de idioma.
+- Histórico com diagnóstico da última tentativa.
+- Decomposição dos erros por tópico: p.p. da prova e participação nos erros.
+- Evolução recente preparada para expansão analítica na v2.4.0.

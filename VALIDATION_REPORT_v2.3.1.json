@@ -1,0 +1,21 @@
+{
+  "version": "2.3.1",
+  "appVersion": "2.3.1",
+  "examId": "pspo-i",
+  "questionCount": 367,
+  "topicGroupCount": 12,
+  "checks": {
+    "appJsSyntax": "validated with node --check",
+    "jsonFiles": "valid",
+    "manifestStartUrl": "./?v=2.3.1",
+    "cacheName": "pspo-i-practice-v2.3.1",
+    "languageToggle": "hidden in UI",
+    "historyDiagnostic": "latest attempt error breakdown implemented"
+  },
+  "knownLimitations": [
+    "renderização visual em Chromium headless não concluída neste ambiente; validar no GitHub Pages",
+    "histórico local por dispositivo",
+    "sem backend/login/sincronização",
+    "Business Strategy possui baixa amostra no banco atual"
+  ]
+}
